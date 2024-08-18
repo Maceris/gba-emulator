@@ -37,3 +37,19 @@ struct AddressRange
 		return address >= min && address <= max;
 	}
 };
+
+struct MemoryAccessInfo
+{
+	uint8_t bus_width;
+	bool supports_8_bit_read;
+	bool supports_8_bit_write;
+	uint8_t cycles_for_8_bit_access;
+
+	bool supports_16_bit_read;
+	bool supports_16_bit_write;
+	uint8_t cycles_for_16_bit_access;
+
+	bool supports_32_bit_read;
+	bool supports_32_bit_write;
+	uint8_t cycles_for_32_bit_access;
+};
