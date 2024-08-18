@@ -1,0 +1,20 @@
+# Third Party Libraries
+
+SET(HEADER_FILES
+
+)
+
+SET(SOURCE_FILES
+
+)
+
+ADD_LIBRARY(ThirdParty STATIC ${HEADER_FILES} ${SOURCE_FILES})
+TARGET_USE_COMMON_OUTPUT_DIRECTORY(ThirdParty)
+
+TARGET_LINK_LIBRARIES(ThirdParty)
+
+INSTALL(
+  TARGETS ThirdParty
+)
+
+set_property(TARGET ThirdParty PROPERTY FOLDER "ThirdParty")
