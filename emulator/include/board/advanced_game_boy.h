@@ -1,7 +1,11 @@
 #pragma once
 
+#include "board/bus.h"
 #include "cpu/cpu.h"
 
+/// <summary>
+/// A System on a Chip containing various components.
+/// </summary>
 struct AdvancedGameBoy
 {
 	ARM7TDMI gba_cpu;
@@ -15,7 +19,7 @@ struct AdvancedGameBoy
 	// 16 KB AGB ROM
 	// Sound Generator
 	// Prefetch Buffer
-	// Bus?
+	ARM7TDMI_Bus gba_bus;
 
 	// 16-bit line to 256KB WRAM
 	// 8/32-bit line to  6-pin serial subconnector

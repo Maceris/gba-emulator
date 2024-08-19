@@ -101,12 +101,12 @@ struct ARM7TDMI
 	Register SPSR_und;
 #pragma endregion
 
-	
 };
 
 /// <summary>
-/// A Sharp SM83 running at either 4.194304 MHz or 8.388608 MHz for 
-/// backward compatibilty with Game Boy and Game Boy color games.
+/// A Sharp SM83 (LR35902) CPU running at either 4.194304 MHz or
+/// 8.388608 MHz for backward compatibilty with Game Boy and Game Boy color
+/// games.
 /// 
 /// A hybrid between the Intel 8080 and the Zilog Z80 processors.
 /// </summary>

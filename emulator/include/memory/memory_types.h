@@ -53,3 +53,11 @@ struct MemoryAccessInfo
 	bool supports_32_bit_write;
 	uint8_t cycles_for_32_bit_access;
 };
+
+enum class MemoryCycleType
+{
+	IDLE,
+	NON_SEQUENTIAL,
+	SEQUENTIAL,
+	COPROCESSOR_REGISTER_TRANSFER
+};
