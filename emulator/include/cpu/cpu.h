@@ -101,6 +101,160 @@ struct ARM7TDMI
 	Register SPSR_und;
 #pragma endregion
 
+#pragma region ARM Instructions
+	/// <summary>
+	/// Add with carry.
+	/// </summary>
+	void adc();
+	/// <summary>
+	/// Add.
+	/// </summary>
+	void add();
+	/// <summary>
+	/// And.
+	/// </summary>
+	void _and();
+	/// <summary>
+	/// Branch.
+	/// </summary>
+	void b();
+	/// <summary>
+	/// Bit clear.
+	/// </summary>
+	void bic();
+	/// <summary>
+	/// Branch with link;
+	/// </summary>
+	void bl();
+	/// <summary>
+	/// Branch and exchange.
+	/// </summary>
+	void bx();
+	/// <summary>
+	/// Coprocessor data processing.
+	/// </summary>
+	void cdp();
+	/// <summary>
+	/// Compare negative.
+	/// </summary>
+	void cmn();
+	/// <summary>
+	/// Compare.
+	/// </summary>
+	void cmp();
+	/// <summary>
+	/// Exclusive or.
+	/// </summary>
+	void eor();
+	/// <summary>
+	/// Load coprocessor from memory.
+	/// </summary>
+	void ldc();
+	/// <summary>
+	/// Load multiple registers.
+	/// </summary>
+	void ldm();
+	/// <summary>
+	/// Load register from memory.
+	/// </summary>
+	void ldr();
+	/// <summary>
+	/// Move CPU register to coprocessor register.
+	/// </summary>
+	void mcr();
+	/// <summary>
+	/// Multiply Accumulate.
+	/// </summary>
+	void mla();
+	/// <summary>
+	/// Move register or constant.
+	/// </summary>
+	void mov();
+	/// <summary>
+	/// Move from coprocessor register to CPU register.
+	/// </summary>
+	void mrc();
+	/// <summary>
+	/// Move PSR status/flags to register.
+	/// </summary>
+	void mrs();
+	/// <summary>
+	/// Move register to PSR status/flags.
+	/// </summary>
+	void msr();
+	/// <summary>
+	/// Multiply.
+	/// </summary>
+	void mul();
+	/// <summary>
+	/// Move negative register.
+	/// </summary>
+	void mvn();
+	/// <summary>
+	/// Or.
+	/// </summary>
+	void orr();
+	/// <summary>
+	/// Reverse subtract.
+	/// </summary>
+	void rsb();
+	/// <summary>
+	/// Reverse subtract with carry.
+	/// </summary>
+	void rsc();
+	/// <summary>
+	/// Subtract with carry.
+	/// </summary>
+	void sbc();
+	/// <summary>
+	/// Multiply signed accumulate long.
+	/// </summary>
+	void smlal();
+	/// <summary>
+	/// Multiply signed long.
+	/// </summary>
+	void smull();
+	/// <summary>
+	/// Store coprocessor register to memory.
+	/// </summary>
+	void stc();
+	/// <summary>
+	/// Store multiple.
+	/// </summary>
+	void stm();
+	/// <summary>
+	/// Store register to memory.
+	/// </summary>
+	void str();
+	/// <summary>
+	/// Subtract.
+	/// </summary>
+	void sub();
+	/// <summary>
+	/// Software interrupt.
+	/// </summary>
+	void swi();
+	/// <summary>
+	/// Swap register with memory.
+	/// </summary>
+	void swp();
+	/// <summary>
+	/// Test bitwise equality.
+	/// </summary>
+	void teq();
+	/// <summary>
+	/// Test bits.
+	/// </summary>
+	void tst();
+	/// <summary>
+	/// Multiply unsigned accumulate long.
+	/// </summary>
+	void umlal();
+	/// <summary>
+	/// Multiply unsigned long
+	/// </summary>
+	void umull();
+#pragma endregion
 };
 
 /// <summary>
