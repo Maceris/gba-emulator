@@ -105,155 +105,353 @@ struct ARM7TDMI
 	/// <summary>
 	/// Add with carry.
 	/// </summary>
-	void adc();
+	void arm_adc();
 	/// <summary>
 	/// Add.
 	/// </summary>
-	void add();
+	void arm_add();
 	/// <summary>
 	/// And.
 	/// </summary>
-	void _and();
+	void arm_and();
 	/// <summary>
 	/// Branch.
 	/// </summary>
-	void b();
+	void arm_b();
 	/// <summary>
 	/// Bit clear.
 	/// </summary>
-	void bic();
+	void arm_bic();
 	/// <summary>
 	/// Branch with link;
 	/// </summary>
-	void bl();
+	void arm_bl();
 	/// <summary>
 	/// Branch and exchange.
 	/// </summary>
-	void bx();
+	void arm_bx();
 	/// <summary>
 	/// Coprocessor data processing.
 	/// </summary>
-	void cdp();
+	void arm_cdp();
 	/// <summary>
 	/// Compare negative.
 	/// </summary>
-	void cmn();
+	void arm_cmn();
 	/// <summary>
 	/// Compare.
 	/// </summary>
-	void cmp();
+	void arm_cmp();
 	/// <summary>
 	/// Exclusive or.
 	/// </summary>
-	void eor();
+	void arm_eor();
 	/// <summary>
 	/// Load coprocessor from memory.
 	/// </summary>
-	void ldc();
+	void arm_ldc();
 	/// <summary>
 	/// Load multiple registers.
 	/// </summary>
-	void ldm();
+	void arm_ldm();
 	/// <summary>
 	/// Load register from memory.
 	/// </summary>
-	void ldr();
+	void arm_ldr();
 	/// <summary>
 	/// Move CPU register to coprocessor register.
 	/// </summary>
-	void mcr();
+	void arm_mcr();
 	/// <summary>
 	/// Multiply Accumulate.
 	/// </summary>
-	void mla();
+	void arm_mla();
 	/// <summary>
 	/// Move register or constant.
 	/// </summary>
-	void mov();
+	void arm_mov();
 	/// <summary>
 	/// Move from coprocessor register to CPU register.
 	/// </summary>
-	void mrc();
+	void arm_mrc();
 	/// <summary>
 	/// Move PSR status/flags to register.
 	/// </summary>
-	void mrs();
+	void arm_mrs();
 	/// <summary>
 	/// Move register to PSR status/flags.
 	/// </summary>
-	void msr();
+	void arm_msr();
 	/// <summary>
 	/// Multiply.
 	/// </summary>
-	void mul();
+	void arm_mul();
 	/// <summary>
 	/// Move negative register.
 	/// </summary>
-	void mvn();
+	void arm_mvn();
 	/// <summary>
 	/// Or.
 	/// </summary>
-	void orr();
+	void arm_orr();
 	/// <summary>
 	/// Reverse subtract.
 	/// </summary>
-	void rsb();
+	void arm_rsb();
 	/// <summary>
 	/// Reverse subtract with carry.
 	/// </summary>
-	void rsc();
+	void arm_rsc();
 	/// <summary>
 	/// Subtract with carry.
 	/// </summary>
-	void sbc();
+	void arm_sbc();
 	/// <summary>
 	/// Multiply signed accumulate long.
 	/// </summary>
-	void smlal();
+	void arm_smlal();
 	/// <summary>
 	/// Multiply signed long.
 	/// </summary>
-	void smull();
+	void arm_smull();
 	/// <summary>
 	/// Store coprocessor register to memory.
 	/// </summary>
-	void stc();
+	void arm_stc();
 	/// <summary>
 	/// Store multiple.
 	/// </summary>
-	void stm();
+	void arm_stm();
 	/// <summary>
 	/// Store register to memory.
 	/// </summary>
-	void str();
+	void arm_str();
 	/// <summary>
 	/// Subtract.
 	/// </summary>
-	void sub();
+	void arm_sub();
 	/// <summary>
 	/// Software interrupt.
 	/// </summary>
-	void swi();
+	void arm_swi();
 	/// <summary>
 	/// Swap register with memory.
 	/// </summary>
-	void swp();
+	void arm_swp();
 	/// <summary>
 	/// Test bitwise equality.
 	/// </summary>
-	void teq();
+	void arm_teq();
 	/// <summary>
 	/// Test bits.
 	/// </summary>
-	void tst();
+	void arm_tst();
 	/// <summary>
 	/// Multiply unsigned accumulate long.
 	/// </summary>
-	void umlal();
+	void arm_umlal();
 	/// <summary>
 	/// Multiply unsigned long
 	/// </summary>
-	void umull();
+	void arm_umull();
+#pragma endregion
+
+#pragma region Thumb Instructions
+	/// <summary>
+	/// Add, or address.
+	/// </summary>
+	void thumb_add();
+	/// <summary>
+	/// And.
+	/// </summary>
+	void thumb_and();
+	/// <summary>
+	/// Arithmetic shift right.
+	/// </summary>
+	void thumb_asr();
+	/// <summary>
+	/// Unconditional branch.
+	/// </summary>
+	void thumb_b();
+	/// <summary>
+	/// Long branch with link.
+	/// </summary>
+	void thumb_bl();
+	/// <summary>
+	/// Operational state change, to either an address held in Lo or Hi 
+	/// register.
+	/// </summary>
+	void thumb_bx();
+	/// <summary>
+	/// Branch if equal (if Z set).
+	/// </summary>
+	void thumb_beq();
+	/// <summary>
+	/// Branch if carry is clear (if C clear).
+	/// </summary>
+	void thumb_bcc();
+	/// <summary>
+	/// Branch if carry set (if C set).
+	/// </summary>
+	void thumb_bcs();
+	/// <summary>
+	/// Branch if greater than or equal to 
+	/// (if (N set and V set) or (N clear and V clear)).
+	/// </summary>
+	void thumb_bge();
+	/// <summary>
+	/// Branch if greater than (signed), 
+	/// (if Z clear and ((N or V set) or (N or V clear))).
+	/// </summary>
+	void thumb_bgt();
+	/// <summary>
+	/// Branch if greater than (unsigned), (if C set and Z clear).
+	/// </summary>
+	void thumb_bhi();
+	/// <summary>
+	/// Bit clear.
+	/// </summary>
+	void thumb_bic();
+	/// <summary>
+	/// Branch if less than or equal to (signed), 
+	/// (if Z set or ((N set and V clear) or (N clear and V set))).
+	/// </summary>
+	void thumb_ble();
+	/// <summary>
+	/// Branch if less than or equal to (unsigned), 
+	/// (if C is clear and Z is set).
+	/// </summary>
+	void thumb_bls();
+	/// <summary>
+	/// Branch if less than (if (N set and V clear) or (N clear and V set)).
+	/// </summary>
+	void thumb_blt();
+	/// <summary>
+	/// Branch if minus (if N set).
+	/// </summary>
+	void thumb_bmi();
+	/// <summary>
+	/// Branch if not equal (if Z clear).
+	/// </summary>
+	void thumb_bne();
+	/// <summary>
+	/// Branch if plus (if N clear).
+	/// </summary>
+	void thumb_bpl();
+	/// <summary>
+	/// Branch if overflow clear (if V clear).
+	/// </summary>
+	void thumb_bvc();
+	/// <summary>
+	/// Branch if overflow set (if V set).
+	/// </summary>
+	void thumb_bvs();
+	/// <summary>
+	/// Exclusive or.
+	/// </summary>
+	void thumb_eor();
+	/// <summary>
+	/// Compare negative.
+	/// </summary>
+	void thumb_cmn();
+	/// <summary>
+	/// Compare immediate, high to low, low to high, or high to high.
+	/// </summary>
+	void thumb_cmp();
+	/// <summary>
+	/// Load multiple.
+	/// </summary>
+	void thumb_ldmia();
+	/// <summary>
+	/// Load word with immediate offset, register offset, PC-relative,
+	/// or SP relative.
+	/// </summary>
+	void thumb_ldr();
+	/// <summary>
+	/// Load byte with immediate offset or register offset.
+	/// </summary>
+	void thumb_ldrb();
+	/// <summary>
+	/// Load halfword with immediate offset or register offset.
+	/// </summary>
+	void thumb_ldrh();
+	/// <summary>
+	/// Load signed byte with register offset.
+	/// </summary>
+	void thumb_ldrsb();
+	/// <summary>
+	/// Logical shift left.
+	/// </summary>
+	void thumb_lsl();
+	/// <summary>
+	/// Logical shift right.
+	/// </summary>
+	void thumb_lsr();
+	/// <summary>
+	/// Move immediate, high to low, low to high, or high to high.
+	/// </summary>
+	void thumb_mov();
+	/// <summary>
+	/// Multiply.
+	/// </summary>
+	void thumb_mul();
+	/// <summary>
+	/// Move not.
+	/// </summary>
+	void thumb_mvn();
+	/// <summary>
+	/// Negate.
+	/// </summary>
+	void thumb_neg();
+	/// <summary>
+	/// Or.
+	/// </summary>
+	void thumb_or();
+	/// <summary>
+	/// Pop registers from stack, or pop registers and PC from stack.
+	/// </summary>
+	void thumb_pop();
+	/// <summary>
+	/// Push registers onto stack, or LR and registers onto stack.
+	/// </summary>
+	void thumb_push();
+	/// <summary>
+	/// Rotate right.
+	/// </summary>
+	void thumb_ror();
+	/// <summary>
+	/// Subtract with carry.
+	/// </summary>
+	void thumb_sbc();
+	/// <summary>
+	/// Store multiple.
+	/// </summary>
+	void thumb_stmia();
+	/// <summary>
+	/// Store word with immediate offset, register offset, or SP-relative.
+	/// </summary>
+	void thumb_str();
+	/// <summary>
+	/// Store byte with immediate offset or register offset.
+	/// </summary>
+	void thumb_strb();
+	/// <summary>
+	/// Store halfword with immediate offset or register offset.
+	/// </summary>
+	void thumb_strh();
+	/// <summary>
+	/// Subtract.
+	/// </summary>
+	void thumb_sub();
+	/// <summary>
+	/// Software interrupt.
+	/// </summary>
+	void thumb_swi();
+	/// <summary>
+	/// Test bits.
+	/// </summary>
+	void thumb_tst();
+
 #pragma endregion
 };
 
