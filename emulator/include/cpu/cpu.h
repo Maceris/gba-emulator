@@ -453,6 +453,10 @@ struct ARM7TDMI
 	void thumb_tst();
 
 #pragma endregion
+
+	void fetch();
+	void decode();
+	void execute();
 };
 
 /// <summary>
