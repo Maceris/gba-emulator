@@ -457,6 +457,30 @@ struct ARM7TDMI
 	void fetch();
 	void decode();
 	void execute();
+	
+private:
+#pragma region ARM Decoding
+	void decode_arm();
+	void decode_thumb();
+
+	void is_arm_data_processing_or_psr_transfer();
+	void is_arm_multiply();
+	void is_arm_multiply_long();
+	void is_arm_single_data_swap();
+	void is_arm_branch_exchange();
+	void is_arm_halfword_data_transfer_register_offset();
+	void is_arm_halfword_data_transfer_immediate_offset();
+	void is_arm_single_data_transfer();
+	void is_arm_undefined();
+	void is_arm_block_data_transfer();
+	void is_arm_branch();
+	void is_arm_coprocessor_data_transfer();
+	void is_arm_coprocessor_data_operation();
+	void is_arm_coprocessor_register_transfer();
+	void is_arm_software_interrupt();
+
+#pragma endregion
+
 };
 
 /// <summary>

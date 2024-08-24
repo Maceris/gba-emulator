@@ -271,6 +271,61 @@ void ARM7TDMI::decode()
 void ARM7TDMI::execute()
 {}
 
+#pragma region ARM Decoding
+
+void ARM7TDMI::decode_arm()
+{}
+
+void ARM7TDMI::decode_thumb()
+{}
+
+void ARM7TDMI::is_arm_data_processing_or_psr_transfer()
+{}
+
+void ARM7TDMI::is_arm_multiply()
+{}
+
+void ARM7TDMI::is_arm_multiply_long()
+{}
+
+void ARM7TDMI::is_arm_single_data_swap()
+{}
+
+void ARM7TDMI::is_arm_branch_exchange()
+{}
+
+void ARM7TDMI::is_arm_halfword_data_transfer_register_offset()
+{}
+
+void ARM7TDMI::is_arm_halfword_data_transfer_immediate_offset()
+{}
+
+void ARM7TDMI::is_arm_single_data_transfer()
+{}
+
+void ARM7TDMI::is_arm_undefined()
+{}
+
+void ARM7TDMI::is_arm_block_data_transfer()
+{}
+
+void ARM7TDMI::is_arm_branch()
+{}
+
+void ARM7TDMI::is_arm_coprocessor_data_transfer()
+{}
+
+void ARM7TDMI::is_arm_coprocessor_data_operation()
+{}
+
+void ARM7TDMI::is_arm_coprocessor_register_transfer()
+{}
+
+void ARM7TDMI::is_arm_software_interrupt()
+{}
+
+
+#pragma endregion
 
 #pragma region SM83 Instructions
 void SM83::asm_adc()
