@@ -2,262 +2,262 @@
 
 
 #pragma region ARM7TDMI ARM Instructions
-void ARM7TDMI::arm_adc()
+void ARM7TDMI::arm_adc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_add()
+void ARM7TDMI::arm_add(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_and()
+void ARM7TDMI::arm_and(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_b()
+void ARM7TDMI::arm_b(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_bic()
+void ARM7TDMI::arm_bic(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_bl()
+void ARM7TDMI::arm_bl(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_bx()
+void ARM7TDMI::arm_bx(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_cdp()
+void ARM7TDMI::arm_cdp(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_cmn()
+void ARM7TDMI::arm_cmn(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_cmp()
+void ARM7TDMI::arm_cmp(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_eor()
+void ARM7TDMI::arm_eor(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_ldc()
+void ARM7TDMI::arm_ldc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_ldm()
+void ARM7TDMI::arm_ldm(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_ldr()
+void ARM7TDMI::arm_ldr(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mcr()
+void ARM7TDMI::arm_mcr(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mla()
+void ARM7TDMI::arm_mla(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mov()
+void ARM7TDMI::arm_mov(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mrc()
+void ARM7TDMI::arm_mrc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mrs()
+void ARM7TDMI::arm_mrs(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_msr()
+void ARM7TDMI::arm_msr(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mul()
+void ARM7TDMI::arm_mul(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_mvn()
+void ARM7TDMI::arm_mvn(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_orr()
+void ARM7TDMI::arm_orr(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_rsb()
+void ARM7TDMI::arm_rsb(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_rsc()
+void ARM7TDMI::arm_rsc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_sbc()
+void ARM7TDMI::arm_sbc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_smlal()
+void ARM7TDMI::arm_smlal(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_smull()
+void ARM7TDMI::arm_smull(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_stc()
+void ARM7TDMI::arm_stc(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_stm()
+void ARM7TDMI::arm_stm(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_str()
+void ARM7TDMI::arm_str(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_sub()
+void ARM7TDMI::arm_sub(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_swi()
+void ARM7TDMI::arm_swi(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_swp()
+void ARM7TDMI::arm_swp(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_teq()
+void ARM7TDMI::arm_teq(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_tst()
+void ARM7TDMI::arm_tst(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_umlal()
+void ARM7TDMI::arm_umlal(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_umull()
+void ARM7TDMI::arm_umull(ArmInstruction instruction)
 {}
 
 #pragma endregion
 
 #pragma region ARM7TDMI Thumb Instructions
-void ARM7TDMI::thumb_add()
+void ARM7TDMI::thumb_add(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_and()
+void ARM7TDMI::thumb_and(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_asr()
+void ARM7TDMI::thumb_asr(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_b()
+void ARM7TDMI::thumb_b(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bl()
+void ARM7TDMI::thumb_bl(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bx()
+void ARM7TDMI::thumb_bx(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_beq()
+void ARM7TDMI::thumb_beq(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bcc()
+void ARM7TDMI::thumb_bcc(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bcs()
+void ARM7TDMI::thumb_bcs(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bge()
+void ARM7TDMI::thumb_bge(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bgt()
+void ARM7TDMI::thumb_bgt(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bhi()
+void ARM7TDMI::thumb_bhi(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bic()
+void ARM7TDMI::thumb_bic(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ble()
+void ARM7TDMI::thumb_ble(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bls()
+void ARM7TDMI::thumb_bls(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_blt()
+void ARM7TDMI::thumb_blt(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bmi()
+void ARM7TDMI::thumb_bmi(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bne()
+void ARM7TDMI::thumb_bne(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bpl()
+void ARM7TDMI::thumb_bpl(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bvc()
+void ARM7TDMI::thumb_bvc(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_bvs()
+void ARM7TDMI::thumb_bvs(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_eor()
+void ARM7TDMI::thumb_eor(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_cmn()
+void ARM7TDMI::thumb_cmn(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_cmp()
+void ARM7TDMI::thumb_cmp(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ldmia()
+void ARM7TDMI::thumb_ldmia(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ldr()
+void ARM7TDMI::thumb_ldr(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ldrb()
+void ARM7TDMI::thumb_ldrb(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ldrh()
+void ARM7TDMI::thumb_ldrh(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ldrsb()
+void ARM7TDMI::thumb_ldrsb(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_lsl()
+void ARM7TDMI::thumb_lsl(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_lsr()
+void ARM7TDMI::thumb_lsr(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_mov()
+void ARM7TDMI::thumb_mov(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_mul()
+void ARM7TDMI::thumb_mul(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_mvn()
+void ARM7TDMI::thumb_mvn(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_neg()
+void ARM7TDMI::thumb_neg(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_or()
+void ARM7TDMI::thumb_or(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_pop()
+void ARM7TDMI::thumb_pop(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_push()
+void ARM7TDMI::thumb_push(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_ror()
+void ARM7TDMI::thumb_ror(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_sbc()
+void ARM7TDMI::thumb_sbc(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_stmia()
+void ARM7TDMI::thumb_stmia(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_str()
+void ARM7TDMI::thumb_str(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_strb()
+void ARM7TDMI::thumb_strb(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_strh()
+void ARM7TDMI::thumb_strh(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_sub()
+void ARM7TDMI::thumb_sub(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_swi()
+void ARM7TDMI::thumb_swi(ThumbInstruction instruction)
 {}
 
-void ARM7TDMI::thumb_tst()
+void ARM7TDMI::thumb_tst(ThumbInstruction instruction)
 {}
 
 #pragma endregion
