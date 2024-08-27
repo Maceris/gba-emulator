@@ -559,21 +559,22 @@ private:
 	ARMInstructionType decode_arm(ArmInstruction instruction);
 	ThumbInstructionType decode_thumb(ThumbInstruction instruction);
 
-	bool is_arm_data_processing_or_psr_transfer(ArmInstruction instruction);
-	bool is_arm_multiply(ArmInstruction instruction);
-	bool is_arm_multiply_long(ArmInstruction instruction);
-	bool is_arm_single_data_swap(ArmInstruction instruction);
-	bool is_arm_branch_exchange(ArmInstruction instruction);
-	bool is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction);
-	bool is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction);
-	bool is_arm_single_data_transfer(ArmInstruction instruction);
-	bool is_arm_undefined(ArmInstruction instruction);
-	bool is_arm_block_data_transfer(ArmInstruction instruction);
-	bool is_arm_branch(ArmInstruction instruction);
-	bool is_arm_coprocessor_data_transfer(ArmInstruction instruction);
-	bool is_arm_coprocessor_data_operation(ArmInstruction instruction);
-	bool is_arm_coprocessor_register_transfer(ArmInstruction instruction);
-	bool is_arm_software_interrupt(ArmInstruction instruction);
+	bool constexpr is_arm_block_data_transfer(ArmInstruction instruction);
+	bool constexpr is_arm_branch(ArmInstruction instruction);
+	bool constexpr is_arm_branch_exchange(ArmInstruction instruction);
+	bool constexpr is_arm_coprocessor_data_transfer(ArmInstruction instruction);
+	bool constexpr is_arm_coprocessor_data_operation(ArmInstruction instruction);
+	bool constexpr is_arm_coprocessor_register_transfer(ArmInstruction instruction);
+	bool constexpr is_arm_data_processing(ArmInstruction instruction);
+	bool constexpr is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction);
+	bool constexpr is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction);
+	bool constexpr is_arm_multiply(ArmInstruction instruction);
+	bool constexpr is_arm_psr_transfer_mrs(ArmInstruction instruction);
+	bool constexpr is_arm_psr_transfer_msr(ArmInstruction instruction);
+	bool constexpr is_arm_single_data_swap(ArmInstruction instruction);
+	bool constexpr is_arm_single_data_transfer(ArmInstruction instruction);
+	bool constexpr is_arm_software_interrupt(ArmInstruction instruction);
+	bool constexpr is_arm_undefined(ArmInstruction instruction);
 
 #pragma endregion
 

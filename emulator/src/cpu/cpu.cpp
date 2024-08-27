@@ -275,91 +275,146 @@ void ARM7TDMI::execute()
 
 ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
 {
+	//TODO(ches) fill this out
 	return ARMInstructionType::CMP;
 }
 
 ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction)
 {
+	//TODO(ches) fill this out
 	return ThumbInstructionType::CMP;
 }
 
-bool ARM7TDMI::is_arm_data_processing_or_psr_transfer(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_block_data_transfer(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction BLOCK_DATA_TRANSFER_FORMAT = 0b0000'1000'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1110'0000'0000'0000'0000'0000'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == BLOCK_DATA_TRANSFER_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_multiply(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_branch(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction BRANCH_FORMAT = 0b0000'1010'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction BRANCH_WITH_LINK_FORMAT = 0b0000'1011'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'0000'0000'0000'0000'0000'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == BRANCH_FORMAT || extracted == BRANCH_WITH_LINK_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_multiply_long(ArmInstruction instruction)
-{
-	return false;
-}
-
-bool ARM7TDMI::is_arm_single_data_swap(ArmInstruction instruction)
-{
-	return false;
-}
-
-bool ARM7TDMI::is_arm_branch_exchange(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_branch_exchange(ArmInstruction instruction)
 {
 	const ArmInstruction BRANCH_AND_EXCHANGE_FORMAT = 0b0000'0001'0010'1111'1111'1111'0001'0000;
 	const ArmInstruction FORMAT_MASK = 0b0000'1111'1111'1111'1111'1111'1111'0000;
 
-	const ArmInstruction extracted = instruction & BRANCH_AND_EXCHANGE_FORMAT;
+	ArmInstruction extracted = instruction & BRANCH_AND_EXCHANGE_FORMAT;
 	return extracted == BRANCH_AND_EXCHANGE_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_coprocessor_data_transfer(ArmInstruction instruction)
 {
 	return false;
 }
 
-bool ARM7TDMI::is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_coprocessor_data_operation(ArmInstruction instruction)
 {
 	return false;
 }
 
-bool ARM7TDMI::is_arm_single_data_transfer(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_coprocessor_register_transfer(ArmInstruction instruction)
 {
 	return false;
 }
 
-bool ARM7TDMI::is_arm_undefined(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_data_processing(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction DATA_PROCESSING_FORMAT = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1100'0000'0000'0000'0000'0000'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == DATA_PROCESSING_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_block_data_transfer(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction HALFWORD_DATA_TRANSFER_IMMEDIATE_FORMAT = 0b0000'0000'0100'0000'0000'0000'1001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1110'0100'0000'0000'0000'1001'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == HALFWORD_DATA_TRANSFER_IMMEDIATE_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_branch(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction HALFWORD_DATA_TRANSFER_REGISTER_FORMAT = 0b0000'0000'0000'0000'0000'0000'1001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1110'0100'0000'0000'1111'1001'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == HALFWORD_DATA_TRANSFER_REGISTER_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_coprocessor_data_transfer(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_multiply(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction MULTIPLY_FORMAT = 0b0000'0000'0000'0000'0000'0000'1001'0000;
+	const ArmInstruction MULTIPLY_LONG_FORMAT = 0b0000'0000'1000'0000'0000'0000'1001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'1000'0000'0000'0000'1111'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == MULTIPLY_FORMAT || extracted == MULTIPLY_LONG_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_coprocessor_data_operation(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_psr_transfer_mrs(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction MRS_FORMAT = 0b0000'0001'0000'1111'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'1011'1111'0000'0000'0000'0000;
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == MRS_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_coprocessor_register_transfer(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_psr_transfer_msr(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction MSR_FORMAT = 0b0000'0001'0010'0000'1111'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1101'1011'0000'1111'0000'0000'0000;
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == MSR_FORMAT;
 }
 
-bool ARM7TDMI::is_arm_software_interrupt(ArmInstruction instruction)
+bool constexpr ARM7TDMI::is_arm_single_data_swap(ArmInstruction instruction)
 {
-	return false;
+	const ArmInstruction SINGLE_DATA_SWAP_FORMAT = 0b0000'0001'0000'0000'0000'0000'1001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'1000'0000'0000'1111'1111'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == SINGLE_DATA_SWAP_FORMAT;
+}
+
+bool constexpr ARM7TDMI::is_arm_single_data_transfer(ArmInstruction instruction)
+{
+	const ArmInstruction SINGLE_DATA_TRANSFER_FORMAT = 0b0000'0100'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1100'0000'0000'0000'0000'0000'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == SINGLE_DATA_TRANSFER_FORMAT;
+}
+
+bool constexpr ARM7TDMI::is_arm_software_interrupt(ArmInstruction instruction)
+{
+	const ArmInstruction SOFTWARE_INTERRUPT_FORMAT = 0b0000'1111'0000'0000'0000'0000'0000'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'0000'0000'0000'0000'0000'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == SOFTWARE_INTERRUPT_FORMAT;
+}
+
+bool constexpr ARM7TDMI::is_arm_undefined(ArmInstruction instruction)
+{
+	const ArmInstruction UNDEFINED_FORMAT = 0b0000'0110'0000'0000'0000'0000'0001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1110'0000'0000'0000'0000'0001'0000;
+
+	ArmInstruction extracted = instruction & FORMAT_MASK;
+	return extracted == UNDEFINED_FORMAT;
 }
 
 #pragma endregion
