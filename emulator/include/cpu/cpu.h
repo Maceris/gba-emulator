@@ -27,6 +27,99 @@ enum class CPUMode
 using ArmInstruction = uint32_t;
 using ThumbInstruction = uint16_t;
 
+enum class ARMInstructionType : uint8_t
+{
+	ADC,
+	ADD,
+	AND,
+	B,
+	BIC,
+	BL,
+	BX,
+	CDP,
+	CMN,
+	CMP,
+	EOR,
+	LDC,
+	LDM,
+	LDR,
+	MCR,
+	MLA,
+	MOV,
+	MRC,
+	MRS,
+	MSR,
+	MUL,
+	MVN,
+	ORR,
+	RSB,
+	RSC,
+	SBC,
+	SMLAL,
+	SMULL,
+	STC,
+	STM,
+	STR,
+	SUB,
+	SWI,
+	SWP,
+	TEQ,
+	TST,
+	UMLAL,
+	UMULL
+};
+
+enum class ThumbInstructionType
+{
+	ADD,
+	AND,
+	ASR,
+	B,
+	BL,
+	BX,
+	BEQ,
+	BCC,
+	BCS,
+	BGE,
+	BGT,
+	BHI,
+	BIC,
+	BLE,
+	BLS,
+	BLT,
+	BMI,
+	BNE,
+	BPL,
+	BVC,
+	BVS,
+	EOR,
+	CMN,
+	CMP,
+	LDMIA,
+	LDR,
+	LDRB,
+	LDRH,
+	LDRSB,
+	LSL,
+	LSR,
+	MOV,
+	MUL,
+	MVN,
+	NEG,
+	OR,
+	POP,
+	PUSH,
+	ROR,
+	SBC,
+	STMIA,
+	STR,
+	STRB,
+	STRH,
+	SUB,
+	SWI,
+	TST
+};
+
 /// <summary>
 /// A 16.78 MHz ARM7TDMI RISC processor, featuring 16-bit Thumb, JTAG Debug,
 /// fast multiplier, and enhanced ICE.
@@ -463,24 +556,24 @@ struct ARM7TDMI
 	
 private:
 #pragma region ARM Decoding
-	void decode_arm();
-	void decode_thumb();
+	ARMInstructionType decode_arm(ArmInstruction instruction);
+	ThumbInstructionType decode_thumb(ThumbInstruction instruction);
 
-	void is_arm_data_processing_or_psr_transfer();
-	void is_arm_multiply();
-	void is_arm_multiply_long();
-	void is_arm_single_data_swap();
-	void is_arm_branch_exchange();
-	void is_arm_halfword_data_transfer_register_offset();
-	void is_arm_halfword_data_transfer_immediate_offset();
-	void is_arm_single_data_transfer();
-	void is_arm_undefined();
-	void is_arm_block_data_transfer();
-	void is_arm_branch();
-	void is_arm_coprocessor_data_transfer();
-	void is_arm_coprocessor_data_operation();
-	void is_arm_coprocessor_register_transfer();
-	void is_arm_software_interrupt();
+	bool is_arm_data_processing_or_psr_transfer(ArmInstruction instruction);
+	bool is_arm_multiply(ArmInstruction instruction);
+	bool is_arm_multiply_long(ArmInstruction instruction);
+	bool is_arm_single_data_swap(ArmInstruction instruction);
+	bool is_arm_branch_exchange(ArmInstruction instruction);
+	bool is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction);
+	bool is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction);
+	bool is_arm_single_data_transfer(ArmInstruction instruction);
+	bool is_arm_undefined(ArmInstruction instruction);
+	bool is_arm_block_data_transfer(ArmInstruction instruction);
+	bool is_arm_branch(ArmInstruction instruction);
+	bool is_arm_coprocessor_data_transfer(ArmInstruction instruction);
+	bool is_arm_coprocessor_data_operation(ArmInstruction instruction);
+	bool is_arm_coprocessor_register_transfer(ArmInstruction instruction);
+	bool is_arm_software_interrupt(ArmInstruction instruction);
 
 #pragma endregion
 

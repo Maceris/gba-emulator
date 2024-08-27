@@ -273,57 +273,94 @@ void ARM7TDMI::execute()
 
 #pragma region ARM Decoding
 
-void ARM7TDMI::decode_arm()
-{}
+ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
+{
+	return ARMInstructionType::CMP;
+}
 
-void ARM7TDMI::decode_thumb()
-{}
+ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction)
+{
+	return ThumbInstructionType::CMP;
+}
 
-void ARM7TDMI::is_arm_data_processing_or_psr_transfer()
-{}
+bool ARM7TDMI::is_arm_data_processing_or_psr_transfer(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_multiply()
-{}
+bool ARM7TDMI::is_arm_multiply(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_multiply_long()
-{}
+bool ARM7TDMI::is_arm_multiply_long(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_single_data_swap()
-{}
+bool ARM7TDMI::is_arm_single_data_swap(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_branch_exchange()
-{}
+bool ARM7TDMI::is_arm_branch_exchange(ArmInstruction instruction)
+{
+	const ArmInstruction BRANCH_AND_EXCHANGE_FORMAT = 0b0000'0001'0010'1111'1111'1111'0001'0000;
+	const ArmInstruction FORMAT_MASK = 0b0000'1111'1111'1111'1111'1111'1111'0000;
 
-void ARM7TDMI::is_arm_halfword_data_transfer_register_offset()
-{}
+	const ArmInstruction extracted = instruction & BRANCH_AND_EXCHANGE_FORMAT;
+	return extracted == BRANCH_AND_EXCHANGE_FORMAT;
+}
 
-void ARM7TDMI::is_arm_halfword_data_transfer_immediate_offset()
-{}
+bool ARM7TDMI::is_arm_halfword_data_transfer_register_offset(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_single_data_transfer()
-{}
+bool ARM7TDMI::is_arm_halfword_data_transfer_immediate_offset(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_undefined()
-{}
+bool ARM7TDMI::is_arm_single_data_transfer(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_block_data_transfer()
-{}
+bool ARM7TDMI::is_arm_undefined(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_branch()
-{}
+bool ARM7TDMI::is_arm_block_data_transfer(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_coprocessor_data_transfer()
-{}
+bool ARM7TDMI::is_arm_branch(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_coprocessor_data_operation()
-{}
+bool ARM7TDMI::is_arm_coprocessor_data_transfer(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_coprocessor_register_transfer()
-{}
+bool ARM7TDMI::is_arm_coprocessor_data_operation(ArmInstruction instruction)
+{
+	return false;
+}
 
-void ARM7TDMI::is_arm_software_interrupt()
-{}
+bool ARM7TDMI::is_arm_coprocessor_register_transfer(ArmInstruction instruction)
+{
+	return false;
+}
 
+bool ARM7TDMI::is_arm_software_interrupt(ArmInstruction instruction)
+{
+	return false;
+}
 
 #pragma endregion
 
