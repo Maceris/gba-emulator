@@ -275,8 +275,62 @@ void ARM7TDMI::execute()
 
 ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
 {
+
+	if (is_arm_branch_exchange(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_block_data_transfer(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_branch(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_software_interrupt(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_undefined(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_single_data_transfer(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_single_data_swap(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_multiply(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_halfword_data_transfer_register_offset(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_halfword_data_transfer_immediate_offset(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_psr_transfer_mrs(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_psr_transfer_msr(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+	if (is_arm_data_processing(instruction))
+	{
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
 	//TODO(ches) fill this out
-	return ARMInstructionType::CMP;
+	return ARMInstructionType::UNIMPLEMENTED;
 }
 
 ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction)

@@ -66,7 +66,8 @@ enum class ARMInstructionType : uint8_t
 	TEQ,
 	TST,
 	UMLAL,
-	UMULL
+	UMULL,
+	UNIMPLEMENTED
 };
 
 enum class ThumbInstructionType
