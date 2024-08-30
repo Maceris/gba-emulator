@@ -363,7 +363,7 @@ bool constexpr ARM7TDMI::is_arm_branch_exchange(ArmInstruction instruction)
 	const ArmInstruction BRANCH_AND_EXCHANGE_FORMAT = 0b0000'0001'0010'1111'1111'1111'0001'0000;
 	const ArmInstruction FORMAT_MASK = 0b0000'1111'1111'1111'1111'1111'1111'0000;
 
-	ArmInstruction extracted = instruction & BRANCH_AND_EXCHANGE_FORMAT;
+	ArmInstruction extracted = instruction & FORMAT_MASK;
 	return extracted == BRANCH_AND_EXCHANGE_FORMAT;
 }
 
