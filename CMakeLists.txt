@@ -17,6 +17,7 @@ SET(CMAKE_C_STANDARD 99)
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
+INCLUDE(FetchContent)
 INCLUDE(PrecompiledHeader)
 
 # ################################## Options ##################################
@@ -110,6 +111,17 @@ SET(COMMON_HEADER_DIR ${COMMON_DIR}/include)
 SET(CONFIGURATION_BINARY_DIR ${GBA_RUNTIME_OUTPUT_DIRECTORY}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>)
 
 # ############################## Project Setup ################################
+
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/b514bdc898e2951020cbdca1304b75f5950d1f59.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP NEW
+)
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+INCLUDE(GoogleTest)
 
 # ADD_SUBDIRECTORY(third_party)
 ADD_SUBDIRECTORY(common)
