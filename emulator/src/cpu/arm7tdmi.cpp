@@ -334,6 +334,147 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_data_processing_and_miscellaneous(ArmInstruction instruction)
 	{
+		const ArmInstruction OP_MASK = 0b0000'0010'0000'0000'0000'0000'0000'0000;
+		const ArmInstruction OP1_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
+		const ArmInstruction OP2_MASK = 0b0000'0000'0000'0000'0000'0000'1111'0000;
+
+		const ArmInstruction op = (instruction & OP_MASK) >> 25;
+		const ArmInstruction op1 = (instruction & OP1_MASK) >> 20;
+
+		if (op == 0)
+		{
+			const ArmInstruction op2 = (instruction & OP2_MASK) >> 4;
+
+			if ((op1 & 0b11001) != 0b10000 && (op2 & 0x0001) == 0x0000)
+			{
+				return decode_data_processing_register(instruction);
+			}
+			if ((op1 & 0b11001) != 0b10000 && (op2 & 0x1001) == 0x0001)
+			{
+				return decode_data_processing_register_shifted_register(instruction);
+			}
+			if ((op1 & 0b11001) == 0b10000 && (op2 & 0x1000) == 0x0000)
+			{
+				return decode_miscellaneous(instruction);
+			}
+			if ((op1 & 0b11001) == 0b10000 && (op2 & 0x1001) == 0x1000)
+			{
+				return decode_halfword_multiply_and_multiply_accumulate(instruction);
+			}
+			if ((op1 & 0b10000) == 0b00000 && op2 == 0x1001)
+			{
+				return decode_multiply_and_multiply_accumulate(instruction);
+			}
+			if ((op1 & 0b10000) == 0b10000 && op2 == 0x1001)
+			{
+				return decode_synchronization_primitives(instruction);
+			}
+			if ((op1 & 0b10010) != 0b00010 && op2 == 0x1011)
+			{
+				return decode_extra_load_store(instruction);
+			}
+			if ((op1 & 0b10010) != 0b00010 && (op2 & 0x1101) == 0x1101)
+			{
+				return decode_extra_load_store(instruction);
+			}
+			if ((op1 & 0b10010) == 0b00010 && op2 == 0x1011)
+			{
+				return decode_extra_load_store_unprivileged(instruction);
+			}
+			if ((op1 & 0b10010) == 0b00010 && (op2 & 0x1101) == 0x1101)
+			{
+				return decode_extra_load_store(instruction);
+			}
+		}
+		else
+		{
+			if ((op1 & 0b11001) != 0b10000)
+			{
+				return decode_data_processing_immediate(instruction);
+			}
+			if (op1 == 0b10000)
+			{
+				return ARMInstructionType::MOV;
+			}
+			if (op1 == 0b10100)
+			{
+				// High halfword 16-bit immediate load, MOVT
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+			if ((op1 & 0b11011) != 0b10010)
+			{
+				return decode_msr_and_hints(instruction);
+			}
+		}
+
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_halfword_multiply_and_multiply_accumulate(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_extra_load_store_unprivileged(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction)
+	{
 		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
 		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;
