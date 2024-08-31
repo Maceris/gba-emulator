@@ -12,6 +12,9 @@ using Address16 = uint16_t;
 
 using Register = Word;
 
+using ArmInstruction = uint32_t;
+using ThumbInstruction = uint16_t;
+
 struct AddressRange
 {
 	Address32 min;
