@@ -112,6 +112,15 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_conditional_instruction(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_data_processing_and_miscellaneous(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction);
+	/// <summary>
+	/// Handles decoding of Data Processing instructions, except when 
+	/// op1 is 1101x, given that we already know it's either a 
+	/// Data Processing (register-shifted register) or 
+	/// Data Processing (register) instruction.
+	/// </summary>
+	/// <param name="op">The 5 bits of op1.</param>
+	/// <returns>The appropriate instruction.</returns>
+	ARMInstructionType constexpr decode_data_processing_register_shared(const ArmInstruction op);
 	ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_halfword_multiply_and_multiply_accumulate(ArmInstruction instruction);

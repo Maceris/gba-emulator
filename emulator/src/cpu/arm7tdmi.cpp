@@ -446,6 +446,46 @@ namespace DecodeArm
 
 		const ArmInstruction op = (instruction & OP_MASK) >> 20;
 
+		if ((op & 0b11110) != 0b11010)
+		{
+			return decode_data_processing_register_shared(instruction);
+		}
+		else
+		{
+			const ArmInstruction op2 = (instruction >> 5) & 0b11;
+			const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
+
+			if (op2 == 0b00 && imm5 == 0b00000)
+			{
+				return ARMInstructionType::MOV;
+			}
+			if (op2 == 0b00 && imm5 != 0b00000)
+			{
+				return ARMInstructionType::LSL;
+			}
+			if (op2 == 0b01)
+			{
+				return ARMInstructionType::LSR;
+			}
+			if (op2 == 0b10)
+			{
+				return ARMInstructionType::ASR;
+			}
+			if (op2 == 0b11 && imm5 == 0b00000)
+			{
+				return ARMInstructionType::RRX;
+			}
+			if (op2 == 0b11 && imm5 != 0b00000)
+			{
+				return ARMInstructionType::ROR;
+			}
+		}
+
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_data_processing_register_shared(const ArmInstruction op)
+	{
 		if ((op & 0b11110) == 0b00000)
 		{
 			return ARMInstructionType::AND;
@@ -480,7 +520,8 @@ namespace DecodeArm
 		}
 		if ((op & 0b11001) == 0b10000)
 		{
-			return decode_data_processing_and_miscellaneous(instruction);
+			// Shouldn't be able to arrive here
+			return ARMInstructionType::UNIMPLEMENTED;
 		}
 		if (op == 0b10001)
 		{
@@ -502,16 +543,32 @@ namespace DecodeArm
 		{
 			return ARMInstructionType::ORR;
 		}
-		if ((op & 0b11110) == 0b11010)
+		if ((op & 0b11110) == 0b11100)
+		{
+			return ARMInstructionType::BIC;
+		}
+		if ((op & 0b11110) == 0b11110)
+		{
+			return ARMInstructionType::MVN;
+		}
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
+
+		const ArmInstruction op = (instruction & OP_MASK) >> 20;
+
+		if ((op & 0b11110) != 0b11010)
+		{
+			return decode_data_processing_register_shared(instruction);
+		}
+		else
 		{
 			const ArmInstruction op2 = (instruction >> 5) & 0b11;
-			const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
 
-			if (op2 == 0b00 && imm5 == 0b00000)
-			{
-				return ARMInstructionType::MOV;
-			}
-			if (op2 == 0b00 && imm5 != 0b00000)
+			if (op2 == 0b00)
 			{
 				return ARMInstructionType::LSL;
 			}
@@ -523,31 +580,12 @@ namespace DecodeArm
 			{
 				return ARMInstructionType::ASR;
 			}
-			if (op2 == 0b11 && imm5 == 0b00000)
-			{
-				return ARMInstructionType::RRX;
-			}
-			if (op2 == 0b11 && imm5 != 0b00000)
+			if (op2 == 0b11)
 			{
 				return ARMInstructionType::ROR;
 			}
 		}
-		if ((op & 0b11110) == 0b11100)
-		{
-			return ARMInstructionType::BIC;
-		}
-		if ((op & 0b11110) == 0b11110)
-		{
-			return ARMInstructionType::MVN;
-		}
 
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
