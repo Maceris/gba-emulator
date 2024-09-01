@@ -7,7 +7,16 @@ void ARM7TDMI::arm_adc(ArmInstruction instruction)
 void ARM7TDMI::arm_add(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_adr(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_adrl(ArmInstruction instruction)
+{}
+
 void ARM7TDMI::arm_and(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_asr(ArmInstruction instruction)
 {}
 
 void ARM7TDMI::arm_b(ArmInstruction instruction)
@@ -43,6 +52,12 @@ void ARM7TDMI::arm_ldm(ArmInstruction instruction)
 void ARM7TDMI::arm_ldr(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_lsl(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_lsr(ArmInstruction instruction)
+{}
+
 void ARM7TDMI::arm_mcr(ArmInstruction instruction)
 {}
 
@@ -67,7 +82,22 @@ void ARM7TDMI::arm_mul(ArmInstruction instruction)
 void ARM7TDMI::arm_mvn(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_nop(ArmInstruction instruction)
+{}
+
 void ARM7TDMI::arm_orr(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_pop(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_push(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_ror(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_rrx(ArmInstruction instruction)
 {}
 
 void ARM7TDMI::arm_rsb(ArmInstruction instruction)
@@ -412,8 +442,105 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction OP_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
+
+		const ArmInstruction op = (instruction & OP_MASK) >> 20;
+
+		if ((op & 0b11110) == 0b00000)
+		{
+			return ARMInstructionType::AND;
+		}
+		if ((op & 0b11110) == 0b00010)
+		{
+			return ARMInstructionType::EOR;
+		}
+		if ((op & 0b11110) == 0b00100)
+		{
+			return ARMInstructionType::SUB;
+		}
+		if ((op & 0b11110) == 0b00110)
+		{
+			return ARMInstructionType::RSB;
+		}
+		if ((op & 0b11110) == 0b01000)
+		{
+			return ARMInstructionType::ADD;
+		}
+		if ((op & 0b11110) == 0b01010)
+		{
+			return ARMInstructionType::ADC;
+		}
+		if ((op & 0b11110) == 0b01100)
+		{
+			return ARMInstructionType::SBC;
+		}
+		if ((op & 0b11110) == 0b01110)
+		{
+			return ARMInstructionType::RSC;
+		}
+		if ((op & 0b11001) == 0b10000)
+		{
+			return decode_data_processing_and_miscellaneous(instruction);
+		}
+		if (op == 0b10001)
+		{
+			return ARMInstructionType::TST;
+		}
+		if (op == 0b10011)
+		{
+			return ARMInstructionType::TEQ;
+		}
+		if (op == 0b10101)
+		{
+			return ARMInstructionType::CMP;
+		}
+		if (op == 0b10111)
+		{
+			return ARMInstructionType::CMN;
+		}
+		if ((op & 0b11110) == 0b11000)
+		{
+			return ARMInstructionType::ORR;
+		}
+		if ((op & 0b11110) == 0b11010)
+		{
+			const ArmInstruction op2 = (instruction >> 5) & 0b11;
+			const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
+
+			if (op2 == 0b00 && imm5 == 0b00000)
+			{
+				return ARMInstructionType::MOV;
+			}
+			if (op2 == 0b00 && imm5 != 0b00000)
+			{
+				return ARMInstructionType::LSL;
+			}
+			if (op2 == 0b01)
+			{
+				return ARMInstructionType::LSR;
+			}
+			if (op2 == 0b10)
+			{
+				return ARMInstructionType::ASR;
+			}
+			if (op2 == 0b11 && imm5 == 0b00000)
+			{
+				return ARMInstructionType::RRX;
+			}
+			if (op2 == 0b11 && imm5 != 0b00000)
+			{
+				return ARMInstructionType::ROR;
+			}
+		}
+		if ((op & 0b11110) == 0b11100)
+		{
+			return ARMInstructionType::BIC;
+		}
+		if ((op & 0b11110) == 0b11110)
+		{
+			return ARMInstructionType::MVN;
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 

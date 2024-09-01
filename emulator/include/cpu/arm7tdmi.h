@@ -6,7 +6,10 @@ enum class ARMInstructionType : uint8_t
 {
 	ADC,
 	ADD,
+	ADR,//Pseudo
+	ADRL,//Pseudo
 	AND,
+	ASR,//Pseudo
 	B,
 	BIC,
 	BL,
@@ -18,6 +21,8 @@ enum class ARMInstructionType : uint8_t
 	LDC,
 	LDM,
 	LDR,
+	LSL,//Pseudo
+	LSR,//Pseudo
 	MCR,
 	MLA,
 	MOV,
@@ -26,7 +31,12 @@ enum class ARMInstructionType : uint8_t
 	MSR,
 	MUL,
 	MVN,
+	NOP,//Pseudo
 	ORR,
+	POP,//Pseudo
+	PUSH,//Pseudo
+	ROR,//Pseudo
+	RRX,//Pseudo
 	RSB,
 	RSC,
 	SBC,
@@ -206,9 +216,21 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_add(ArmInstruction instruction);
 	/// <summary>
+	/// Load Address (short-range).
+	/// </summary>
+	void arm_adr(ArmInstruction instruction);
+	/// <summary>
+	/// Load Address (medium-range).
+	/// </summary>
+	void arm_adrl(ArmInstruction instruction);
+	/// <summary>
 	/// And.
 	/// </summary>
 	void arm_and(ArmInstruction instruction);
+	/// <summary>
+	/// Arithmetic Shift Right.
+	/// </summary>
+	void arm_asr(ArmInstruction instruction);
 	/// <summary>
 	/// Branch.
 	/// </summary>
@@ -254,6 +276,14 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_ldr(ArmInstruction instruction);
 	/// <summary>
+	/// Logical Shift Left.
+	/// </summary>
+	void arm_lsl(ArmInstruction instruction);
+	/// <summary>
+	/// Logical Shift Right.
+	/// </summary>
+	void arm_lsr(ArmInstruction instruction);
+	/// <summary>
 	/// Move CPU register to coprocessor register.
 	/// </summary>
 	void arm_mcr(ArmInstruction instruction);
@@ -286,9 +316,29 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_mvn(ArmInstruction instruction);
 	/// <summary>
+	/// No Operation.
+	/// </summary>
+	void arm_nop(ArmInstruction instruction);
+	/// <summary>
 	/// Or.
 	/// </summary>
 	void arm_orr(ArmInstruction instruction);
+	/// <summary>
+	/// Pop.
+	/// </summary>
+	void arm_pop(ArmInstruction instruction);
+	/// <summary>
+	/// Push.
+	/// </summary>
+	void arm_push(ArmInstruction instruction);
+	/// <summary>
+	/// Rotate Right.
+	/// </summary>
+	void arm_ror(ArmInstruction instruction);
+	/// <summary>
+	/// Rotate Right with Extend.
+	/// </summary>
+	void arm_rrx(ArmInstruction instruction);
 	/// <summary>
 	/// Reverse subtract.
 	/// </summary>
