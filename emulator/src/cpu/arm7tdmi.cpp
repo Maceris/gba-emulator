@@ -424,7 +424,8 @@ namespace DecodeArm
 			}
 			if (op1 == 0b10000)
 			{
-				return ARMInstructionType::MOV;
+				// v6T2 instruction, 16-bit immediate load, MOV (immediate)
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if (op1 == 0b10100)
 			{
@@ -591,8 +592,76 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op = (instruction >> 20) & 0b11;
+		const ArmInstruction op2 = (instruction >> 4) & 0b111;
+
+		if (op2 == 0b000)
+		{
+			const ArmInstruction b = (instruction >> 9) & 0b1;
+
+			if (b == 1)
+			{
+				//v7VE instructions, MRS/MSR (Banked register)
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+			else
+			{
+				const ArmInstruction op1 = (instruction >> 16) & 0b1111;
+				if ((op & 0b01) == 0b00)
+				{
+					return ARMInstructionType::MRS;
+				}
+				if (op == 0b01)
+				{
+					//NOTE(ches) all 4 cases of op1 are some kind of MSR
+					return ARMInstructionType::MSR;
+				}
+				if (op == 0b11)
+				{
+					return ARMInstructionType::MSR;
+				}
+			}
+		}
+		if (op2 == 0b001)
+		{
+			if (op == 0b01)
+			{
+				return ARMInstructionType::BX;
+			}
+			if (op == 0b11)
+			{
+				// v5T instruction, CLZ Count Leading Zeros
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+		}
+		if (op2 == 0b010)
+		{
+			// v5TEJ instruction, BXJ Branch and Exchange Jazelle
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if (op2 == 0b011)
+		{
+			// v5T instruction, BLX (register) Branch with Link and Exchange
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if (op2 == 0b101)
+		{
+			// Saturating addition and subtraction are v5 and up
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if (op2 == 0b110)
+		{
+			// v7VE instruction, ERET Exception Return
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if (op2 == 0b111)
+		{
+			// either v5T instruction BKPT Breakpoint, the v7VE instruction
+			// HVC Hypervisor Call, or Security Extenions SMC/ (previously SMI)
+			// but none of those are supported here
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 

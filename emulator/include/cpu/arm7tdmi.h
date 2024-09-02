@@ -141,6 +141,8 @@ namespace DecodeArm
 /// <summary>
 /// A 16.78 MHz ARM7TDMI RISC processor, featuring 16-bit Thumb, JTAG Debug,
 /// fast multiplier, and enhanced ICE.
+/// 
+/// While called ARM7, it's an implementation of the ARMv4T architecture.
 /// </summary>
 struct ARM7TDMI
 {
