@@ -389,7 +389,9 @@ namespace DecodeArm
 			}
 			if ((op1 & 0b11001) == 0b10000 && (op2 & 0x1001) == 0x1000)
 			{
-				return decode_halfword_multiply_and_multiply_accumulate(instruction);
+				// Halfword multiply and multiply accumulate are only on
+				// ARMv5TE and above
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if ((op1 & 0b10000) == 0b00000 && op2 == 0x1001)
 			{
@@ -662,13 +664,6 @@ namespace DecodeArm
 			return ARMInstructionType::UNIMPLEMENTED;
 		}
 
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_halfword_multiply_and_multiply_accumulate(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 

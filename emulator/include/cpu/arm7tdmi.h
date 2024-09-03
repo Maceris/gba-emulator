@@ -123,7 +123,6 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_data_processing_register_shared(const ArmInstruction op);
 	ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_halfword_multiply_and_multiply_accumulate(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction);
