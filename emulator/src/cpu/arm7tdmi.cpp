@@ -669,8 +669,39 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op = (instruction >> 20) & 0b1111;
+		if ((op & 0b1110) == 0b0000)
+		{
+			return ARMInstructionType::MUL;
+		}
+		if ((op & 0b1110) == 0b0010)
+		{
+			return ARMInstructionType::MLA;
+		}
+		if ((op & 0b1100) == 0b0100)
+		{
+			// 0100 is UMAAL Unsigned Multiply Accumulate Accumulate Long in v6
+			// 0101 is undefined
+			// 0110 is MLS Multiply and Subtract in v6T2
+			// 0111 is undefined
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if ((op & 0b1110) == 0b1000)
+		{
+			return ARMInstructionType::UMULL;
+		}
+		if ((op & 0b1110) == 0b1010)
+		{
+			return ARMInstructionType::UMLAL;
+		}
+		if ((op & 0b1110) == 0b1100)
+		{
+			return ARMInstructionType::SMULL;
+		}
+		if ((op & 0b1110) == 0b1110)
+		{
+			return ARMInstructionType::SMLAL;
+		}
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
