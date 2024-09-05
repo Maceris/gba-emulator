@@ -707,8 +707,13 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op = (instruction >> 20) & 0b1111;
+
+		if ((op & 0b1011) == 0b0000)
+		{
+			return ARMInstructionType::SWP;
+		}
+		// everything else is v6 or v6K and above
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
