@@ -720,7 +720,70 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction)
 	{
 		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op1 = (instruction >> 20) & 0b00101;
+		const ArmInstruction op2 = (instruction >> 5) & 0b11;
+		const ArmInstruction rn = (instruction >> 16) & 0b1111;
+
+		if (op2 == 0b01)
+		{
+			if (op1 == 0b00000)
+			{
+				return ARMInstructionType::STRH;
+			}
+			if (op1 == 0b00001)
+			{
+				return ARMInstructionType::LDRH;
+			}
+			if (op1 == 0b00100)
+			{
+				return ARMInstructionType::STRH;
+			}
+			if (op1 == 0b00101)
+			{
+				return ARMInstructionType::LDRH;
+			}
+		}
+		if (op2 == 0b10)
+		{
+			if (op1 == 0b00000)
+			{
+				// LDRD Load Dual is v5TE
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+			if (op1 == 0b00001)
+			{
+				return ARMInstructionType::LDRSB;
+			}
+			if (op1 == 0b00100)
+			{
+				// LDRD Load Dual is v5TE
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+			if (op1 == 0b00101)
+			{
+				return ARMInstructionType::LDRSB;
+			}
+		}
+		if (op2 == 0b11)
+		{
+			if (op1 == 0b00000)
+			{
+				return ARMInstructionType::STRD;
+			}
+			if (op1 == 0b00001)
+			{
+				return ARMInstructionType::LDRSH;
+			}
+			if (op1 == 0b00100)
+			{
+				return ARMInstructionType::STRD;
+			}
+			if (op1 == 0b00101)
+			{
+				return ARMInstructionType::LDRSH;
+			}
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 

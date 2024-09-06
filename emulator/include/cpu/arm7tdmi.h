@@ -21,6 +21,9 @@ enum class ARMInstructionType : uint8_t
 	LDC,
 	LDM,
 	LDR,
+	LDRH,//TODO(ches) confirm and add functions
+	LDRSB,//TODO(ches) confirm and add functions
+	LDRSH,//TODO(ches) confirm and add functions
 	LSL,//Pseudo
 	LSR,//Pseudo
 	MCR,
@@ -45,6 +48,8 @@ enum class ARMInstructionType : uint8_t
 	STC,
 	STM,
 	STR,
+	STRD,//TODO(ches) confirm and add functions
+	STRH,//TODO(ches) confirm and add functions
 	SUB,
 	SWI,
 	SWP,
