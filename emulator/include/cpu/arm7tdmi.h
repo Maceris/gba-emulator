@@ -116,6 +116,7 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_conditional_instruction(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_data_processing_and_miscellaneous(ArmInstruction instruction);
+	ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction);
 	/// <summary>
 	/// Handles decoding of Data Processing instructions, except when 
@@ -131,8 +132,6 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_extra_load_store_unprivileged(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction);
 
 	ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction);

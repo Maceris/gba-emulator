@@ -411,7 +411,8 @@ namespace DecodeArm
 			}
 			if ((op1 & 0b10010) == 0b00010 && op2 == 0x1011)
 			{
-				return decode_extra_load_store_unprivileged(instruction);
+				// Unprivileged load/store instructions are all v6T2 and above
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if ((op1 & 0b10010) == 0b00010 && (op2 & 0x1101) == 0x1101)
 			{
@@ -443,45 +444,64 @@ namespace DecodeArm
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
+	ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction)
+	{
+		const ArmInstruction op = (instruction >> 20) & 0b11111;
+		const ArmInstruction rn = (instruction >> 16) & 0b1111;
+
+		const ArmInstruction op_first_4 = (instruction >> 20) & 0b11110;
+
+		if ((op_first_4 == 0b00010 || op_first_4 == 0b01000) && rn == 0b1111)
+		{
+			return ARMInstructionType::ADR;
+		}
+		if ((op & 0b11001) == 0b10000)
+		{
+			return decode_data_processing_and_miscellaneous(instruction);
+		}
+		if (op_first_4 == 0b11010)
+		{
+			return ARMInstructionType::MOV;
+		}
+
+		return decode_data_processing_register_shared(instruction);
+	}
+
 	ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
-
-		const ArmInstruction op = (instruction & OP_MASK) >> 20;
+		const ArmInstruction op = (instruction >> 20) & 0b11111;
 
 		if ((op & 0b11110) != 0b11010)
 		{
 			return decode_data_processing_register_shared(instruction);
 		}
-		else
-		{
-			const ArmInstruction op2 = (instruction >> 5) & 0b11;
-			const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
+		
+		const ArmInstruction op2 = (instruction >> 5) & 0b11;
+		const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
 
-			if (op2 == 0b00 && imm5 == 0b00000)
-			{
-				return ARMInstructionType::MOV;
-			}
-			if (op2 == 0b00 && imm5 != 0b00000)
-			{
-				return ARMInstructionType::LSL;
-			}
-			if (op2 == 0b01)
-			{
-				return ARMInstructionType::LSR;
-			}
-			if (op2 == 0b10)
-			{
-				return ARMInstructionType::ASR;
-			}
-			if (op2 == 0b11 && imm5 == 0b00000)
-			{
-				return ARMInstructionType::RRX;
-			}
-			if (op2 == 0b11 && imm5 != 0b00000)
-			{
-				return ARMInstructionType::ROR;
-			}
+		if (op2 == 0b00 && imm5 == 0b00000)
+		{
+			return ARMInstructionType::MOV;
+		}
+		if (op2 == 0b00 && imm5 != 0b00000)
+		{
+			return ARMInstructionType::LSL;
+		}
+		if (op2 == 0b01)
+		{
+			return ARMInstructionType::LSR;
+		}
+		if (op2 == 0b10)
+		{
+			return ARMInstructionType::ASR;
+		}
+		if (op2 == 0b11 && imm5 == 0b00000)
+		{
+			return ARMInstructionType::RRX;
+		}
+		if (op2 == 0b11 && imm5 != 0b00000)
+		{
+			return ARMInstructionType::ROR;
 		}
 
 		return ARMInstructionType::UNIMPLEMENTED;
@@ -567,26 +587,24 @@ namespace DecodeArm
 		{
 			return decode_data_processing_register_shared(instruction);
 		}
-		else
-		{
-			const ArmInstruction op2 = (instruction >> 5) & 0b11;
+		
+		const ArmInstruction op2 = (instruction >> 5) & 0b11;
 
-			if (op2 == 0b00)
-			{
-				return ARMInstructionType::LSL;
-			}
-			if (op2 == 0b01)
-			{
-				return ARMInstructionType::LSR;
-			}
-			if (op2 == 0b10)
-			{
-				return ARMInstructionType::ASR;
-			}
-			if (op2 == 0b11)
-			{
-				return ARMInstructionType::ROR;
-			}
+		if (op2 == 0b00)
+		{
+			return ARMInstructionType::LSL;
+		}
+		if (op2 == 0b01)
+		{
+			return ARMInstructionType::LSR;
+		}
+		if (op2 == 0b10)
+		{
+			return ARMInstructionType::ASR;
+		}
+		if (op2 == 0b11)
+		{
+			return ARMInstructionType::ROR;
 		}
 
 		return ARMInstructionType::UNIMPLEMENTED;
@@ -784,20 +802,6 @@ namespace DecodeArm
 			}
 		}
 
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_extra_load_store_unprivileged(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
