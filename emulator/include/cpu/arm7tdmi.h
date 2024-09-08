@@ -22,9 +22,12 @@ enum class ARMInstructionType : uint8_t
 	LDC,
 	LDM,
 	LDR,
+	LDRB,//TODO(ches) confirm and add functions
+	LDRBT,//TODO(ches) confirm and add functions
 	LDRH,//TODO(ches) confirm and add functions
 	LDRSB,//TODO(ches) confirm and add functions
 	LDRSH,//TODO(ches) confirm and add functions
+	LDRT,//TODO(ches) confirm and add functions
 	LSL,//Pseudo
 	LSR,//Pseudo
 	MCR,
@@ -49,8 +52,11 @@ enum class ARMInstructionType : uint8_t
 	STC,
 	STM,
 	STR,
+	STRB,//TODO(ches) confirm and add functions
+	STRBT,//TODO(ches) confirm and add functions
 	STRD,//TODO(ches) confirm and add functions
 	STRH,//TODO(ches) confirm and add functions
+	STRT,//TODO(ches) confirm and add functions
 	SUB,
 	SWI,
 	SWP,
@@ -135,6 +141,18 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction);
 
+	/// <summary>
+	/// Decode load/store word and unsigned byte instructions, given the 
+	/// below information.
+	/// 
+	/// 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 10  9  8  7  6  5  4  3  2  1  0
+	/// ____cond___  0  1  A _____op1______ ____Rn_____                                B
+	/// 
+	/// Either bits A or B may be 1, but not both.
+	/// 
+	/// </summary>
+	/// <param name="instruction"></param>
+	/// <returns></returns>
 	ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction);

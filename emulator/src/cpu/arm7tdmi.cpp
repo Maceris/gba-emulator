@@ -320,42 +320,30 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_conditional_instruction(ArmInstruction instruction)
 	{
-		const ArmInstruction OP1_MASK = 0b0001'1100'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction OP1_MASK_FIRST_2 = 0b0001'1000'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0001'0000;
+		const ArmInstruction op1 = (instruction >> 26) & 0b111;
 
-		const ArmInstruction DATA_PROCESSING_AND_MISC_FORMAT = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction LOAD_STORE_FORMAT = 0b0000'1000'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction LOAD_STORE_OR_MEDIA_FORMAT = 0b0000'1100'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction MEDIA_FORMAT = 0b0000'0000'0000'0000'0000'0000'0001'0000;
-		const ArmInstruction BRANCH_BRANCH_WITH_LINK_OR_BLOCK_DATA_FORMAT = 0b0001'0000'0000'0000'0000'0000'0000'0000;
-		const ArmInstruction COPROCESSOR_OR_SUPERVISOR_FORMAT = 0b0001'1000'0000'0000'0000'0000'0000'0000;
-
-		const ArmInstruction op1 = instruction & OP1_MASK;
-		const ArmInstruction first_2_of_op1 = instruction & OP1_MASK_FIRST_2;
-		const ArmInstruction op = instruction & OP_MASK;
-
-		if (first_2_of_op1 == DATA_PROCESSING_AND_MISC_FORMAT)
+		if ((op1 & 0b110) == 0b000)
 		{
 			return decode_data_processing_and_miscellaneous(instruction);
 		}
-		if (op1 == LOAD_STORE_FORMAT)
+		if (op1 == 0b010)
 		{
 			return decode_load_store_word_and_unsigned_byte(instruction);
 		}
-		if (op1 == LOAD_STORE_OR_MEDIA_FORMAT)
+		if (op1 == 0b011)
 		{
-			if (op == LOAD_STORE_OR_MEDIA_FORMAT)
+			const ArmInstruction b = (instruction >> 4) & 0b1;
+			if (b == 1)
 			{
 				return decode_media_instructions(instruction);
 			}
 			return decode_load_store_word_and_unsigned_byte(instruction);
 		}
-		if (first_2_of_op1 == BRANCH_BRANCH_WITH_LINK_OR_BLOCK_DATA_FORMAT)
+		if ((op1 & 0b110) == 0b100)
 		{
 			return decode_branch_branch_with_link_and_block_data_transfer(instruction);
 		}
-		if (first_2_of_op1 == COPROCESSOR_OR_SUPERVISOR_FORMAT)
+		if ((op1 & 0b110) == 0b110)
 		{
 			return decode_coprocessor_and_supervisor_call(instruction);
 		}
@@ -845,8 +833,41 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op1 = (instruction >> 20) & 0b11111;
+
+		if ((op1 & 0b00101) == 0b00000 && (op1 & 0b10111) != 0b00010)
+		{
+			return ARMInstructionType::STR;
+		}
+		if ((op1 & 0b10111) == 0b00010)
+		{
+			return ARMInstructionType::STRT;
+		}
+		if ((op1 & 0b00101) == 0b00001 && (op1 & 0b10111) != 0b00011)
+		{
+			return ARMInstructionType::LDR;
+		}
+		if ((op1 & 0b10111) == 0b00011)
+		{
+			return ARMInstructionType::LDRT;
+		}
+		if ((op1 & 0b00101) == 0b00100 && (op1 & 0b10111) != 0b00110)
+		{
+			return ARMInstructionType::STRB;
+		}
+		if ((op1 & 0b10111) == 0b00110)
+		{
+			return ARMInstructionType::STRBT;
+		}
+		if ((op1 & 0b00101) == 0b00101 && (op1 & 0b10111) != 0b00111)
+		{
+			return ARMInstructionType::LDRB;
+		}
+		if ((op1 & 0b10111) == 0b00111)
+		{
+			return ARMInstructionType::LDRBT;
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
