@@ -17,6 +17,7 @@ enum class ARMInstructionType : uint8_t
 	CDP,
 	CMN,
 	CMP,
+	CSDB,//TODO(ches) confirm and add functions
 	EOR,
 	LDC,
 	LDM,

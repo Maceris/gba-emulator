@@ -807,8 +807,39 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op = (instruction >> 22) & 0b1;
+		const ArmInstruction op1 = (instruction >> 16) & 0b1111;
+
+		if (op == 0b0)
+		{
+			if (op1 == 0b0000)
+			{
+				const ArmInstruction op2 = instruction & 0b1111'1111;
+
+				// 00000000 = NOP No Operation hint, v6K and v6T2
+				// 00000001 = YIELD Yield hint, v6K
+				// 00000010 = WFE Wait For Event hint, v6K
+				// 00000011 = WFI Wait For Interrupt hint, v6K
+				// 00000100 = SEV Send Event hint, v6K
+				// 1111xxxx = DBG Debug hint, v7
+				if (op2 == 0b00010100)
+				{
+					return ARMInstructionType::CSDB;
+				}
+			}
+			if (op1 == 0b0100 || (op1 & 0b1011) == 0b1000)
+			{
+				return ARMInstructionType::MSR;
+			}
+			if ((op1 & 0b0011) == 0b0001 || (op1 & 0b0010) == 0b0010)
+			{
+				return ARMInstructionType::MSR;
+			}
+		}
+		else
+		{
+			return ARMInstructionType::MSR;
+		}
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
