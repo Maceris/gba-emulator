@@ -4,65 +4,245 @@
 
 enum class ARMInstructionType : uint8_t
 {
+	/// <summary>
+	/// Add with carry.
+	/// </summary>
 	ADC,
+	/// <summary>
+	/// Add.
+	/// </summary>
 	ADD,
-	ADR,//Pseudo
-	ADRL,//Pseudo
+	/// <summary>
+	/// Load Address (short-range). Pseudo-instruction.
+	/// </summary>
+	ADR,
+	/// <summary>
+	/// Load Address (medium-range). Pseudo-instruction.
+	/// </summary>
+	ADRL,
+	/// <summary>
+	/// And.
+	/// </summary>
 	AND,
-	ASR,//Pseudo
+	/// <summary>
+	/// Arithmetic Shift Right. Pseudo-instruction.
+	/// </summary>
+	ASR,
+	/// <summary>
+	/// Branch.
+	/// </summary>
 	B,
+	/// <summary>
+	/// Bit clear.
+	/// </summary>
 	BIC,
+	/// <summary>
+	/// Branch with link. Pseudo-instruction.
+	/// </summary>
 	BL,
+	/// <summary>
+	/// Branch and exchange.
+	/// </summary>
 	BX,
+	/// <summary>
+	/// Coprocessor data processing.
+	/// </summary>
 	CDP,
+	/// <summary>
+	/// Compare negative.
+	/// </summary>
 	CMN,
+	/// <summary>
+	/// Compare.
+	/// </summary>
 	CMP,
-	CSDB,//TODO(ches) confirm and add functions
+	/// <summary>
+	/// Consumption of Speculative Data Barrier.
+	/// </summary>
+	CSDB,
+	/// <summary>
+	/// Exclusive or.
+	/// </summary>
 	EOR,
+	/// <summary>
+	/// Load coprocessor from memory.
+	/// </summary>
 	LDC,
+	/// <summary>
+	/// Load multiple registers.
+	/// </summary>
 	LDM,
+	/// <summary>
+	/// Load register from memory.
+	/// </summary>
 	LDR,
-	LDRB,//TODO(ches) confirm and add functions
-	LDRBT,//TODO(ches) confirm and add functions
-	LDRH,//TODO(ches) confirm and add functions
-	LDRSB,//TODO(ches) confirm and add functions
-	LDRSH,//TODO(ches) confirm and add functions
-	LDRT,//TODO(ches) confirm and add functions
-	LSL,//Pseudo
-	LSR,//Pseudo
+	/// <summary>
+	/// Load Register Byte.
+	/// </summary>
+	LDRB,
+	/// <summary>
+	/// Load Register Byte Unprivileged.
+	/// </summary>
+	LDRBT,
+	/// <summary>
+	/// Load Register Halfword.
+	/// </summary>
+	LDRH,
+	/// <summary>
+	/// Load Register Signed Byte.
+	/// </summary>
+	LDRSB,
+	/// <summary>
+	/// Load Register Signed Halfword.
+	/// </summary>
+	LDRSH,
+	/// <summary>
+	/// Load Register Unprivileged.
+	/// </summary>
+	LDRT,
+	/// <summary>
+	/// Logical Shift Left. Pseudo-instruction.
+	/// </summary>
+	LSL,
+	/// <summary>
+	/// Logical Shift Right. Pseudo-instruction.
+	/// </summary>
+	LSR,
+	/// <summary>
+	/// Move CPU register to coprocessor register.
+	/// </summary>
 	MCR,
+	/// <summary>
+	/// Multiply Accumulate.
+	/// </summary>
 	MLA,
+	/// <summary>
+	/// Move register or constant.
+	/// </summary>
 	MOV,
+	/// <summary>
+	/// Move from coprocessor register to CPU register.
+	/// </summary>
 	MRC,
+	/// <summary>
+	/// Move PSR status/flags to register.
+	/// </summary>
 	MRS,
+	/// <summary>
+	/// Move register to PSR status/flags.
+	/// </summary>
 	MSR,
+	/// <summary>
+	/// Multiply.
+	/// </summary>
 	MUL,
+	/// <summary>
+	/// Move negative register.
+	/// </summary>
 	MVN,
-	NOP,//Pseudo
+	/// <summary>
+	/// No Operation. Pseudo-instruction.
+	/// </summary>
+	NOP,
+	/// <summary>
+	/// Or.
+	/// </summary>
 	ORR,
-	POP,//Pseudo
-	PUSH,//Pseudo
-	ROR,//Pseudo
-	RRX,//Pseudo
+	/// <summary>
+	/// Pop. Pseudo-instruction.
+	/// </summary>
+	POP,
+	/// <summary>
+	/// Push. Pseudo-instruction.
+	/// </summary>
+	PUSH,
+	/// <summary>
+	/// Rotate Right. Pseudo-instruction.
+	/// </summary>
+	ROR,
+	/// <summary>
+	/// Rotate Right with Extend. Pseudo-instruction.
+	/// </summary>
+	RRX,
+	/// <summary>
+	/// Reverse subtract.
+	/// </summary>
 	RSB,
+	/// <summary>
+	/// Reverse subtract with carry.
+	/// </summary>
 	RSC,
+	/// <summary>
+	/// Subtract with carry.
+	/// </summary>
 	SBC,
+	/// <summary>
+	/// Multiply signed accumulate long.
+	/// </summary>
 	SMLAL,
+	/// <summary>
+	/// Multiply signed long.
+	/// </summary>
 	SMULL,
+	/// <summary>
+	/// Store coprocessor register to memory.
+	/// </summary>
 	STC,
+	/// <summary>
+	/// Store multiple.
+	/// </summary>
 	STM,
+	/// <summary>
+	/// Store register to memory.
+	/// </summary>
 	STR,
-	STRB,//TODO(ches) confirm and add functions
-	STRBT,//TODO(ches) confirm and add functions
-	STRD,//TODO(ches) confirm and add functions
-	STRH,//TODO(ches) confirm and add functions
-	STRT,//TODO(ches) confirm and add functions
+	/// <summary>
+	/// Store register byte.
+	/// </summary>
+	STRB,
+	/// <summary>
+	/// Store register byte unprivileged.
+	/// </summary>
+	STRBT,
+	/// <summary>
+	/// Store register dual.
+	/// </summary>
+	STRD,
+	/// <summary>
+	/// Store register halfword.
+	/// </summary>
+	STRH,
+	/// <summary>
+	/// Store register unprivileged.
+	/// </summary>
+	STRT,
+	/// <summary>
+	/// Subtract.
+	/// </summary>
 	SUB,
+	/// <summary>
+	/// Software interrupt.
+	/// </summary>
 	SWI,
+	/// <summary>
+	/// Swap register with memory.
+	/// </summary>
 	SWP,
+	/// <summary>
+	/// Test bitwise equality.
+	/// </summary>
 	TEQ,
+	/// <summary>
+	/// Test bits.
+	/// </summary>
 	TST,
+	/// <summary>
+	/// Multiply unsigned accumulate long.
+	/// </summary>
 	UMLAL,
+	/// <summary>
+	/// Multiply unsigned long
+	/// </summary>
 	UMULL,
 	UNIMPLEMENTED
 };
@@ -273,7 +453,7 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_bic(ArmInstruction instruction);
 	/// <summary>
-	/// Branch with link;
+	/// Branch with link.
 	/// </summary>
 	void arm_bl(ArmInstruction instruction);
 	/// <summary>
@@ -293,6 +473,10 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_cmp(ArmInstruction instruction);
 	/// <summary>
+	/// Consumption of speculative data barrier.
+	/// </summary>
+	void arm_csdb(ArmInstruction instruction);
+	/// <summary>
 	/// Exclusive or.
 	/// </summary>
 	void arm_eor(ArmInstruction instruction);
@@ -308,6 +492,30 @@ struct ARM7TDMI
 	/// Load register from memory.
 	/// </summary>
 	void arm_ldr(ArmInstruction instruction);
+	/// <summary>
+	/// Load register byte.
+	/// </summary>
+	void arm_ldrb(ArmInstruction instruction);
+	/// <summary>
+	/// Load register byte unprivileged.
+	/// </summary>
+	void arm_ldrbt(ArmInstruction instruction);
+	/// <summary>
+	/// Load register halfword.
+	/// </summary>
+	void arm_ldrh(ArmInstruction instruction);
+	/// <summary>
+	/// Load register signed byte.
+	/// </summary>
+	void arm_ldrsb(ArmInstruction instruction);
+	/// <summary>
+	/// Load register signed halfword.
+	/// </summary>
+	void arm_ldrsh(ArmInstruction instruction);
+	/// <summary>
+	/// Load register unprivileged.
+	/// </summary>
+	void arm_ldrt(ArmInstruction instruction);
 	/// <summary>
 	/// Logical Shift Left.
 	/// </summary>
@@ -404,6 +612,26 @@ struct ARM7TDMI
 	/// Store register to memory.
 	/// </summary>
 	void arm_str(ArmInstruction instruction);
+	/// <summary>
+	/// Store register byte.
+	/// </summary>
+	void arm_strb(ArmInstruction instruction);
+	/// <summary>
+	/// Store register byte unprivileged.
+	/// </summary>
+	void arm_strbt(ArmInstruction instruction);
+	/// <summary>
+	/// Store register dual.
+	/// </summary>
+	void arm_strd(ArmInstruction instruction);
+	/// <summary>
+	/// Store register halfword.
+	/// </summary>
+	void arm_strh(ArmInstruction instruction);
+	/// <summary>
+	/// Store register unprivileged.
+	/// </summary>
+	void arm_strt(ArmInstruction instruction);
 	/// <summary>
 	/// Subtract.
 	/// </summary>

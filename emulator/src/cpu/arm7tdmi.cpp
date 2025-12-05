@@ -40,6 +40,11 @@ void ARM7TDMI::arm_cmn(ArmInstruction instruction)
 void ARM7TDMI::arm_cmp(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_csdb(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
 void ARM7TDMI::arm_eor(ArmInstruction instruction)
 {}
 
@@ -51,6 +56,36 @@ void ARM7TDMI::arm_ldm(ArmInstruction instruction)
 
 void ARM7TDMI::arm_ldr(ArmInstruction instruction)
 {}
+
+void ARM7TDMI::arm_ldrb(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
+void ARM7TDMI::arm_ldrbt(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
+void ARM7TDMI::arm_ldrh(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
+void ARM7TDMI::arm_ldrsb(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
+void ARM7TDMI::arm_ldrsh(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
+void ARM7TDMI::arm_ldrt(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
 
 void ARM7TDMI::arm_lsl(ArmInstruction instruction)
 {}
@@ -123,6 +158,27 @@ void ARM7TDMI::arm_stm(ArmInstruction instruction)
 
 void ARM7TDMI::arm_str(ArmInstruction instruction)
 {}
+
+void ARM7TDMI::arm_strb(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+void ARM7TDMI::arm_strbt(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+void ARM7TDMI::arm_strd(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+void ARM7TDMI::arm_strh(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+void ARM7TDMI::arm_strt(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
 
 void ARM7TDMI::arm_sub(ArmInstruction instruction)
 {}

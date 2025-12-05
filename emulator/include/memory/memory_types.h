@@ -35,7 +35,7 @@ struct AddressRange
 	constexpr AddressRange& operator=(AddressRange&&) = default;
 	constexpr ~AddressRange() = default;
 
-	constexpr bool contains(const Address32& address)
+	constexpr bool contains(const Address32& address) const
 	{
 		return address >= min && address <= max;
 	}
