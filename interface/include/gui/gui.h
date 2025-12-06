@@ -12,4 +12,6 @@ namespace gui {
 	/// while it is generating commands for the buffer.
 	/// </summary>
 	void draw_ui();
+
+	void draw_main_menu_bar();
 }
