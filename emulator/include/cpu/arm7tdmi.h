@@ -249,53 +249,201 @@ enum class ARMInstructionType : uint8_t
 
 enum class ThumbInstructionType
 {
+	/// <summary>
+	/// Add, or address.
+	/// </summary>
 	ADD,
+	/// <summary>
+	/// And.
+	/// </summary>
 	AND,
+	/// <summary>
+	/// Arithmetic shift right.
+	/// </summary>
 	ASR,
+	/// <summary>
+	/// Unconditional branch.
+	/// </summary>
 	B,
+	/// <summary>
+	/// Long branch with link.
+	/// </summary>
 	BL,
+	/// <summary>
+	/// Operational state change, to either an address held in Lo or Hi 
+	/// register.
+	/// </summary>
 	BX,
+	/// <summary>
+	/// Branch if equal (if Z set).
+	/// </summary>
 	BEQ,
+	/// <summary>
+	/// Branch if carry is clear (if C clear).
+	/// </summary>
 	BCC,
+	/// <summary>
+	/// Branch if carry set (if C set).
+	/// </summary>
 	BCS,
+	/// <summary>
+	/// Branch if greater than or equal to 
+	/// (if (N set and V set) or (N clear and V clear)).
+	/// </summary>
 	BGE,
+	/// <summary>
+	/// Branch if greater than (signed), 
+	/// (if Z clear and ((N or V set) or (N or V clear))).
+	/// </summary>
 	BGT,
+	/// <summary>
+	/// Branch if greater than (unsigned), (if C set and Z clear).
+	/// </summary>
 	BHI,
+	/// <summary>
+	/// Bit clear.
+	/// </summary>
 	BIC,
+	/// <summary>
+	/// Branch if less than or equal to (signed), 
+	/// (if Z set or ((N set and V clear) or (N clear and V set))).
+	/// </summary>
 	BLE,
+	/// <summary>
+	/// Branch if less than or equal to (unsigned), 
+	/// (if C is clear and Z is set).
+	/// </summary>
 	BLS,
+	/// <summary>
+	/// Branch if less than (if (N set and V clear) or (N clear and V set)).
+	/// </summary>
 	BLT,
+	/// <summary>
+	/// Branch if minus (if N set).
+	/// </summary>
 	BMI,
+	/// <summary>
+	/// Branch if not equal (if Z clear).
+	/// </summary>
 	BNE,
+	/// <summary>
+	/// Branch if plus (if N clear).
+	/// </summary>
 	BPL,
+	/// <summary>
+	/// Branch if overflow clear (if V clear).
+	/// </summary>
 	BVC,
+	/// <summary>
+	/// Branch if overflow set (if V set).
+	/// </summary>
 	BVS,
+	/// <summary>
+	/// Exclusive or.
+	/// </summary>
 	EOR,
+	/// <summary>
+	/// Compare negative.
+	/// </summary>
 	CMN,
+	/// <summary>
+	/// Compare immediate, high to low, low to high, or high to high.
+	/// </summary>
 	CMP,
+	/// <summary>
+	/// Load multiple.
+	/// </summary>
 	LDMIA,
+	/// <summary>
+	/// Load word with immediate offset, register offset, PC-relative,
+	/// or SP relative.
+	/// </summary>
 	LDR,
+	/// <summary>
+	/// Load byte with immediate offset or register offset.
+	/// </summary>
 	LDRB,
+	/// <summary>
+	/// Load halfword with immediate offset or register offset.
+	/// </summary>
 	LDRH,
+	/// <summary>
+	/// Load signed byte with register offset.
+	/// </summary>
 	LDRSB,
+	/// <summary>
+	/// Logical shift left.
+	/// </summary>
 	LSL,
+	/// <summary>
+	/// Logical shift right.
+	/// </summary>
 	LSR,
+	/// <summary>
+	/// Move immediate, high to low, low to high, or high to high.
+	/// </summary>
 	MOV,
+	/// <summary>
+	/// Multiply.
+	/// </summary>
 	MUL,
+	/// <summary>
+	/// Move not.
+	/// </summary>
 	MVN,
+	/// <summary>
+	/// Negate.
+	/// </summary>
 	NEG,
+	/// <summary>
+	/// Or.
+	/// </summary>
 	OR,
+	/// <summary>
+	/// Pop registers from stack, or pop registers and PC from stack.
+	/// </summary>
 	POP,
+	/// <summary>
+	/// Push registers onto stack, or LR and registers onto stack.
+	/// </summary>
 	PUSH,
+	/// <summary>
+	/// Rotate right.
+	/// </summary>
 	ROR,
+	/// <summary>
+	/// Subtract with carry.
+	/// </summary>
 	SBC,
+	/// <summary>
+	/// Store multiple.
+	/// </summary>
 	STMIA,
+	/// <summary>
+	/// Store word with immediate offset, register offset, or SP-relative.
+	/// </summary>
 	STR,
+	/// <summary>
+	/// Store byte with immediate offset or register offset.
+	/// </summary>
 	STRB,
+	/// <summary>
+	/// Store halfword with immediate offset or register offset.
+	/// </summary>
 	STRH,
+	/// <summary>
+	/// Subtract.
+	/// </summary>
 	SUB,
+	/// <summary>
+	/// Software interrupt.
+	/// </summary>
 	SWI,
-	TST
+	/// <summary>
+	/// Test bits.
+	/// </summary>
+	TST,
+	UNIMPLEMENTED
 };
 
 namespace DecodeArm
