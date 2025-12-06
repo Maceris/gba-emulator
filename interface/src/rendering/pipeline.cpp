@@ -1,5 +1,9 @@
 #include "rendering/pipeline.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+
 #include "debugging/logger.h"
 #include "rendering/device.h"
 #include "rendering/render.h"
@@ -209,64 +213,6 @@ Pipeline::~Pipeline()
 	vkDestroyPipeline(device, graphics_pipeline, nullptr);
 	vkDestroyPipelineLayout(device, layout, nullptr);
 	vkDestroyRenderPass(device, render_pass, nullptr);
-}
-
-void Pipeline::record_command_buffer(const VkCommandBuffer buffer,
-	uint32_t image_index) const
-{
-	VkCommandBufferBeginInfo begin_info{};
-	begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	begin_info.flags = 0;
-	begin_info.pInheritanceInfo = nullptr;
-
-	if (vkBeginCommandBuffer(buffer, &begin_info) != VK_SUCCESS)
-	{
-		LOG_FATAL("Failed to begin recording a command buffer");
-	}
-
-	const auto& extent = g_render_state->window_state->swap_chain->extent;
-
-	VkRenderPassBeginInfo renderPassInfo{};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = render_pass;
-	renderPassInfo.framebuffer = frame_buffers[image_index];
-	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = extent;
-
-	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-	renderPassInfo.clearValueCount = 1;
-	renderPassInfo.pClearValues = &clearColor;
-
-	vkCmdBeginRenderPass(buffer, &renderPassInfo,
-		VK_SUBPASS_CONTENTS_INLINE);
-
-	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-		graphics_pipeline);
-
-	VkViewport viewport{};
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(extent.width);
-	viewport.height = static_cast<float>(extent.height);
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
-	vkCmdSetViewport(buffer, 0, 1, &viewport);
-
-	VkRect2D scissor{};
-	scissor.offset = { 0, 0 };
-	scissor.extent = extent;
-	vkCmdSetScissor(buffer, 0, 1, &scissor);
-
-	vkCmdDraw(buffer, 3, 1, 0, 0);
-
-	draw_UI();
-
-	vkCmdEndRenderPass(g_render_state->draw_state->current_command_buffer());
-
-	if (vkEndCommandBuffer(buffer) != VK_SUCCESS)
-	{
-		LOG_FATAL("Failed recording command buffer");
-	}
 }
 
 void create_pipeline()

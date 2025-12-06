@@ -17,9 +17,6 @@ struct Pipeline
 	Pipeline(const Pipeline&) = delete;
 	Pipeline& operator=(const Pipeline&) = delete;
 
-	void record_command_buffer(const VkCommandBuffer buffer,
-		uint32_t image_index) const;
-
 	VkRenderPass render_pass = nullptr;
 	VkPipeline graphics_pipeline = nullptr;
 	std::vector<VkFramebuffer> frame_buffers;

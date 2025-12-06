@@ -5,6 +5,7 @@ SET(IMGUI_PATH ${THIRD_PARTY_DIR}/imgui)
 SET(GLFW_PATH ${THIRD_PARTY_DIR}/glfw)
 
 SET(HEADER_FILES
+  ${INTERFACE_HEADER_DIR}/gui/gui.h
   ${INTERFACE_HEADER_DIR}/rendering/command_buffer.h
   ${INTERFACE_HEADER_DIR}/rendering/device.h
   ${INTERFACE_HEADER_DIR}/rendering/instance.h
@@ -30,6 +31,7 @@ SET(THIRD_PARTY_HEADERS
 
 SET(SOURCE_FILES
   ${INTERFACE_SOURCE_DIR}/main.cpp
+  ${INTERFACE_SOURCE_DIR}/gui/gui.cpp
   ${INTERFACE_SOURCE_DIR}/rendering/command_buffer.cpp
   ${INTERFACE_SOURCE_DIR}/rendering/device.cpp
   ${INTERFACE_SOURCE_DIR}/rendering/instance.cpp

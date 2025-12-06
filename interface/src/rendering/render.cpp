@@ -15,63 +15,6 @@ void imgui_result_callback(VkResult err)
 	LOG_ASSERT("Issue with ImGui");
 }
 
-constexpr ImVec4 RED = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
-
-void draw_UI()
-{
-	ImGui_ImplVulkan_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	bool unsupported = false;
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			bool scene_select = false;
-			if (ImGui::MenuItem("Open", nullptr, &scene_select))
-			{
-				unsupported = true;
-			}
-
-			ImGui::EndMenu();
-		}
-		ImGui::PushStyleColor(ImGuiCol_Text, RED);
-		if (ImGui::MenuItem("Exit"))
-		{
-			g_render_state->close_requested = true;
-		}
-		ImGui::PopStyleColor();
-		ImGui::EndMainMenuBar();
-	}
-
-	if (unsupported)
-	{
-		ImGui::OpenPopup("Unsupported operation");
-	}
-	if (ImGui::BeginPopupModal("Unsupported operation", nullptr,
-		ImGuiWindowFlags_NoResize))
-	{
-		ImGui::Text("Operation not yet supported");
-		if (ImGui::Button("Sorry"))
-		{
-			ImGui::CloseCurrentPopup();
-		}
-		ImGui::EndPopup();
-	}
-	ImGui::ShowDemoWindow();
-
-	ImGui::Render();
-	ImDrawData* draw_data = ImGui::GetDrawData();
-	const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f
-		|| draw_data->DisplaySize.y <= 0.0f);
-	if (!is_minimized)
-	{
-		ImGui_ImplVulkan_RenderDrawData(draw_data,
-			g_render_state->draw_state->current_command_buffer());
-	}
-}
-
 void draw_frame()
 {
 	DrawState* draw_state = g_render_state->draw_state;
@@ -114,7 +57,7 @@ void draw_frame()
 	const VkCommandBuffer buffer =
 		g_render_state->draw_state->current_command_buffer();
 	vkResetCommandBuffer(buffer, 0);
-	g_render_state->pipeline->record_command_buffer(buffer, image_index);
+	record_command_buffer(buffer, g_render_state->pipeline, image_index);
 
 	VkSubmitInfo submit_info{};
 	submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -308,6 +251,73 @@ void DrawState::create_command_buffers()
 		!= VK_SUCCESS)
 	{
 		LOG_FATAL("Failed to create command buffer");
+	}
+}
+
+void record_command_buffer(const VkCommandBuffer buffer, 
+	const Pipeline* pipeline, uint32_t image_index)
+{
+	LOG_ASSERT(pipeline != nullptr);
+
+	VkCommandBufferBeginInfo begin_info{};
+	begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	begin_info.flags = 0;
+	begin_info.pInheritanceInfo = nullptr;
+
+	if (vkBeginCommandBuffer(buffer, &begin_info) != VK_SUCCESS)
+	{
+		LOG_FATAL("Failed to begin recording a command buffer");
+	}
+
+	const auto& extent = g_render_state->window_state->swap_chain->extent;
+
+	VkRenderPassBeginInfo renderPassInfo{};
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	renderPassInfo.renderPass = pipeline->render_pass;
+	renderPassInfo.framebuffer = pipeline->frame_buffers[image_index];
+	renderPassInfo.renderArea.offset = { 0, 0 };
+	renderPassInfo.renderArea.extent = extent;
+
+	VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	renderPassInfo.clearValueCount = 1;
+	renderPassInfo.pClearValues = &clearColor;
+
+	vkCmdBeginRenderPass(buffer, &renderPassInfo,
+		VK_SUBPASS_CONTENTS_INLINE);
+
+	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipeline->graphics_pipeline);
+
+	VkViewport viewport{};
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width = static_cast<float>(extent.width);
+	viewport.height = static_cast<float>(extent.height);
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+	vkCmdSetViewport(buffer, 0, 1, &viewport);
+
+	VkRect2D scissor{};
+	scissor.offset = { 0, 0 };
+	scissor.extent = extent;
+	vkCmdSetScissor(buffer, 0, 1, &scissor);
+
+	vkCmdDraw(buffer, 3, 1, 0, 0);
+
+	ImGui::Render();
+	ImDrawData* draw_data = ImGui::GetDrawData();
+	const bool is_minimized = (extent.width <= 0.0f || extent.height <= 0.0f);
+	if (!is_minimized)
+	{
+		ImGui_ImplVulkan_RenderDrawData(draw_data,
+			g_render_state->draw_state->current_command_buffer());
+	}
+
+	vkCmdEndRenderPass(g_render_state->draw_state->current_command_buffer());
+
+	if (vkEndCommandBuffer(buffer) != VK_SUCCESS)
+	{
+		LOG_FATAL("Failed recording command buffer");
 	}
 }
 

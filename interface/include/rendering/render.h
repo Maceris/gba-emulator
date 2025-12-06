@@ -1,20 +1,17 @@
 #pragma once
 
 #include <atomic>
+#include <cstdint>
 #include <vector>
 
 #include <vulkan/vulkan.h>
+
+struct Pipeline;
 
 /// <summary>
 /// Render a single frame.
 /// </summary>
 void draw_frame();
-
-/// <summary>
-/// Draw the UI on top of a frame, intended to be called from the pipeline
-/// while it is generating commands for the buffer.
-/// </summary>
-void draw_UI();
 
 /// <summary>
 /// Prepare things for the UI.
@@ -72,8 +69,12 @@ private:
 	void destroy_synchronization_objects();
 
 	void create_command_buffers();
+	
 	void destroy_command_buffers();
 };
 
 void create_draw_state();
 void destroy_draw_state();
+
+void record_command_buffer(const VkCommandBuffer buffer,
+	const Pipeline* pipeline, uint32_t image_index);

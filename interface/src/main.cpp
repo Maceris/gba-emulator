@@ -2,6 +2,7 @@
 #include "GLFW/glfw3.h"
 
 #include "debugging/logger.h"
+#include "gui/gui.h"
 #include "rendering/device.h"
 #include "rendering/instance.h"
 #include "rendering/pipeline.h"
@@ -39,6 +40,7 @@ int gba::main()
 	while (!g_render_state->should_close())
 	{
 		glfwPollEvents();
+		gui::draw_ui();
 		draw_frame();
 	}
 
