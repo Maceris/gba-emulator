@@ -24,7 +24,7 @@ void gui::draw_ui()
 		ImGui::PushStyleColor(ImGuiCol_Text, RED);
 		if (ImGui::MenuItem("Exit"))
 		{
-			g_render_state->close_requested = true;
+			render::g_render_state->close_requested = true;
 		}
 		ImGui::PopStyleColor();
 		ImGui::EndMainMenuBar();

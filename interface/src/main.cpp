@@ -37,11 +37,11 @@ int gba::main()
 {
 	initialize();
 
-	while (!g_render_state->should_close())
+	while (!render::g_render_state->should_close())
 	{
 		glfwPollEvents();
 		gui::draw_ui();
-		draw_frame();
+		render::draw_frame();
 	}
 
 	cleanup();
@@ -60,24 +60,24 @@ void gba::initialize() {
 		LOG_FATAL("Vulkan is not supported on this system!");
 	}
 
-	create_vulkan_instance();
-	create_vulkan_window();
-	g_render_state->device = new Device();
+	render::create_vulkan_instance();
+	render::create_vulkan_window();
+	render::g_render_state->device = new render::Device();
 	//TODO(ches) use common allocator?
-	create_swap_chain();
-	create_pipeline();
+	render::create_swap_chain();
+	render::create_pipeline();
 
-	create_draw_state();
+	render::create_draw_state();
 
-	init_UI();
+	render::init_UI();
 }
 
 void gba::cleanup()
 {
-	vkDeviceWaitIdle(g_render_state->device->logical_device);
-	teardown_UI();
+	vkDeviceWaitIdle(render::g_render_state->device->logical_device);
+	render::teardown_UI();
 
-	safe_delete(g_render_state);
+	safe_delete(render::g_render_state);
 	glfwTerminate();
 	Logger::destroy();
 }

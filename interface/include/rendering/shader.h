@@ -8,73 +8,75 @@
 
 #include <vulkan/vulkan.h>
 
-/// <summary>
+namespace render {
+	/// <summary>
 	/// A single shader module, representing one file.
 	/// </summary>
-struct ShaderModule
-{
-	ShaderModule(std::string_view name);
-	ShaderModule(const ShaderModule&) = delete;
-	ShaderModule& operator=(const ShaderModule&) = delete;
-	ShaderModule(ShaderModule&&) = delete;
-	ShaderModule& operator=(ShaderModule&&) = delete;
-	~ShaderModule();
-
-	VkShaderModule shader_module = nullptr;
-};
-
-/// <summary>
-/// The types of shaders we support.
-/// </summary>
-enum class ShaderType
-{
-	fragment,
-	vertex
-};
-
-/// <summary>
-/// Convert our shader type to the type that we need to create a shader
-/// of that type in Vulkan.
-/// </summary>
-/// <param name="stage">The type of shader.</param>
-/// <returns>The corresponding stage flags for that stage.</returns>
-[[nodiscard]]
-constexpr VkShaderStageFlagBits stage_type(ShaderType stage);
-
-/// <summary>
-/// Information used to specify which modules are required for a shader.
-/// </summary>
-struct ShaderStage
-{
-	const ShaderType type;
-	const std::string location;
-
-	constexpr ShaderStage(const ShaderType type,
-		std::string_view location)
-		: type{ type }
-		, location{ location }
+	struct ShaderModule
 	{
-	}
-	constexpr ShaderStage(const ShaderStage&) = delete;
-	ShaderStage& operator=(const ShaderStage&) = delete;
-	constexpr ShaderStage(ShaderStage&&) = delete;
-	ShaderStage& operator=(ShaderStage&&) = delete;
-	~ShaderStage() = default;
-};
+		ShaderModule(std::string_view name);
+		ShaderModule(const ShaderModule&) = delete;
+		ShaderModule& operator=(const ShaderModule&) = delete;
+		ShaderModule(ShaderModule&&) = delete;
+		ShaderModule& operator=(ShaderModule&&) = delete;
+		~ShaderModule();
 
-/// <summary>
-/// A shader program defined by one or more stages.
-/// </summary>
-struct Shader
-{
-public:
-	Shader(std::initializer_list<ShaderStage> stages);
-	~Shader();
-	Shader(const Shader&) = delete;
-	Shader& operator=(const Shader&) = delete;
-	Shader(Shader&&) = delete;
-	Shader& operator=(Shader&&) = delete;
+		VkShaderModule shader_module = nullptr;
+	};
 
-	std::vector<std::shared_ptr<ShaderModule>> modules;
-	std::vector<VkPipelineShaderStageCreateInfo> create_info_list;
-};
+	/// <summary>
+	/// The types of shaders we support.
+	/// </summary>
+	enum class ShaderType
+	{
+		fragment,
+		vertex
+	};
+
+	/// <summary>
+	/// Convert our shader type to the type that we need to create a shader
+	/// of that type in Vulkan.
+	/// </summary>
+	/// <param name="stage">The type of shader.</param>
+	/// <returns>The corresponding stage flags for that stage.</returns>
+	[[nodiscard]]
+	constexpr VkShaderStageFlagBits stage_type(ShaderType stage);
+
+	/// <summary>
+	/// Information used to specify which modules are required for a shader.
+	/// </summary>
+	struct ShaderStage
+	{
+		const ShaderType type;
+		const std::string location;
+
+		constexpr ShaderStage(const ShaderType type,
+			std::string_view location)
+			: type{ type }
+			, location{ location }
+		{
+		}
+		constexpr ShaderStage(const ShaderStage&) = delete;
+		ShaderStage& operator=(const ShaderStage&) = delete;
+		constexpr ShaderStage(ShaderStage&&) = delete;
+		ShaderStage& operator=(ShaderStage&&) = delete;
+		~ShaderStage() = default;
+	};
+
+	/// <summary>
+	/// A shader program defined by one or more stages.
+	/// </summary>
+	struct Shader
+	{
+	public:
+		Shader(std::initializer_list<ShaderStage> stages);
+		~Shader();
+		Shader(const Shader&) = delete;
+		Shader& operator=(const Shader&) = delete;
+		Shader(Shader&&) = delete;
+		Shader& operator=(Shader&&) = delete;
+
+		std::vector<std::shared_ptr<ShaderModule>> modules;
+		std::vector<VkPipelineShaderStageCreateInfo> create_info_list;
+	};
+}

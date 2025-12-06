@@ -6,69 +6,72 @@
 #include "rendering/render.h"
 #include "rendering/window.h"
 
-RenderState* g_render_state = new RenderState();
+namespace render {
 
-void unload_debug_messenger();
+	RenderState* g_render_state = new RenderState();
 
-RenderState::~RenderState()
-{
-	destroy_draw_state();
-	if (pipeline) {
-		delete pipeline;
-	}
-	pipeline = nullptr;
+	void unload_debug_messenger();
 
-	if (window_state)
+	RenderState::~RenderState()
 	{
-		delete window_state;
+		destroy_draw_state();
+		if (pipeline) {
+			delete pipeline;
+		}
+		pipeline = nullptr;
+
+		if (window_state)
+		{
+			delete window_state;
+		}
+		window_state = nullptr;
+		if (device)
+		{
+			delete device;
+		}
+		device = nullptr;
+		if (debug_messenger)
+		{
+			unload_debug_messenger();
+		}
+
+		if (instance)
+		{
+			vkDestroyInstance(instance, nullptr);
+			instance = nullptr;
+		}
 	}
-	window_state = nullptr;
-	if (device)
+
+	bool load_debug_messenger()
 	{
-		delete device;
+		VkDebugUtilsMessengerCreateInfoEXT create_info;
+		popualate_debug_info(create_info);
+
+		VkResult result = VK_SUCCESS;
+
+		VkAllocationCallbacks* allocator = nullptr;
+		call_extension_function("vkCreateDebugUtilsMessengerEXT", &result,
+			g_render_state->instance, &create_info, allocator,
+			&g_render_state->debug_messenger);
+
+		return result == VK_SUCCESS;
 	}
-	device = nullptr;
-	if (debug_messenger)
+
+	void unload_debug_messenger()
 	{
-		unload_debug_messenger();
+		if (g_render_state->debug_messenger == nullptr)
+		{
+			LOG_WARNING("Trying to unload a debug messenger that is not loaded");
+			return;
+		}
+
+		VkAllocationCallbacks* allocator = nullptr;
+		call_extension_function("vkDestroyDebugUtilsMessengerEXT", nullptr,
+			g_render_state->instance, g_render_state->debug_messenger, allocator);
 	}
 
-	if (instance)
+	[[nodiscard]] bool RenderState::should_close() const
 	{
-		vkDestroyInstance(instance, nullptr);
-		instance = nullptr;
+		return close_requested || window_state->window->should_close();
 	}
-}
-
-bool load_debug_messenger()
-{
-	VkDebugUtilsMessengerCreateInfoEXT create_info;
-	popualate_debug_info(create_info);
-
-	VkResult result = VK_SUCCESS;
-
-	VkAllocationCallbacks* allocator = nullptr;
-	call_extension_function("vkCreateDebugUtilsMessengerEXT", &result,
-		g_render_state->instance, &create_info, allocator,
-		&g_render_state->debug_messenger);
-
-	return result == VK_SUCCESS;
-}
-
-void unload_debug_messenger()
-{
-	if (g_render_state->debug_messenger == nullptr)
-	{
-		LOG_WARNING("Trying to unload a debug messenger that is not loaded");
-		return;
-	}
-
-	VkAllocationCallbacks* allocator = nullptr;
-	call_extension_function("vkDestroyDebugUtilsMessengerEXT", nullptr,
-		g_render_state->instance, g_render_state->debug_messenger, allocator);
-}
-
-[[nodiscard]] bool RenderState::should_close() const
-{
-	return close_requested || window_state->window->should_close();
 }

@@ -4,60 +4,63 @@
 
 #include <vulkan/vulkan.h>
 
-/// <summary>
-/// Information about swap chain support.
-/// </summary>
-struct SwapChainSupport
-{
-	VkSurfaceCapabilitiesKHR capabilities{};
-	std::vector<VkSurfaceFormatKHR> formats;
-	std::vector<VkPresentModeKHR> present_modes;
-};
-
-/// <summary>
-/// Handles the lifecycle of a swap chain.
-/// </summary>
-struct SwapChain
-{
-public:
-	SwapChain();
-	~SwapChain();
-	SwapChain(const SwapChain&) = delete;
-	SwapChain& operator=(const SwapChain&) = delete;
-	SwapChain(SwapChain&&) = delete;
-	SwapChain& operator=(SwapChain&&) = delete;
-
-	VkSwapchainKHR vulkan_swap_chain;
-	std::vector<VkImage> images;
-	std::vector<VkImageView> image_views;
-	VkExtent2D extent;
-	VkFormat image_format;
-
-private:
-	/// <summary>
-	/// Set up the swap chain.
-	/// </summary>
-	void initialize_swap_chain();
+namespace render {
 
 	/// <summary>
-	/// Set up the image views after initializing.
+	/// Information about swap chain support.
 	/// </summary>
-	void initialize_image_views();
+	struct SwapChainSupport
+	{
+		VkSurfaceCapabilitiesKHR capabilities{};
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> present_modes;
+	};
 
 	/// <summary>
-	/// Select an extent to use based on the surface capabilities.
+	/// Handles the lifecycle of a swap chain.
 	/// </summary>
-	[[nodiscard]] VkExtent2D
-		select_extent(const VkSurfaceCapabilitiesKHR& capabilities) const;
-};
+	struct SwapChain
+	{
+	public:
+		SwapChain();
+		~SwapChain();
+		SwapChain(const SwapChain&) = delete;
+		SwapChain& operator=(const SwapChain&) = delete;
+		SwapChain(SwapChain&&) = delete;
+		SwapChain& operator=(SwapChain&&) = delete;
 
-/// <summary>
-/// Create a swap chain when we don't have one.
-/// </summary>
-void create_swap_chain();
+		VkSwapchainKHR vulkan_swap_chain;
+		std::vector<VkImage> images;
+		std::vector<VkImageView> image_views;
+		VkExtent2D extent;
+		VkFormat image_format;
 
-/// <summary>
-/// Clean up the existing swap chain and create a new swap chain,
-/// image views, and frame buffers.
-/// </summary>
-void recreate_swap_chain();
+	private:
+		/// <summary>
+		/// Set up the swap chain.
+		/// </summary>
+		void initialize_swap_chain();
+
+		/// <summary>
+		/// Set up the image views after initializing.
+		/// </summary>
+		void initialize_image_views();
+
+		/// <summary>
+		/// Select an extent to use based on the surface capabilities.
+		/// </summary>
+		[[nodiscard]] VkExtent2D
+			select_extent(const VkSurfaceCapabilitiesKHR& capabilities) const;
+	};
+
+	/// <summary>
+	/// Create a swap chain when we don't have one.
+	/// </summary>
+	void create_swap_chain();
+
+	/// <summary>
+	/// Clean up the existing swap chain and create a new swap chain,
+	/// image views, and frame buffers.
+	/// </summary>
+	void recreate_swap_chain();
+}
