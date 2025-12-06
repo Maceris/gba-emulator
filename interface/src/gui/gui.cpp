@@ -97,16 +97,22 @@ namespace gui {
 				{
 				}
 				ImGui::Separator();
+				
+				if (ImGui::MenuItem("Close Game", NO_SHORTCUT, NOT_SELECTED, DISABLED))
+				{
+				}
+				ImGui::Separator();
+
 				if (ImGui::MenuItem("Screen Capture", NO_SHORTCUT, NOT_SELECTED, DISABLED))
 				{
 				}
-				if (ImGui::MenuItem("Rom Information", NO_SHORTCUT, NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("ROM Information", NO_SHORTCUT, NOT_SELECTED, DISABLED))
 				{
 				}
 				ImGui::Separator();
 
 				ImGui::PushStyleColor(ImGuiCol_Text, RED);
-				if (ImGui::MenuItem("Exit"))
+				if (ImGui::MenuItem("Exit", NO_SHORTCUT, NOT_SELECTED, ENABLED))
 				{
 					render::g_render_state->close_requested = true;
 				}
@@ -549,7 +555,7 @@ namespace gui {
 				if (ImGui::MenuItem("Rewind", NO_SHORTCUT, NOT_SELECTED, DISABLED))
 				{
 				}
-				if (ImGui::MenuItem("Advanced Keybinds...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("Keybinds...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
 				{
 				}
 
