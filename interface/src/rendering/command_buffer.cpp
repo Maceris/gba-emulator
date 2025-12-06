@@ -10,8 +10,7 @@ namespace render {
 		VkCommandPoolCreateInfo pool_info{};
 		pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		pool_info.queueFamilyIndex =
-			g_render_state->device->indices.graphics_family.value();
+		pool_info.queueFamilyIndex = g_render_state->device->graphics_family;
 
 		const auto& device = g_render_state->device->logical_device;
 

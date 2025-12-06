@@ -1,6 +1,5 @@
 #include "rendering/device.h"
 
-#include <map>
 #include <set>
 #include <vector>
 
@@ -18,12 +17,171 @@ namespace render {
 		VK_KHR_SWAPCHAIN_EXTENSION_NAME
 	};
 
+	/// <summary>
+	/// Find all the queue family indices we care about for a device.
+	/// </summary>
+	/// <param name="device">The device we are checking.</param>
+	/// <param name="surface">The Vulkan surface.</param>
+	/// <param name="graphics_family">Output for the graphics family</param>
+	/// <param name="preseent_family">Output for the present family</param>
+	/// <returns>If we found the queue families.</returns>
+	[[nodiscard]]
+	static bool find_queue_families(
+		const VkPhysicalDevice device, const VkSurfaceKHR surface,
+		uint32_t* graphics_family, uint32_t* present_family)
+	{
+		LOG_ASSERT(graphics_family != nullptr);
+		LOG_ASSERT(present_family != nullptr);
+		if (graphics_family == nullptr || present_family == nullptr) {
+			LOG_FATAL("Internal error: Null pointer finding queue families");
+			return false;
+		}
+
+		uint32_t queue_family_count = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count,
+			nullptr);
+
+		std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count,
+			queue_families.data());
+
+		bool found_graphics = false;
+		bool found_present = false;
+
+		int i = 0;
+		for (const auto& queue_family : queue_families)
+		{
+			if (queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			{
+				*graphics_family = i;
+				found_graphics = true;
+			}
+			VkBool32 present_support = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface,
+				&present_support);
+
+			if (present_support)
+			{
+				*present_family = i;
+				found_present = true;
+			}
+
+			++i;
+			if (found_graphics && found_present)
+			{
+				break;
+			}
+		}
+
+		return found_graphics && found_present;
+	}
+
+	/// <summary>
+	/// Checks if a device supports all the extensions we need.
+	/// </summary>
+	/// <param name="device">The device to check.</param>
+	/// <returns>If it supports the required extensions.</returns>
+	[[nodiscard]]
+	static bool supports_required_extensions(const VkPhysicalDevice device)
+	{
+		uint32_t extension_count;
+		vkEnumerateDeviceExtensionProperties(device, nullptr,
+			&extension_count, nullptr);
+
+		std::vector<VkExtensionProperties> available_extensions(extension_count);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count,
+			available_extensions.data());
+
+		std::set<std::string> required_extensions(REQUIRED_EXTENSIONS.begin(),
+			REQUIRED_EXTENSIONS.end());
+
+		for (const auto& extension : available_extensions)
+		{
+			required_extensions.erase(extension.extensionName);
+		}
+
+		return required_extensions.empty();
+	}
+
+	/// <summary>
+	/// Calculate a score to represent how much desireable a device is. Will
+	/// be zero if it's not usable for us.
+	/// </summary>
+	/// <param name="device">The device we are rating.</param>
+	/// <param name="surface">The Vulkan surface.</param>
+	/// <param name="graphics_family">Output for the graphics family.</param>
+	/// <param name="preseent_family">Output for the present family.</param>
+	/// <returns>A score for the device.</returns>
+	[[nodiscard]]
+	static int rate_device(const VkPhysicalDevice device, VkSurfaceKHR surface,
+		uint32_t* graphics_family, uint32_t* present_family
+		)
+	{
+		LOG_ASSERT(graphics_family != nullptr);
+		LOG_ASSERT(present_family != nullptr);
+		if (graphics_family == nullptr || present_family == nullptr) {
+			LOG_FATAL("Internal error: Null pointer finding queue families");
+			return 0;
+		}
+
+		int score = 0;
+
+		VkPhysicalDeviceProperties device_properties;
+		vkGetPhysicalDeviceProperties(device, &device_properties);
+		VkPhysicalDeviceFeatures device_features;
+		vkGetPhysicalDeviceFeatures(device, &device_features);
+
+		if (!device_features.geometryShader)
+		{
+			return 0;
+		}
+
+		bool found_families = find_queue_families(device, surface, 
+			graphics_family, present_family);
+
+		if (!found_families)
+		{
+			return 0;
+		}
+
+		if (!supports_required_extensions(device))
+		{
+			return 0;
+		}
+
+		SwapChainSupport swap_chain_support;
+		
+		check_swap_chain_support(device, surface, swap_chain_support);
+		if (swap_chain_support.formats.empty()
+			|| swap_chain_support.present_modes.empty())
+		{
+			return 0;
+		}
+
+		//NOTE(ches) Discrete GPU is much better than on-chip
+		if (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+		{
+			score += 1000;
+		}
+
+		//NOTE(ches) Largest possible size of a texture
+		score += device_properties.limits.maxImageDimension2D;
+
+		return score;
+	}
+
 	Device::Device()
 	{
 		select_physical_device();
 		select_logical_device();
 		create_queues();
-		configure_surface();
+		
+		WindowSurface* surface = g_render_state->window_state->surface;
+		check_swap_chain_support(physical_device, surface->vulkan_surface,
+			swap_chain_support);
+
+		surface->select_present_mode(swap_chain_support.present_modes);
+		surface->select_surface_format(swap_chain_support.formats);
 
 		VkDescriptorPoolSize pool_sizes[] =
 		{
@@ -63,147 +221,15 @@ namespace render {
 		}
 	}
 
-	[[nodiscard]] SwapChainSupport
-		Device::check_swap_chain_support(const VkPhysicalDevice device)
-		const
-	{
-		const VkSurfaceKHR surface =
-			g_render_state->window_state->surface->vulkan_surface;
-
-		SwapChainSupport details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface,
-			&details.capabilities);
-
-		uint32_t format_count;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
-			&format_count, nullptr);
-
-		if (format_count != 0)
-		{
-			details.formats.resize(format_count);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
-				&format_count, details.formats.data());
-		}
-
-		uint32_t present_mode_count;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
-			&present_mode_count, nullptr);
-
-		if (present_mode_count != 0)
-		{
-			details.present_modes.resize(present_mode_count);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
-				&present_mode_count, details.present_modes.data());
-		}
-
-		return details;
-	}
-
-	void Device::configure_surface() const
-	{
-		SwapChainSupport swap_chain_support =
-			check_swap_chain_support(physical_device);
-		WindowSurface* surface = g_render_state->window_state->surface;
-
-		surface->select_present_mode(swap_chain_support.present_modes);
-		surface->select_surface_format(swap_chain_support.formats);
-	}
-
 	void Device::create_queues()
 	{
 		const uint32_t queue_index = 0;
-		vkGetDeviceQueue(logical_device, indices.present_family.value(),
-			queue_index, &present_queue);
-		vkGetDeviceQueue(logical_device, indices.graphics_family.value(),
-			queue_index, &graphics_queue);
+		vkGetDeviceQueue(logical_device, present_family, queue_index,
+			&present_queue);
+		vkGetDeviceQueue(logical_device, graphics_family, queue_index,
+			&graphics_queue);
 	}
-
-	[[nodiscard]] QueueFamilyIndices
-		Device::find_queue_families(const VkPhysicalDevice device) const
-	{
-		QueueFamilyIndices indices{};
-
-		uint32_t queue_family_count = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count,
-			nullptr);
-
-		std::vector<VkQueueFamilyProperties> queue_families(queue_family_count);
-		vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count,
-			queue_families.data());
-
-		const VkSurfaceKHR surface =
-			g_render_state->window_state->surface->vulkan_surface;
-
-		int i = 0;
-		for (const auto& queue_family : queue_families)
-		{
-			if (queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			{
-				indices.graphics_family = i;
-			}
-			VkBool32 present_support = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface,
-				&present_support);
-
-			if (present_support)
-			{
-				indices.present_family = i;
-			}
-
-			++i;
-			if (indices.has_all_values())
-			{
-				break;
-			}
-		}
-
-		return indices;
-	}
-
-	int Device::rate_device(const VkPhysicalDevice device) const
-	{
-		int score = 0;
-
-		VkPhysicalDeviceProperties device_properties;
-		vkGetPhysicalDeviceProperties(device, &device_properties);
-		VkPhysicalDeviceFeatures device_features;
-		vkGetPhysicalDeviceFeatures(device, &device_features);
-
-		if (!device_features.geometryShader)
-		{
-			return 0;
-		}
-
-		QueueFamilyIndices queue_families = find_queue_families(device);
-
-		if (!queue_families.has_all_values())
-		{
-			return 0;
-		}
-
-		if (!supports_required_extensions(device))
-		{
-			return 0;
-		}
-
-		SwapChainSupport swap_chain_support = check_swap_chain_support(device);
-		if (swap_chain_support.formats.empty()
-			|| swap_chain_support.present_modes.empty())
-		{
-			return 0;
-		}
-
-		//NOTE(ches) Discrete GPU is much better than on-chip
-		if (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-		{
-			score += 1000;
-		}
-
-		//NOTE(ches) Largest possible size of a texture
-		score += device_properties.limits.maxImageDimension2D;
-
-		return score;
-	}
+	
 
 	void Device::select_physical_device()
 	{
@@ -220,31 +246,38 @@ namespace render {
 		vkEnumeratePhysicalDevices(g_render_state->instance, &device_count,
 			devices.data());
 
-		std::multimap<int, VkPhysicalDevice> candidates;
+		int best_score = 0;
+		VkPhysicalDevice best_device = VK_NULL_HANDLE;
+		uint32_t temp_graphics_family = 0;
+		uint32_t temp_present_family = 0;
+
 		for (const auto& device : devices)
 		{
-			int score = rate_device(device);
-			if (score > 0)
+			int score = rate_device(device, 
+				g_render_state->window_state->surface->vulkan_surface,
+				&temp_graphics_family, &temp_present_family);
+			if (score > best_score)
 			{
-				candidates.insert(std::make_pair(score, device));
+				best_score = score;
+				best_device = device;
+				graphics_family = temp_graphics_family;
+				present_family = temp_present_family;
 			}
 		}
 
-		if (candidates.empty()) {
+		if (best_score == 0) {
 			LOG_FATAL("No GPUs are suitable for this program");
 		}
 
-		physical_device = candidates.rbegin()->second;
+		physical_device = best_device;
 	}
 
 	void Device::select_logical_device()
 	{
-		indices = find_queue_families(physical_device);
-
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = {
-			indices.graphics_family.value(),
-			indices.present_family.value()
+			graphics_family,
+			present_family
 		};
 
 		float queuePriority = 1.0f;
@@ -288,27 +321,5 @@ namespace render {
 			LOG_FATAL("Could not create a logical device");
 		}
 	}
-
-	[[nodiscard]]
-	bool Device::supports_required_extensions(const VkPhysicalDevice device)
-		const
-	{
-		uint32_t extension_count;
-		vkEnumerateDeviceExtensionProperties(device, nullptr,
-			&extension_count, nullptr);
-
-		std::vector<VkExtensionProperties> available_extensions(extension_count);
-		vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count,
-			available_extensions.data());
-
-		std::set<std::string> required_extensions(REQUIRED_EXTENSIONS.begin(),
-			REQUIRED_EXTENSIONS.end());
-
-		for (const auto& extension : available_extensions)
-		{
-			required_extensions.erase(extension.extensionName);
-		}
-
-		return required_extensions.empty();
-	}
+	
 }

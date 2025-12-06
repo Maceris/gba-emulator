@@ -125,8 +125,7 @@ namespace render {
 		init_info.Instance = g_render_state->instance;
 		init_info.PhysicalDevice = g_render_state->device->physical_device;
 		init_info.Device = g_render_state->device->logical_device;
-		init_info.QueueFamily =
-			g_render_state->device->indices.graphics_family.value();
+		init_info.QueueFamily = g_render_state->device->graphics_family;
 		init_info.Queue = g_render_state->device->graphics_queue;
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = g_render_state->device->descriptor_pool;
@@ -229,8 +228,7 @@ namespace render {
 		VkCommandPoolCreateInfo pool_info{};
 		pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		pool_info.queueFamilyIndex =
-			g_render_state->device->indices.graphics_family.value();
+		pool_info.queueFamilyIndex = g_render_state->device->graphics_family;
 
 		auto& device = g_render_state->device->logical_device;
 
@@ -260,6 +258,10 @@ namespace render {
 		const Pipeline* pipeline, uint32_t image_index)
 	{
 		LOG_ASSERT(pipeline != nullptr);
+		if (pipeline == nullptr) {
+			LOG_FATAL("Internal error: null pipeline");
+			return;
+		}
 
 		VkCommandBufferBeginInfo begin_info{};
 		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

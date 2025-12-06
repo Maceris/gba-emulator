@@ -63,4 +63,14 @@ namespace render {
 	/// image views, and frame buffers.
 	/// </summary>
 	void recreate_swap_chain();
+
+	/// <summary>
+	/// Check what kind of swap chain support the device has.
+	/// </summary>
+	/// <param name="device">The device we are checking.</param>
+	/// <param name="surface">The Vulkan surface.</param>
+	/// <param name="output">Where to store swap chain support info.</param>
+	[[nodiscard]]
+	void check_swap_chain_support(const VkPhysicalDevice device,
+		const VkSurfaceKHR surface, SwapChainSupport& output);
 }

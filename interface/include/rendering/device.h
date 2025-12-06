@@ -8,22 +8,6 @@
 #include "swap_chain.h"
 
 namespace render {
-
-	/// <summary>
-	/// A set of all the queue families we care about.
-	/// </summary>
-	struct QueueFamilyIndices
-	{
-		std::optional<uint32_t> graphics_family;
-		std::optional<uint32_t> present_family;
-
-		[[nodiscard]] bool has_all_values() const
-		{
-			return graphics_family.has_value()
-				&& present_family.has_value();
-		}
-	};
-
 	/// <summary>
 	/// Stores information about a device and what we need to interact with it.
 	/// </summary>
@@ -36,8 +20,10 @@ namespace render {
 		VkDevice logical_device = VK_NULL_HANDLE;
 		VkQueue graphics_queue = nullptr;
 		VkQueue present_queue = nullptr;
-		QueueFamilyIndices indices;
+		uint32_t graphics_family;
+		uint32_t present_family;
 		VkDescriptorPool descriptor_pool = nullptr;
+		SwapChainSupport swap_chain_support;
 
 		Device();
 		Device(const Device&) = delete;
@@ -47,42 +33,10 @@ namespace render {
 		~Device();
 
 	private:
-
-		/// <summary>
-		/// Check what kind of swap chain support the device has.
-		/// </summary>
-		/// <param name="device">The device we are checking.</param>
-		/// <returns></returns>
-		[[nodiscard]] SwapChainSupport
-			check_swap_chain_support(const VkPhysicalDevice device) const;
-
-		/// <summary>
-		/// Set the window surface up with present modes and surface format based
-		/// on the selected device.
-		/// </summary>
-		void configure_surface() const;
-
 		/// <summary>
 		/// Set up the device queues.
 		/// </summary>
 		void create_queues();
-
-		/// <summary>
-		/// Find all the queue family indices we care about for a device.
-		/// </summary>
-		/// <param name="device">The device we are checking.</param>
-		/// <returns>What queue family indices we could find.</returns>
-		[[nodiscard]] QueueFamilyIndices
-			find_queue_families(const VkPhysicalDevice device) const;
-
-		/// <summary>
-		/// Calculate a score to represent how much desireable a device is. Will
-		/// be zero if it's not usable for us.
-		/// </summary>
-		/// <param name="device">The device we are rating.</param>
-		/// <returns>A score for the device.</returns>
-		[[nodiscard]]
-		int rate_device(const VkPhysicalDevice device) const;
 
 		/// <summary>
 		/// Select a logical device to use among the system devices, and store it
@@ -96,14 +50,5 @@ namespace render {
 		/// in the game state. Might have a fatal problem if we can't find a GPU.
 		/// </summary>
 		void select_physical_device();
-
-		/// <summary>
-		/// Checks if a device supports all the extensions we need.
-		/// </summary>
-		/// <param name="device">The device to check.</param>
-		/// <returns>If it supports the required extensions.</returns>
-		[[nodiscard]]
-		bool supports_required_extensions(const VkPhysicalDevice device)
-			const;
 	};
 }

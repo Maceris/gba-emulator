@@ -100,10 +100,14 @@ namespace render {
 
 	WindowSurface::WindowSurface(Window* window)
 	{
-		LOG_ASSERT(g_render_state != nullptr && g_render_state->has_instance()
-			&& "We require a Vulkan instance before setting up a surface");
-		LOG_ASSERT(window != nullptr && window->glfw_window
-			&& "Trying to create a surface for a null window");
+		if (g_render_state == nullptr || !g_render_state->has_instance()) {
+			LOG_FATAL("We require a Vulkan instance before setting up a surface");
+			return;
+		}
+		if (window == nullptr || window->glfw_window == nullptr) {
+			LOG_FATAL("Trying to create a surface for a null window");
+			return;
+		}
 
 		if (glfwCreateWindowSurface(g_render_state->instance,
 			window->glfw_window,

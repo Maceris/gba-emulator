@@ -37,9 +37,10 @@ namespace render {
 	void SwapChain::initialize_swap_chain()
 	{
 		const WindowSurface& surface = *g_render_state->window_state->surface;
-		const Device& device = *g_render_state->device;
-		const SwapChainSupport& support =
-			device.check_swap_chain_support(device.physical_device);
+		Device& device = *g_render_state->device;
+		check_swap_chain_support(device.physical_device, surface.vulkan_surface,
+			device.swap_chain_support);
+		const SwapChainSupport& support = device.swap_chain_support;
 
 		VkExtent2D extent = select_extent(support.capabilities);
 		uint32_t image_count = support.capabilities.minImageCount + 1;
@@ -65,15 +66,12 @@ namespace render {
 		//TODO(ches) This will eventually need handling
 		create_info.oldSwapchain = VK_NULL_HANDLE;
 
-		QueueFamilyIndices indices =
-			device.find_queue_families(device.physical_device);
-
 		uint32_t queue_family_indices[] = {
-			indices.graphics_family.value(),
-			indices.present_family.value()
+			device.graphics_family,
+			device.present_family
 		};
 
-		if (indices.graphics_family != indices.present_family)
+		if (device.graphics_family != device.present_family)
 		{
 			create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			create_info.queueFamilyIndexCount = 2;
@@ -182,5 +180,38 @@ namespace render {
 
 		create_swap_chain();
 		create_frame_buffers();
+	}
+
+	[[nodiscard]]
+	void check_swap_chain_support(
+		const VkPhysicalDevice device, const VkSurfaceKHR surface,
+		SwapChainSupport& output)
+	{
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface,
+			&output.capabilities);
+
+		uint32_t format_count;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
+			&format_count, nullptr);
+
+		if (format_count != 0)
+		{
+			output.formats.clear();
+			output.formats.resize(format_count);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface,
+				&format_count, output.formats.data());
+		}
+
+		uint32_t present_mode_count;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+			&present_mode_count, nullptr);
+
+		if (present_mode_count != 0)
+		{
+			output.present_modes.clear();
+			output.present_modes.resize(present_mode_count);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface,
+				&present_mode_count, output.present_modes.data());
+		}
 	}
 }
