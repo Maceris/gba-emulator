@@ -6,6 +6,7 @@
 
 #include "GLFW/glfw3.h"
 
+#include "revision.h"
 #include "rendering/render_state.h"
 
 namespace render {
@@ -130,10 +131,10 @@ namespace render {
         app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         app_info.pApplicationName = "GBA";
         app_info.applicationVersion =
-            VK_MAKE_API_VERSION(1, 0, 0, 0);
+            VK_MAKE_API_VERSION(1, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
         app_info.pEngineName = "Ikala GBA";
         app_info.engineVersion =
-            VK_MAKE_API_VERSION(1, 0, 0, 0);
+            VK_MAKE_API_VERSION(1, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
         app_info.apiVersion = VK_API_VERSION_1_0;
 
         VkInstanceCreateInfo create_info{};

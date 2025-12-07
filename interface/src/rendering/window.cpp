@@ -4,6 +4,7 @@
 
 #include "GLFW/glfw3.h"
 
+#include "revision.h"
 #include "debugging/logger.h"
 #include "rendering/render.h"
 #include "rendering/render_state.h"
@@ -42,7 +43,7 @@ namespace render {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfw_window = glfwCreateWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT,
-			"GBA Emulator v1.0.0", NULL, NULL);
+			std::format("GBA Emulator v{}", VERSION_STR).c_str(), NULL, NULL);
 		glfwSetWindowIconifyCallback(glfw_window, callback_iconify);
 		glfwSetFramebufferSizeCallback(glfw_window, callback_resized);
 	}

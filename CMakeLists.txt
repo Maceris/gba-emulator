@@ -4,7 +4,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
 
-PROJECT(GBA VERSION 2.0.0)
+PROJECT(GBA VERSION 0.1.0)
 
 SET(GBA_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 SET(GBA_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -113,6 +113,8 @@ SET(RESOURCE_PATH ${ROOT_DIR}/resources)
 SET(CONFIGURATION_BINARY_DIR ${GBA_RUNTIME_OUTPUT_DIRECTORY}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>)
 
 # ############################## Project Setup ################################
+
+CONFIGURE_FILE(${ROOT_DIR}/revision.h.in ${GBA_LIBRARY_OUTPUT_DIRECTORY}/revision.h)
 
 FetchContent_Declare(
   googletest
