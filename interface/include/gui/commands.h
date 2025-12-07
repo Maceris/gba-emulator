@@ -13,6 +13,22 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 #endif
 
 #define GBA_GUI_COMMANDS_LIST \
+	GBA_GUI_COMMANDS_MAPPING(ControlsUp)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsDown)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsLeft)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsRight)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsMotionUp)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsMotionDown)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsMotionLeft)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsMotionRight)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsA)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsB)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsL)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsR)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsSelect)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsStart)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsSpeed)\
+	GBA_GUI_COMMANDS_MAPPING(ControlsScreenCapture)\
 	GBA_GUI_COMMANDS_MAPPING(FileOpenGameboyAdvance)\
 	GBA_GUI_COMMANDS_MAPPING(FileOpenGameboy)\
 	GBA_GUI_COMMANDS_MAPPING(FileRecent01)\
@@ -51,6 +67,7 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 	GBA_GUI_COMMANDS_MAPPING(FileReset)\
 	GBA_GUI_COMMANDS_MAPPING(FileScreenCapture)\
 	GBA_GUI_COMMANDS_MAPPING(FileRomInformation)\
+	GBA_GUI_COMMANDS_MAPPING(FileToggleMenu)\
 	GBA_GUI_COMMANDS_MAPPING(FileClose)\
 	GBA_GUI_COMMANDS_MAPPING(FileExit)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsVideoVSync)\
@@ -129,19 +146,10 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 	GBA_GUI_COMMANDS_MAPPING(OptionsGameboyRealColors)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsGameboyGameboyColors)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsGameboyColors)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadConfigure1)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadConfigure2)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadConfigure3)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadConfigure4)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadDefault1)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadDefault2)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadDefault3)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadDefault4)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadMotionControls)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadAutofireA)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadAutofireB)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadAutofireL)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsJoypadAutofireR)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsControlsAutofireA)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsControlsAutofireB)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsControlsAutofireL)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsControlsAutofireR)\
 	GBA_GUI_COMMANDS_MAPPING(CheatsSearch)\
 	GBA_GUI_COMMANDS_MAPPING(CheatsList)\
 	GBA_GUI_COMMANDS_MAPPING(CheatsAutomaticallySaveAndLoad)\

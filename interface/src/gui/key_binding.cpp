@@ -1,6 +1,11 @@
 #include "gui/key_binding.h"
 
+#include <filesystem>
 #include <format>
+#include <fstream>
+#include <iostream>
+
+#include "debugging/logger.h"
 
 namespace gui {
 
@@ -13,11 +18,17 @@ namespace gui {
 
     static void populate_cache(std::map<uint64_t, const char*>& cache);
 
+    [[nodiscard]]
     uint64_t KeyBinding::to_map_key() const {
         return static_cast<uint64_t>(mod) << 32 | static_cast<uint64_t>(key);
     }
 
-    const char* to_string(Key key)
+    [[nodiscard]]
+    static std::filesystem::path keybinds_file_path() {
+        return std::filesystem::current_path().append("gba_keybinds.ini");
+    }
+
+    const char* to_string(const Key key)
     {
         switch (key) {
         case Key::NONE: return "";
@@ -171,7 +182,193 @@ namespace gui {
         return "";
     }
 
-    const char* to_string(KeyMod mod)
+    Key key_from_string(const char* text, const size_t length)
+    {
+        switch (length) {
+        case 1:
+            if (strncmp(text, "A", length) == 0) return Key::A;
+            if (strncmp(text, "B", length) == 0) return Key::B;
+            if (strncmp(text, "C", length) == 0) return Key::C;
+            if (strncmp(text, "D", length) == 0) return Key::D;
+            if (strncmp(text, "E", length) == 0) return Key::E;
+            if (strncmp(text, "F", length) == 0) return Key::F;
+            if (strncmp(text, "G", length) == 0) return Key::G;
+            if (strncmp(text, "H", length) == 0) return Key::H;
+            if (strncmp(text, "I", length) == 0) return Key::I;
+            if (strncmp(text, "J", length) == 0) return Key::J;
+            if (strncmp(text, "K", length) == 0) return Key::K;
+            if (strncmp(text, "L", length) == 0) return Key::L;
+            if (strncmp(text, "M", length) == 0) return Key::M;
+            if (strncmp(text, "N", length) == 0) return Key::N;
+            if (strncmp(text, "O", length) == 0) return Key::O;
+            if (strncmp(text, "P", length) == 0) return Key::P;
+            if (strncmp(text, "Q", length) == 0) return Key::Q;
+            if (strncmp(text, "R", length) == 0) return Key::R;
+            if (strncmp(text, "S", length) == 0) return Key::S;
+            if (strncmp(text, "T", length) == 0) return Key::T;
+            if (strncmp(text, "U", length) == 0) return Key::U;
+            if (strncmp(text, "V", length) == 0) return Key::V;
+            if (strncmp(text, "W", length) == 0) return Key::W;
+            if (strncmp(text, "X", length) == 0) return Key::X;
+            if (strncmp(text, "Y", length) == 0) return Key::Y;
+            if (strncmp(text, "Z", length) == 0) return Key::Z;
+            if (strncmp(text, "0", length) == 0) return Key::ZERO;
+            if (strncmp(text, "1", length) == 0) return Key::ONE;
+            if (strncmp(text, "2", length) == 0) return Key::TWO;
+            if (strncmp(text, "3", length) == 0) return Key::THREE;
+            if (strncmp(text, "4", length) == 0) return Key::FOUR;
+            if (strncmp(text, "5", length) == 0) return Key::FIVE;
+            if (strncmp(text, "6", length) == 0) return Key::SIX;
+            if (strncmp(text, "7", length) == 0) return Key::SEVEN;
+            if (strncmp(text, "8", length) == 0) return Key::EIGHT;
+            if (strncmp(text, "9", length) == 0) return Key::NINE;
+            if (strncmp(text, "&", length) == 0) return Key::AMPERSAND;
+            if (strncmp(text, "`", length) == 0) return Key::APOSTROPHE;
+            if (strncmp(text, "*", length) == 0) return Key::ASTERISK;
+            if (strncmp(text, "@", length) == 0) return Key::AT;
+            if (strncmp(text, "\\", length) == 0) return Key::BACK_SLASH;
+            if (strncmp(text, "^", length) == 0) return Key::CARET;
+            if (strncmp(text, ":", length) == 0) return Key::COLON;
+            if (strncmp(text, ",", length) == 0) return Key::COMMA;
+            if (strncmp(text, "$", length) == 0) return Key::DOLLAR;
+            if (strncmp(text, "\"", length) == 0) return Key::DOUBLE_QUOTE;
+            if (strncmp(text, "=", length) == 0) return Key::EQUALS;
+            if (strncmp(text, "!", length) == 0) return Key::EXCLAMATION_MARK;
+            if (strncmp(text, "/", length) == 0) return Key::FORWARD_SLASH;
+            if (strncmp(text, ">", length) == 0) return Key::GREATER_THAN;
+            if (strncmp(text, "{", length) == 0) return Key::LEFT_BRACE;
+            if (strncmp(text, "[", length) == 0) return Key::LEFT_BRACKET;
+            if (strncmp(text, "(", length) == 0) return Key::LEFT_PARENTHESES;
+            if (strncmp(text, "<", length) == 0) return Key::LESS_THAN;
+            if (strncmp(text, "-", length) == 0) return Key::MINUS;
+            if (strncmp(text, "#", length) == 0) return Key::NUMBER_SIGN;
+            if (strncmp(text, "%", length) == 0) return Key::PERCENT;
+            if (strncmp(text, ".", length) == 0) return Key::PERIOD;
+            if (strncmp(text, "|", length) == 0) return Key::PIPE;
+            if (strncmp(text, "+", length) == 0) return Key::PLUS;
+            if (strncmp(text, "?", length) == 0) return Key::QUESTION_MARK;
+            if (strncmp(text, "}", length) == 0) return Key::RIGHT_BRACE;
+            if (strncmp(text, "]", length) == 0) return Key::RIGHT_BRACKET;
+            if (strncmp(text, ")", length) == 0) return Key::RIGHT_PARENTHESES;
+            if (strncmp(text, ";", length) == 0) return Key::SEMICOLON;
+            if (strncmp(text, "'", length) == 0) return Key::SINGLE_QUOTE;
+            if (strncmp(text, "_", length) == 0) return Key::UNDERSCORE;
+            break;
+        case 2:
+            if (strncmp(text, "\u00A3", length) == 0) return Key::POUND;
+            if (strncmp(text, "Up", length) == 0) return Key::ARROW_UP;
+            if (strncmp(text, "F1", length) == 0) return Key::F1;
+            if (strncmp(text, "F2", length) == 0) return Key::F2;
+            if (strncmp(text, "F3", length) == 0) return Key::F3;
+            if (strncmp(text, "F4", length) == 0) return Key::F4;
+            if (strncmp(text, "F5", length) == 0) return Key::F5;
+            if (strncmp(text, "F6", length) == 0) return Key::F6;
+            if (strncmp(text, "F7", length) == 0) return Key::F7;
+            if (strncmp(text, "F8", length) == 0) return Key::F8;
+            if (strncmp(text, "F9", length) == 0) return Key::F9;
+            break;
+        case 3:
+            if (strncmp(text, "\u20AC", length) == 0) return Key::EURO;
+            if (strncmp(text, "Alt", length) == 0) return Key::ALT;
+            if (strncmp(text, "End", length) == 0) return Key::END;
+            if (strncmp(text, "Esc", length) == 0) return Key::ESCAPE;
+            if (strncmp(text, "Tab", length) == 0) return Key::TAB;
+            if (strncmp(text, "F10", length) == 0) return Key::F10;
+            if (strncmp(text, "F11", length) == 0) return Key::F11;
+            if (strncmp(text, "F12", length) == 0) return Key::F12;
+            break;
+        case 4:
+            if (strncmp(text, "Down", length) == 0) return Key::ARROW_DOWN;
+            if (strncmp(text, "Left", length) == 0) return Key::ARROW_LEFT;
+            if (strncmp(text, "Ctrl", length) == 0) return Key::CTRL;
+            if (strncmp(text, "Home", length) == 0) return Key::HOME;
+            if (strncmp(text, "Menu", length) == 0) return Key::MENU;
+            break;
+        case 5:
+            if (strncmp(text, "Right", length) == 0) return Key::ARROW_RIGHT;
+            if (strncmp(text, "Enter", length) == 0) return Key::ENTER;
+            if (strncmp(text, "Shift", length) == 0) return Key::SHIFT;
+            if (strncmp(text, "Space", length) == 0) return Key::SPACE;
+            if (strncmp(text, "Super", length) == 0) return Key::SUPER;
+            break;
+        case 6:
+            if (strncmp(text, "Delete", length) == 0) return Key::DELETE;
+            if (strncmp(text, "Insert", length) == 0) return Key::INSERT;
+            if (strncmp(text, "PageUp", length) == 0) return Key::PAGE_UP;
+            break;
+        case 7:
+            if (strncmp(text, "NumPad0", length) == 0) return Key::NUMPAD_ZERO;
+            if (strncmp(text, "NumPad1", length) == 0) return Key::NUMPAD_ONE;
+            if (strncmp(text, "NumPad2", length) == 0) return Key::NUMPAD_TWO;
+            if (strncmp(text, "NumPad3", length) == 0) return Key::NUMPAD_THREE;
+            if (strncmp(text, "NumPad4", length) == 0) return Key::NUMPAD_FOUR;
+            if (strncmp(text, "NumPad5", length) == 0) return Key::NUMPAD_FIVE;
+            if (strncmp(text, "NumPad6", length) == 0) return Key::NUMPAD_SIX;
+            if (strncmp(text, "NumPad7", length) == 0) return Key::NUMPAD_SEVEN;
+            if (strncmp(text, "NumPad8", length) == 0) return Key::NUMPAD_EIGHT;
+            if (strncmp(text, "NumPad9", length) == 0) return Key::NUMPAD_NINE;
+            if (strncmp(text, "NumLock", length) == 0) return Key::NUM_LOCK;
+            if (strncmp(text, "NumPad+", length) == 0) return Key::NUMPAD_ADD;
+            if (strncmp(text, "NumPad/", length) == 0) return Key::NUMPAD_DIVIDE;
+            if (strncmp(text, "NumPad*", length) == 0) return Key::NUMPAD_MULTIPLY;
+            if (strncmp(text, "NumPad.", length) == 0) return Key::NUMPAD_PERIOD;
+            if (strncmp(text, "NumPad-", length) == 0) return Key::NUMPAD_SUBTRACT;
+            break;
+        case 8:
+            if (strncmp(text, "PageDown", length) == 0) return Key::PAGE_DOWN;
+            break;
+        case 9:
+            if (strncmp(text, "Backspace", length) == 0) return Key::BACKSPACE;
+            if (strncmp(text, "GamepadL1", length) == 0) return Key::GAMEPAD_L1;
+            if (strncmp(text, "GamepadL2", length) == 0) return Key::GAMEPAD_L2;
+            if (strncmp(text, "GamepadL3", length) == 0) return Key::GAMEPAD_L3;
+            if (strncmp(text, "GamepadR1", length) == 0) return Key::GAMEPAD_R1;
+            if (strncmp(text, "GamepadR2", length) == 0) return Key::GAMEPAD_R2;
+            if (strncmp(text, "GamepadR3", length) == 0) return Key::GAMEPAD_R3;
+            break;
+        case 11:
+            if (strncmp(text, "NumPadEnter", length) == 0) return Key::NUMPAD_ENTER;
+            if (strncmp(text, "GamePadBack", length) == 0) return Key::GAMEPAD_BACK;
+            break;
+        case 12:
+            if (strncmp(text, "GamepadStart", length) == 0) return Key::GAMEPAD_START;
+            break;
+        case 13:
+            if (strncmp(text, "GamepadSelect", length) == 0) return Key::GAMEPAD_SELECT;
+            if (strncmp(text, "GamepadDPadUp", length) == 0) return Key::GAMEPAD_DPAD_UP;
+            if (strncmp(text, "GamepadFaceUp", length) == 0) return Key::GAMEPAD_FACE_UP;
+            break;
+        case 15:
+            if (strncmp(text, "GamepadDPadDown", length) == 0) return Key::GAMEPAD_DPAD_DOWN;
+            if (strncmp(text, "GamepadDPadLeft", length) == 0) return Key::GAMEPAD_DPAD_LEFT;
+            if (strncmp(text, "GamepadFaceDown", length) == 0) return Key::GAMEPAD_FACE_DOWN;
+            if (strncmp(text, "GamepadFaceLeft", length) == 0) return Key::GAMEPAD_FACE_LEFT;
+            if (strncmp(text, "GamepadLStickUp", length) == 0) return Key::GAMEPAD_LSTICK_UP;
+            if (strncmp(text, "GamepadRStickUp", length) == 0) return Key::GAMEPAD_RSTICK_UP;
+            break;
+        case 16:
+            if (strncmp(text, "GamepadDPadRight", length) == 0) return Key::GAMEPAD_DPAD_RIGHT;
+            if (strncmp(text, "GamepadFaceRight", length) == 0) return Key::GAMEPAD_FACE_RIGHT;
+            break;
+        case 17:
+            if (strncmp(text, "GamepadLStickDown", length) == 0) return Key::GAMEPAD_LSTICK_DOWN;
+            if (strncmp(text, "GamepadLStickLeft", length) == 0) return Key::GAMEPAD_LSTICK_LEFT;
+            if (strncmp(text, "GamepadRStickDown", length) == 0) return Key::GAMEPAD_RSTICK_DOWN;
+            if (strncmp(text, "GamepadRStickLeft", length) == 0) return Key::GAMEPAD_RSTICK_LEFT;
+            break;
+        case 18:
+            if (strncmp(text, "GamepadLStickRight", length) == 0) return Key::GAMEPAD_LSTICK_RIGHT;
+            if (strncmp(text, "GamepadRStickRight", length) == 0) return Key::GAMEPAD_RSTICK_RIGHT;
+            break;
+        case 19:
+            if (strncmp(text, "GamepadLStickButton", length) == 0) return Key::GAMEPAD_LSTICK_BUTTON;
+            if (strncmp(text, "GamepadRStickButton", length) == 0) return Key::GAMEPAD_RSTICK_BUTTON;
+            break;
+        }
+        return Key::_count;
+    }
+
+    const char* to_string(const KeyMod mod)
     {
         switch (mod) {
         case KeyMod::NONE: return "";
@@ -183,7 +380,15 @@ namespace gui {
         return "";
     }
 
-    const char* to_string(KeyBinding binding)
+    KeyMod mod_from_string(const char* text, const size_t length) {
+        if (length == 3 && strncmp(text, "Alt", length) == 0) return KeyMod::ALT;
+        if (length == 4 && strncmp(text, "Ctrl", length) == 0) return KeyMod::CTRL;
+        if (length == 5 && strncmp(text, "Shift", length) == 0) return KeyMod::SHIFT;
+        
+        return KeyMod::_count;
+    }
+
+    const char* to_string(const KeyBinding binding)
     {
         static bool initialized_cache = false;
         if (!initialized_cache) {
@@ -201,7 +406,31 @@ namespace gui {
         return result->second;
     }
 
-    void map_key(KeyBinding key, Command command) {
+    KeyBinding binding_from_string(const std::string binding_string) {
+        const size_t plus = binding_string.find("+");
+        if (plus > 0 && plus != std::string::npos) {
+            // we have a plus
+            KeyMod mod = mod_from_string(binding_string.data(), plus);
+            if (mod == KeyMod::_count) {
+                LOG_ERROR(std::format("Unknown keymod in {}", binding_string));
+                return { KeyMod::_count , Key::_count };
+            }
+            Key key = key_from_string(binding_string.data() + (plus + 1), binding_string.length() - (plus + 1));
+            if (key == Key::_count) {
+                LOG_ERROR(std::format("Unknown key in {}", binding_string));
+                return { KeyMod::_count , Key::_count };
+            }
+            return { mod, key };
+        }
+        Key key = key_from_string(binding_string.data(), binding_string.length());
+        if (key == Key::_count) {
+            LOG_ERROR(std::format("Unknown key in {}", binding_string));
+            return { KeyMod::_count , Key::_count };
+        }
+        return { KeyMod::NONE, key };
+    }
+
+    void map_key(const KeyBinding key, const Command command) {
         const auto command_mapped_to_key = key_bindings.find(key.to_map_key());
         if (command_mapped_to_key != key_bindings.end()) {
             command_bindings.erase(command_mapped_to_key->second);
@@ -218,7 +447,7 @@ namespace gui {
         command_bindings.emplace(command, key);
     }
 
-    void unmap_key(KeyBinding key) {
+    void unmap_key(const KeyBinding key) {
         const auto existing = key_bindings.find(key.to_map_key());
 
         if (existing != key_bindings.end()) {
@@ -227,7 +456,7 @@ namespace gui {
         key_bindings.erase(key.to_map_key());
     }
 
-    void unmap_command(Command command) {
+    void unmap_command(const Command command) {
         const auto existing = command_bindings.find(command);
 
         if (existing != command_bindings.end()) {
@@ -236,7 +465,7 @@ namespace gui {
         command_bindings.erase(command);
     }
 
-    bool has_binding(Command command) {
+    bool has_binding(const Command command) {
         return command_bindings.find(command) != command_bindings.end();
     }
 
@@ -244,7 +473,7 @@ namespace gui {
         return key_bindings.find(key.to_map_key()) != key_bindings.end();
     }
 
-    KeyBinding get_binding(Command command) {
+    KeyBinding get_binding(const Command command) {
         const auto result = command_bindings.find(command);
         if (result == command_bindings.end()) {
             return { KeyMod::NONE, Key::NONE };
@@ -252,12 +481,156 @@ namespace gui {
         return result->second;
     }
 
-    Command get_binding(KeyBinding key) {
+    Command get_binding(const KeyBinding key) {
         const auto result = key_bindings.find(key.to_map_key());
         if (result == key_bindings.end()) {
             return Command::_count;
         }
         return result->second;
+    }
+
+    void clear_all_bindings() {
+        key_bindings.clear();
+        command_bindings.clear();
+    }
+
+    void set_default_bindings() {
+        clear_all_bindings();
+
+        map_key({ KeyMod::NONE, Key::ARROW_UP }, Command::ControlsUp);
+        map_key({ KeyMod::NONE, Key::ARROW_DOWN }, Command::ControlsDown);
+        map_key({ KeyMod::NONE, Key::ARROW_LEFT }, Command::ControlsLeft);
+        map_key({ KeyMod::NONE, Key::ARROW_RIGHT }, Command::ControlsRight);
+        map_key({ KeyMod::NONE, Key::Z }, Command::ControlsB);
+        map_key({ KeyMod::NONE, Key::X }, Command::ControlsA);
+        map_key({ KeyMod::NONE, Key::A }, Command::ControlsL);
+        map_key({ KeyMod::NONE, Key::S }, Command::ControlsR);
+        map_key({ KeyMod::NONE, Key::BACKSPACE }, Command::ControlsSelect);
+        map_key({ KeyMod::NONE, Key::ENTER }, Command::ControlsStart);
+        map_key({ KeyMod::NONE, Key::SPACE }, Command::ControlsSpeed);
+        map_key({ KeyMod::NONE, Key::F12 }, Command::ControlsScreenCapture);
+        map_key({ KeyMod::NONE, Key::NUMPAD_EIGHT }, Command::ControlsMotionUp);
+        map_key({ KeyMod::NONE, Key::NUMPAD_TWO }, Command::ControlsMotionDown);
+        map_key({ KeyMod::NONE, Key::NUMPAD_FOUR }, Command::ControlsMotionLeft);
+        map_key({ KeyMod::NONE, Key::NUMPAD_SIX }, Command::ControlsMotionRight);
+        
+        map_key({ KeyMod::CTRL, Key::O }, Command::FileOpenGameboyAdvance);
+        map_key({ KeyMod::CTRL, Key::L }, Command::FileLoad);
+        map_key({ KeyMod::CTRL, Key::S }, Command::FileSave);
+        map_key({ KeyMod::NONE, Key::F1 }, Command::FileLoadGame01);
+        map_key({ KeyMod::NONE, Key::F2 }, Command::FileLoadGame02);
+        map_key({ KeyMod::NONE, Key::F3 }, Command::FileLoadGame03);
+        map_key({ KeyMod::NONE, Key::F4 }, Command::FileLoadGame04);
+        map_key({ KeyMod::NONE, Key::F5 }, Command::FileLoadGame05);
+        map_key({ KeyMod::NONE, Key::F6 }, Command::FileLoadGame06);
+        map_key({ KeyMod::NONE, Key::F7 }, Command::FileLoadGame07);
+        map_key({ KeyMod::NONE, Key::F8 }, Command::FileLoadGame08);
+        map_key({ KeyMod::NONE, Key::F9 }, Command::FileLoadGame09);
+        map_key({ KeyMod::NONE, Key::F10 }, Command::FileLoadGame10);
+        map_key({ KeyMod::SHIFT, Key::F1 }, Command::FileSaveGame01);
+        map_key({ KeyMod::SHIFT, Key::F2 }, Command::FileSaveGame02);
+        map_key({ KeyMod::SHIFT, Key::F3 }, Command::FileSaveGame03);
+        map_key({ KeyMod::SHIFT, Key::F4 }, Command::FileSaveGame04);
+        map_key({ KeyMod::SHIFT, Key::F5 }, Command::FileSaveGame05);
+        map_key({ KeyMod::SHIFT, Key::F6 }, Command::FileSaveGame06);
+        map_key({ KeyMod::SHIFT, Key::F7 }, Command::FileSaveGame07);
+        map_key({ KeyMod::SHIFT, Key::F8 }, Command::FileSaveGame08);
+        map_key({ KeyMod::SHIFT, Key::F9 }, Command::FileSaveGame09);
+        map_key({ KeyMod::SHIFT, Key::F10 }, Command::FileSaveGame10);
+        map_key({ KeyMod::CTRL, Key::F1 }, Command::FileRecent01);
+        map_key({ KeyMod::CTRL, Key::F2 }, Command::FileRecent02);
+        map_key({ KeyMod::CTRL, Key::F3 }, Command::FileRecent03);
+        map_key({ KeyMod::CTRL, Key::F4 }, Command::FileRecent04);
+        map_key({ KeyMod::CTRL, Key::F5 }, Command::FileRecent05);
+        map_key({ KeyMod::CTRL, Key::F6 }, Command::FileRecent06);
+        map_key({ KeyMod::CTRL, Key::F7 }, Command::FileRecent07);
+        map_key({ KeyMod::CTRL, Key::F8 }, Command::FileRecent08);
+        map_key({ KeyMod::CTRL, Key::F9 }, Command::FileRecent09);
+        map_key({ KeyMod::CTRL, Key::F10 }, Command::FileRecent10);
+        map_key({ KeyMod::CTRL, Key::P }, Command::FilePause);
+        map_key({ KeyMod::CTRL, Key::R }, Command::FileReset);
+        map_key({ KeyMod::NONE, Key::ESCAPE }, Command::FileToggleMenu);
+        map_key({ KeyMod::CTRL, Key::X }, Command::FileExit);
+        map_key({ KeyMod::CTRL, Key::C }, Command::CheatsSearch);
+        map_key({ KeyMod::CTRL, Key::N }, Command::ToolsNextFrame);
+    }
+
+    bool load_key_bindings() {
+        //TODO(ches) load key bindings
+        std::ifstream input_file(keybinds_file_path());
+
+        bool result = true;
+
+        if (!input_file.is_open()) {
+            LOG_WARNING("Failed to open key bindings file for reading");
+            return false;
+        }
+
+        std::string line;
+
+        while (std::getline(input_file, line)) {
+            const size_t equals = line.find('=');
+            if (equals == std::string::npos) {
+                LOG_ERROR("Error loading key bindings: Invalid config line, missing an equals");
+                result = false;
+                break;
+            }
+            if (equals == 0 || equals == line.length() - 1) {
+                LOG_ERROR("Error loading key bindings: Missing a side of the equals");
+                result = false;
+                break;
+            }
+
+            bool found_command = false;
+            Command command;
+            for (const auto& [key, value] : COMMAND_NAMES) {
+                if (strncmp(line.data(), value, equals) == 0) {
+                    command = key;
+                    found_command = true;
+                    break;
+                }
+            }
+            if (!found_command) {
+                LOG_ERROR(std::format("Error loading key bindings: Could not find command {}", 
+                    line.substr(0, equals)));
+                result = false;
+                break;
+            }
+
+            std::string binding_string = line.substr(equals+1);
+            KeyBinding binding = binding_from_string(binding_string);
+            if (binding.mod == KeyMod::_count || binding.key == Key::_count) {
+                LOG_ERROR(std::format("Unknown binding {}", binding_string));
+                result = false;
+                break;
+            }
+
+            map_key(binding, command);
+        }
+
+        input_file.close();
+
+        return result;
+    }
+
+    void save_key_bindings() {
+        std::ofstream output_file(keybinds_file_path(), std::ios::trunc);
+
+        if (!output_file.is_open()) {
+            LOG_ERROR("Failed to open key bindings file for writing");
+            return;
+        }
+
+        for (const auto& [key, value] : command_bindings) {
+            const auto& command_name = COMMAND_NAMES.find(key);
+            LOG_ASSERT(command_name != COMMAND_NAMES.end());
+
+            output_file << command_name->second;
+            output_file << "=";
+            output_file << to_string(value);
+            output_file << "\n";
+        }
+        output_file.close();
     }
 
     static void populate_cache(std::map<uint64_t, const char*>& cache) {

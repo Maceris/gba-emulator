@@ -111,6 +111,9 @@ namespace gui {
 				if (ImGui::MenuItem("ROM Information", NO_SHORTCUT, NOT_SELECTED, DISABLED))
 				{
 				}
+				if (ImGui::MenuItem("Toggle Menu", NO_SHORTCUT, NOT_SELECTED, DISABLED))
+				{
+				}
 				ImGui::Separator();
 
 				ImGui::PushStyleColor(ImGuiCol_Text, RED);
@@ -385,45 +388,8 @@ namespace gui {
 					}
 					ImGui::EndMenu();
 				}
-				if (ImGui::BeginMenu("Joypad"))
+				if (ImGui::BeginMenu("Controls"))
 				{
-					if (ImGui::BeginMenu("Configure"))
-					{
-						if (ImGui::MenuItem("1...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("2...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("3...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("4...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						ImGui::EndMenu();
-					}
-					if (ImGui::BeginMenu("Default Joypad"))
-					{
-						if (ImGui::MenuItem("1", NO_SHORTCUT, SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("2", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("3", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						if (ImGui::MenuItem("4", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-						{
-						}
-						ImGui::EndMenu();
-					}
-					if (ImGui::MenuItem("Motion Controls...", NO_SHORTCUT, NOT_SELECTED, DISABLED))
-					{
-					}
-					ImGui::Separator();
-
 					if (ImGui::BeginMenu("Autofire"))
 					{
 						//TODO(ches) keybinds

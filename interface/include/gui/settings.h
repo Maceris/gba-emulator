@@ -17,34 +17,35 @@ namespace gui {
 		ColorGroup sprite;
 	};
 
-	struct JoypadSettings {
-		//TODO(ches) these need to be bindings
-		int up;
-		int down;
-		int left;
-		int right;
-		int a;
-		int b;
-		int l;
-		int r;
-		int select;
-		int start;
-		int speed;
-		int capture;
-		int gs;
+	constexpr ColorSet COLOR_SET_STANDARD = {
+		{
+			0xF8F8F8,
+			0xA8A8A8,
+			0x606060,
+			0x000000
+		},
+		{
+			0xF8F8F8,
+			0xA8A8A8,
+			0x606060,
+			0x000000
+		}
 	};
+
+	constexpr auto SAVE_FILE_VERSION = 1;
 
 	struct Settings {
 		struct Options {
 			struct Video {
-				bool vsync;
+				bool vsync = false;
 				enum class Size {
 					X1,
 					X2,
 					X3,
 					X4,
 					FULL_SCREEN,
-				} size;
+				} size = Size::X1;
+				bool show_menu = true;
 			} video;
 			enum class FrameSkip {
 				AUTOMATIC,
@@ -58,57 +59,60 @@ namespace gui {
 				X7,
 				X8,
 				X9,
-			} frame_skip;
+			} frame_skip = FrameSkip::AUTOMATIC;
 			enum class Filter {
 				NORMAL,
 				BILINEAR
-			} filter;
+			} filter = Filter::NORMAL;
 			struct Emulator {
-				bool pause_when_inactive;
-				bool speed_up_toggle;
-				bool automatic_ips_patching;
-				bool real_time_clock;
+				bool pause_when_inactive = false;
+				bool speed_up_toggle = false;
+				bool automatic_ips_patching = false;
+				bool real_time_clock = false;
 				struct Directories {
-					std::string rom;
-					std::string gb_rom;
-					std::string battery;
-					std::string save_game;
-					std::string capture;
-				};
-				int rewind_interval;
+					std::string rom = "";
+					std::string gb_rom = "";
+					std::string battery = "";
+					std::string save_game = "";
+					std::string capture = "";
+				} directories;
+				/// <summary>
+				/// Rewind interval in seconds (0..600), 0 to disable rewind.
+				/// </summary>
+				int rewind_interval = 0;
 				enum class ShowSpeed {
 					NONE,
 					PERCENTAGE,
 					DETAILED
-				} show_speed;
-				bool speed_transparent;
-				bool use_bios_file;
-				bool skip_bios_file;
+				} show_speed = ShowSpeed::PERCENTAGE;
+				bool speed_transparent = true;
+				bool use_bios_file = true;
+				bool skip_bios_file = false;
 				enum class Format {
 					PNG,
 					BMP,
-				};
+				} format = Format::PNG;
 			} emulator;
 			struct Sound {
 				enum class Status {
 					ON,
 					MUTE,
 					OFF
-				} status;
-				bool echo;
-				bool low_pass_filter;
-				bool reverse_stereo;
-				bool channel_1;
-				bool channel_2;
-				bool channel_3;
-				bool channel_4;
-				bool direct_sound_a;
-				bool direct_sound_b;
+				} sound_status = Status::ON;
+				bool echo = false;
+				bool low_pass_filter = false;
+				bool reverse_stereo = false;
+				bool channel_1 = true;
+				bool channel_2 = true;
+				bool channel_3 = true;
+				bool channel_4 = true;
+				bool direct_sound_a = true;
+				bool direct_sound_b = true;
 				enum class Frequency {
 					KHZ_11,
 					KHZ_22,
 					KHZ_44,
-				} frequency;
+				} frequency = Frequency::KHZ_22;
 				enum class Volume {
 					QUARTER,
 					HALF,
@@ -116,12 +120,12 @@ namespace gui {
 					X2,
 					X3,
 					X4,
-				} volume;
+				} volume = Volume::X1;
 			} sound;
 			struct Gameboy {
-				bool border;
-				bool border_automatic;
-				bool printer;
+				bool border = false;
+				bool border_automatic = false;
+				bool printer = false;
 				enum class Type {
 					AUTOMATIC,
 					GBA,
@@ -129,50 +133,47 @@ namespace gui {
 					SGB,
 					SGB2,
 					GB
-				} type;
+				} type = Type::AUTOMATIC;
 				enum class Colors {
 					REAL,
 					GAMEBOY,
-				} colors;
-				ColorSet colors;
+				} colors = Colors::REAL;
+				ColorSet color_set = COLOR_SET_STANDARD;
 			} gameboy;
-			struct Joypad {
-				JoypadSettings joypad_1;
-				JoypadSettings joypad_2;
-				JoypadSettings joypad_3;
-				JoypadSettings joypad_4;
-				enum class DefaultJoypad {
-					JOYPAD_1,
-					JOYPAD_2,
-					JOYPAD_3,
-					JOYPAD_4,
-				} default_joypad;
-				struct Motion {
-					//TODO(ches) these need to be keybindings
-					int up;
-					int down;
-					int left;
-					int right;
-				} motion;
-				struct Autofire {
-					bool a;
-					bool b;
-					bool l;
-					bool r;
-				} autofire;
-			};
 		} options;
+		struct Controls {
+			struct Autofire {
+				bool a = false;
+				bool b = false;
+				bool l = false;
+				bool r = false;
+			} autofire;
+		} controls;
 		struct Cheats {
-			bool autoload_cheats;
-			bool disable_cheats;
-
+			bool autoload_cheats = false;
+			bool disable_cheats = false;
 		} cheats;
 	};
 
+	extern Settings g_settings;
 
-	void foo() {
+	/// <summary>
+	/// Reset any settings, and set everything to the
+	/// defaults.
+	/// </summary>
+	void set_default_settings();
 
-		Settings settings;
-		settings.options.video.size = Settings::Options::Video::Size::X1;
-	}
+	/// <summary>
+	/// Attempt to load settings from file. If we fail to 
+	/// load settings, they might not be in a valid state and should probably
+	/// be reset to the defaults.
+	/// </summary>
+	/// <returns>Whether we successfully loaded settings.</returns>
+	bool load_settings();
+
+	/// <summary>
+	/// Save all settings to file.
+	/// </summary>
+	void save_settings();
+
 }

@@ -3,6 +3,8 @@
 
 #include "debugging/logger.h"
 #include "gui/gui.h"
+#include "gui/key_binding.h"
+#include "gui/settings.h"
 #include "rendering/device.h"
 #include "rendering/instance.h"
 #include "rendering/pipeline.h"
@@ -58,6 +60,16 @@ void gba::initialize() {
 	if (!glfwVulkanSupported())
 	{
 		LOG_FATAL("Vulkan is not supported on this system!");
+	}
+
+	if (!gui::load_settings()) {
+		gui::set_default_settings();
+		gui::save_settings();
+	}
+
+	if (!gui::load_key_bindings()) {
+		gui::set_default_bindings();
+		gui::save_key_bindings();
 	}
 
 	render::create_vulkan_instance();
