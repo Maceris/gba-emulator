@@ -3,6 +3,7 @@
 #include <format>
 
 #include "rendering/render_state.h"
+#include "gui/key_binding.h"
 
 namespace gui {
 	const std::string TEXT_SAVE_TIME_MISSING = "----/--/-- --:--:--";
