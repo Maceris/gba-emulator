@@ -335,7 +335,6 @@ namespace render {
 	void create_draw_state()
 	{
 		g_render_state->draw_state = new DrawState();
-		//TODO(ches) use common allocator?
 	}
 
 	void destroy_draw_state()

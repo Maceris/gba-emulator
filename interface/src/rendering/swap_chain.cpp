@@ -164,7 +164,6 @@ namespace render {
 	void create_swap_chain()
 	{
 		g_render_state->window_state->swap_chain = new SwapChain();
-		//TODO(ches) use common allocator?
 	}
 
 	void recreate_swap_chain()

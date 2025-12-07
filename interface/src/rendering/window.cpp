@@ -96,7 +96,6 @@ namespace render {
 		g_render_state->window_state = state;
 		state->window = new Window();
 		state->surface = new WindowSurface(state->window);
-		//TODO(ches) use common allocator?
 	}
 
 	WindowSurface::WindowSurface(Window* window)
@@ -154,7 +153,6 @@ namespace render {
 			&& "We require available surface formats");
 
 		surface_format = new VkSurfaceFormatKHR();
-		//TODO(ches) use common allocator?
 		for (const auto& choice : available_formats)
 		{
 			if (choice.format == VK_FORMAT_B8G8R8A8_UNORM

@@ -75,7 +75,6 @@ void gba::initialize() {
 	render::create_vulkan_instance();
 	render::create_vulkan_window();
 	render::g_render_state->device = new render::Device();
-	//TODO(ches) use common allocator?
 	render::create_swap_chain();
 	render::create_pipeline();
 
