@@ -1,9 +1,21 @@
 #include "gui/key_binding.h"
 
 #include <format>
-#include <map>
 
 namespace gui {
+
+    /// <summary>
+    /// Contains the string form of all the known sane+supported, key bindings.
+    /// </summary>
+    std::map<uint64_t, const char*> key_string_cache;
+    std::map<uint64_t, Command> key_bindings;
+    std::map<Command, KeyBinding> command_bindings;
+
+    static void populate_cache(std::map<uint64_t, const char*>& cache);
+
+    uint64_t KeyBinding::to_map_key() const {
+        return static_cast<uint64_t>(mod) << 32 | static_cast<uint64_t>(key);
+    }
 
     const char* to_string(Key key)
     {
@@ -156,6 +168,7 @@ namespace gui {
         case Key::GAMEPAD_START: return "GamepadStart";
         case Key::_count: return "";
         }
+        return "";
     }
 
     const char* to_string(KeyMod mod)
@@ -167,29 +180,82 @@ namespace gui {
         case KeyMod::ALT: return "Alt";
         case KeyMod::_count: return "";
         }
+        return "";
     }
-
-    /// <summary>
-    /// Contains the string form of all the known sane+supported, key bindings.
-    /// </summary>
-    std::map<uint64_t, const char*> key_cache;
-    static void populate_cache(std::map<uint64_t, const char*>& cache);
 
     const char* to_string(KeyBinding binding)
     {
         static bool initialized_cache = false;
         if (!initialized_cache) {
             initialized_cache = true;
-            populate_cache(key_cache);
+            populate_cache(key_string_cache);
         }
 
-        uint64_t cache_key = static_cast<uint64_t>(binding.mod) << 32 
-            | static_cast<uint64_t>(binding.key);
+        uint64_t cache_key = binding.to_map_key();
 
-        const auto result = key_cache.find(cache_key);
+        const auto result = key_string_cache.find(cache_key);
 
-        if (result == key_cache.end()) {
+        if (result == key_string_cache.end()) {
             return "";
+        }
+        return result->second;
+    }
+
+    void map_key(KeyBinding key, Command command) {
+        const auto command_mapped_to_key = key_bindings.find(key.to_map_key());
+        if (command_mapped_to_key != key_bindings.end()) {
+            command_bindings.erase(command_mapped_to_key->second);
+            key_bindings.erase(command_mapped_to_key);
+        }
+        
+        const auto key_mapped_to_command = command_bindings.find(command);
+        if (key_mapped_to_command != command_bindings.end()) {
+            key_bindings.erase(key_mapped_to_command->second.to_map_key());
+            command_bindings.erase(key_mapped_to_command);
+        }
+
+        key_bindings.emplace(key.to_map_key(), command);
+        command_bindings.emplace(command, key);
+    }
+
+    void unmap_key(KeyBinding key) {
+        const auto existing = key_bindings.find(key.to_map_key());
+
+        if (existing != key_bindings.end()) {
+            command_bindings.erase(existing->second);
+        }
+        key_bindings.erase(key.to_map_key());
+    }
+
+    void unmap_command(Command command) {
+        const auto existing = command_bindings.find(command);
+
+        if (existing != command_bindings.end()) {
+            key_bindings.erase(existing->second.to_map_key());
+        }
+        command_bindings.erase(command);
+    }
+
+    bool has_binding(Command command) {
+        return command_bindings.find(command) != command_bindings.end();
+    }
+
+    bool has_binding(KeyBinding key) {
+        return key_bindings.find(key.to_map_key()) != key_bindings.end();
+    }
+
+    KeyBinding get_binding(Command command) {
+        const auto result = command_bindings.find(command);
+        if (result == command_bindings.end()) {
+            return { KeyMod::NONE, Key::NONE };
+        }
+        return result->second;
+    }
+
+    Command get_binding(KeyBinding key) {
+        const auto result = key_bindings.find(key.to_map_key());
+        if (result == key_bindings.end()) {
+            return Command::_count;
         }
         return result->second;
     }

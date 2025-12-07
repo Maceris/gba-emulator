@@ -62,6 +62,7 @@ namespace gui {
 
 					for (int i = 1; i <= 10; i++) {
 						//TODO(ches) keybinds
+
 						if (ImGui::MenuItem(std::format("{} {} Shift+F{}", i,
 							TEXT_SAVE_TIME_MISSING, i).c_str(), NO_SHORTCUT, NOT_SELECTED, DISABLED))
 						{
