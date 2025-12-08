@@ -86,6 +86,20 @@ namespace gui {
 					DETAILED
 				} show_speed = ShowSpeed::PERCENTAGE;
 				bool speed_transparent = true;
+				enum class SaveType {
+					AUTOMATIC,
+					EEPROM,
+					SRAM,
+					FLASH,
+					EEPROM_AND_SENSOR,
+					NONE,
+				} save_type = SaveType::AUTOMATIC;
+				enum class SaveSize {
+					FLASH_32K,
+					FLASH_64K,
+					FLASH_128K,
+				} save_size = SaveSize::FLASH_64K;
+				bool save_automatic_size_detection = true;
 				bool use_bios_file = true;
 				bool skip_bios_file = false;
 				enum class Format {

@@ -81,6 +81,27 @@ namespace gui {
 		return "?";
 	}
 
+	static constexpr const char* to_string(Settings::Options::Emulator::SaveType save_type) {
+		switch (save_type) {
+		case Settings::Options::Emulator::SaveType::AUTOMATIC: return "AUTOMATIC";
+		case Settings::Options::Emulator::SaveType::EEPROM: return "EEPROM";
+		case Settings::Options::Emulator::SaveType::SRAM: return "SRAM";
+		case Settings::Options::Emulator::SaveType::FLASH: return "FLASH";
+		case Settings::Options::Emulator::SaveType::EEPROM_AND_SENSOR: return "EEPROM_AND_SENSOR";
+		case Settings::Options::Emulator::SaveType::NONE: return "NONE";
+		}
+		return "?";
+	}
+
+	static constexpr const char* to_string(Settings::Options::Emulator::SaveSize save_size) {
+		switch (save_size) {
+		case Settings::Options::Emulator::SaveSize::FLASH_32K: return "FLASH_32K";
+		case Settings::Options::Emulator::SaveSize::FLASH_64K: return "FLASH_64K";
+		case Settings::Options::Emulator::SaveSize::FLASH_128K: return "FLASH_128K";
+		}
+		return "?";
+	}
+
 	static constexpr const char* to_string(Settings::Options::Emulator::Format format) {
 		switch (format) {
 		case Settings::Options::Emulator::Format::PNG: return "PNG";
@@ -173,6 +194,9 @@ namespace gui {
 		output_file << "rewind_interval=" << g_settings.options.emulator.rewind_interval << "\n";
 		output_file << "show_speed=" << to_string(g_settings.options.emulator.show_speed) << "\n";
 		output_file << "speed_transparent=" << to_string(g_settings.options.emulator.speed_transparent) << "\n";
+		output_file << "save_type=" << to_string(g_settings.options.emulator.save_type) << "\n";
+		output_file << "save_size=" << to_string(g_settings.options.emulator.save_size) << "\n";
+		output_file << "save_automatic_size_detection=" << to_string(g_settings.options.emulator.save_automatic_size_detection) << "\n";
 		output_file << "use_bios_file=" << to_string(g_settings.options.emulator.use_bios_file) << "\n";
 		output_file << "skip_bios_file=" << to_string(g_settings.options.emulator.skip_bios_file) << "\n";
 		output_file << "format=" << to_string(g_settings.options.emulator.format) << "\n";

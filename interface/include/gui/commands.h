@@ -105,9 +105,10 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveFlash)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveEEPROMAndSensor)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveNone)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveFlash32K)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveFlash64K)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveFlash128K)\
-	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveEnhancedDetection)\
+	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSaveAutomaticSizeDetection)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorUseBIOSFile)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSkipBIOSFile)\
 	GBA_GUI_COMMANDS_MAPPING(OptionsEmulatorSelectBIOSFile)\
