@@ -1,6 +1,7 @@
 # Interface
 
 SET(INTERFACE_SOURCE_DIR ${INTERFACE_DIR}/src)
+SET(INTERFACE_TEST_DIR ${INTERFACE_DIR}/test)
 SET(IMGUI_PATH ${THIRD_PARTY_DIR}/imgui)
 SET(GLFW_PATH ${THIRD_PARTY_DIR}/glfw)
 
@@ -33,7 +34,6 @@ SET(THIRD_PARTY_HEADERS
 )
 
 SET(SOURCE_FILES
-  ${INTERFACE_SOURCE_DIR}/main.cpp
   ${INTERFACE_SOURCE_DIR}/gui/commands.cpp
   ${INTERFACE_SOURCE_DIR}/gui/gui.cpp
   ${INTERFACE_SOURCE_DIR}/gui/key_binding.cpp
@@ -71,6 +71,11 @@ IF(WIN32)
   )
 ENDIF()
 
+SET(TEST_FILES
+  ${INTERFACE_TEST_DIR}/main.cpp
+  ${INTERFACE_TEST_DIR}/gui/key_binding_test.cpp
+)
+
 INCLUDE_DIRECTORIES(BEFORE
   ${INTERFACE_HEADER_DIR}/
   ${COMMON_HEADER_DIR}/
@@ -89,7 +94,7 @@ SOURCE_GROUP(third_party PREFIX "third_party" FILES ${THIRD_PARTY_HEADERS} ${THI
 FIND_PACKAGE(Vulkan REQUIRED COMPONENTS glslc)
 FIND_PROGRAM(glslc_executable NAMES glslc HINTS Vulkan::glslc)
 
-ADD_EXECUTABLE(Interface
+ADD_LIBRARY(InterfaceLibrary
   ${HEADER_FILES}
   ${THIRD_PARTY_HEADERS}
   ${GBA_LIBRARY_OUTPUT_DIRECTORY}/revision.h
@@ -98,9 +103,19 @@ ADD_EXECUTABLE(Interface
   ${THIRD_PARTY_SOURCES}
 )
 
-TARGET_USE_COMMON_OUTPUT_DIRECTORY(Interface)
+TARGET_USE_COMMON_OUTPUT_DIRECTORY(InterfaceLibrary)
+TARGET_LINK_LIBRARIES(InterfaceLibrary Emulator Common Vulkan::Vulkan glfw)
 
-TARGET_LINK_LIBRARIES(Interface Emulator Common Vulkan::Vulkan glfw)
+ADD_EXECUTABLE(Interface
+  ${HEADER_FILES}
+  ${THIRD_PARTY_HEADERS}
+  ${GBA_LIBRARY_OUTPUT_DIRECTORY}/revision.h
+  
+  ${INTERFACE_SOURCE_DIR}/main.cpp
+)
+
+TARGET_USE_COMMON_OUTPUT_DIRECTORY(Interface)
+TARGET_LINK_LIBRARIES(Interface InterfaceLibrary)
 
 SET(SHADER_SOURCE_DIR ${RESOURCE_PATH}/shaders)
 SET(RESOURCE_BINARY_DIR ${CONFIGURATION_BINARY_DIR}/resources)
@@ -148,3 +163,24 @@ FOREACH(source IN LISTS SHADERS)
 ENDFOREACH()
 
 ADD_CUSTOM_TARGET(shaders ALL DEPENDS ${SPV_SHADERS})
+
+enable_testing()
+
+ADD_EXECUTABLE(interface_test
+  ${HEADER_FILES}
+  ${THIRD_PARTY_HEADERS}
+  ${GBA_LIBRARY_OUTPUT_DIRECTORY}/revision.h
+  
+  ${TEST_FILES}
+)
+
+TARGET_USE_COMMON_OUTPUT_DIRECTORY(interface_test)
+
+TARGET_LINK_LIBRARIES(interface_test
+  GTest::gtest_main
+  GTest::gtest
+  InterfaceLibrary
+  Common
+)
+
+gtest_discover_tests(interface_test)

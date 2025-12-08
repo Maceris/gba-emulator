@@ -30,6 +30,7 @@ SET(SOURCE_FILES
 )
 
 SET(TEST_FILES
+  ${EMULATOR_TEST_DIR}/main.cpp
   ${EMULATOR_TEST_DIR}/cpu/cpu_test.cpp
 )
 

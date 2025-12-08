@@ -96,7 +96,7 @@ namespace gui {
         case Key::DOLLAR: return "$";
         case Key::DOUBLE_QUOTE: return "\"";
         case Key::EQUALS: return "=";
-        case Key::EURO: return "\u20AC";
+        case Key::EURO: return "Euro";
         case Key::EXCLAMATION_MARK: return "!";
         case Key::FORWARD_SLASH: return "/";
         case Key::GREATER_THAN: return ">";
@@ -110,7 +110,7 @@ namespace gui {
         case Key::PERIOD: return ".";
         case Key::PIPE: return "|";
         case Key::PLUS: return "+";
-        case Key::POUND: return "\u00A3";
+        case Key::POUND: return "Pound";
         case Key::QUESTION_MARK: return "?";
         case Key::RIGHT_BRACE: return "}";
         case Key::RIGHT_BRACKET: return "]";
@@ -118,13 +118,11 @@ namespace gui {
         case Key::SEMICOLON: return ";";
         case Key::SINGLE_QUOTE: return "'";
         case Key::UNDERSCORE: return "_";
-        case Key::ALT: return "Alt";
         case Key::ARROW_DOWN: return "Down";
         case Key::ARROW_LEFT: return "Left";
         case Key::ARROW_RIGHT: return "Right";
         case Key::ARROW_UP: return "Up";
         case Key::BACKSPACE: return "Backspace";
-        case Key::CTRL: return "Ctrl";
         case Key::DELETE: return "Delete";
         case Key::END: return "End";
         case Key::ENTER: return "Enter";
@@ -134,7 +132,6 @@ namespace gui {
         case Key::MENU: return "Menu";
         case Key::PAGE_DOWN: return "PageDown";
         case Key::PAGE_UP: return "PageUp";
-        case Key::SHIFT: return "Shift";
         case Key::SPACE: return "Space";
         case Key::SUPER: return "Super";
         case Key::TAB: return "Tab";
@@ -255,7 +252,6 @@ namespace gui {
             if (strncmp(text, "_", length) == 0) return Key::UNDERSCORE;
             break;
         case 2:
-            if (strncmp(text, "\u00A3", length) == 0) return Key::POUND;
             if (strncmp(text, "Up", length) == 0) return Key::ARROW_UP;
             if (strncmp(text, "F1", length) == 0) return Key::F1;
             if (strncmp(text, "F2", length) == 0) return Key::F2;
@@ -268,8 +264,6 @@ namespace gui {
             if (strncmp(text, "F9", length) == 0) return Key::F9;
             break;
         case 3:
-            if (strncmp(text, "\u20AC", length) == 0) return Key::EURO;
-            if (strncmp(text, "Alt", length) == 0) return Key::ALT;
             if (strncmp(text, "End", length) == 0) return Key::END;
             if (strncmp(text, "Esc", length) == 0) return Key::ESCAPE;
             if (strncmp(text, "Tab", length) == 0) return Key::TAB;
@@ -278,16 +272,16 @@ namespace gui {
             if (strncmp(text, "F12", length) == 0) return Key::F12;
             break;
         case 4:
+            if (strncmp(text, "Euro", length) == 0) return Key::EURO;
             if (strncmp(text, "Down", length) == 0) return Key::ARROW_DOWN;
             if (strncmp(text, "Left", length) == 0) return Key::ARROW_LEFT;
-            if (strncmp(text, "Ctrl", length) == 0) return Key::CTRL;
             if (strncmp(text, "Home", length) == 0) return Key::HOME;
             if (strncmp(text, "Menu", length) == 0) return Key::MENU;
             break;
         case 5:
+            if (strncmp(text, "Pound", length) == 0) return Key::POUND;
             if (strncmp(text, "Right", length) == 0) return Key::ARROW_RIGHT;
             if (strncmp(text, "Enter", length) == 0) return Key::ENTER;
-            if (strncmp(text, "Shift", length) == 0) return Key::SHIFT;
             if (strncmp(text, "Space", length) == 0) return Key::SPACE;
             if (strncmp(text, "Super", length) == 0) return Key::SUPER;
             break;
@@ -365,7 +359,7 @@ namespace gui {
             if (strncmp(text, "GamepadRStickButton", length) == 0) return Key::GAMEPAD_RSTICK_BUTTON;
             break;
         }
-        return Key::_count;
+        return Key::NONE;
     }
 
     const char* to_string(const KeyMod mod)
@@ -385,7 +379,7 @@ namespace gui {
         if (length == 4 && strncmp(text, "Ctrl", length) == 0) return KeyMod::CTRL;
         if (length == 5 && strncmp(text, "Shift", length) == 0) return KeyMod::SHIFT;
         
-        return KeyMod::_count;
+        return KeyMod::NONE;
     }
 
     const char* to_string(const KeyBinding binding)
@@ -408,24 +402,24 @@ namespace gui {
 
     KeyBinding binding_from_string(const std::string binding_string) {
         const size_t plus = binding_string.find("+");
-        if (plus > 0 && plus != std::string::npos) {
+        if (plus > 0 && plus < binding_string.size() - 1 && plus != std::string::npos) {
             // we have a plus
             KeyMod mod = mod_from_string(binding_string.data(), plus);
-            if (mod == KeyMod::_count) {
-                LOG_ERROR(std::format("Unknown keymod in {}", binding_string));
-                return { KeyMod::_count , Key::_count };
+            if (mod == KeyMod::NONE) {
+                LOG_WARNING(std::format("Unknown keymod in {}", binding_string));
+                return { KeyMod::NONE , Key::NONE };
             }
             Key key = key_from_string(binding_string.data() + (plus + 1), binding_string.length() - (plus + 1));
-            if (key == Key::_count) {
-                LOG_ERROR(std::format("Unknown key in {}", binding_string));
-                return { KeyMod::_count , Key::_count };
+            if (key == Key::NONE) {
+                LOG_WARNING(std::format("Unknown key in {}", binding_string));
+                return { KeyMod::NONE , Key::NONE };
             }
             return { mod, key };
         }
         Key key = key_from_string(binding_string.data(), binding_string.length());
-        if (key == Key::_count) {
-            LOG_ERROR(std::format("Unknown key in {}", binding_string));
-            return { KeyMod::_count , Key::_count };
+        if (key == Key::NONE) {
+            LOG_WARNING(std::format("Unknown key in {}", binding_string));
+            return { KeyMod::NONE , Key::NONE };
         }
         return { KeyMod::NONE, key };
     }
@@ -571,12 +565,12 @@ namespace gui {
         while (std::getline(input_file, line)) {
             const size_t equals = line.find('=');
             if (equals == std::string::npos) {
-                LOG_ERROR("Error loading key bindings: Invalid config line, missing an equals");
+                LOG_WARNING("Error loading key bindings: Invalid config line, missing an equals");
                 result = false;
                 break;
             }
             if (equals == 0 || equals == line.length() - 1) {
-                LOG_ERROR("Error loading key bindings: Missing a side of the equals");
+                LOG_WARNING("Error loading key bindings: Missing a side of the equals");
                 result = false;
                 break;
             }
@@ -591,7 +585,7 @@ namespace gui {
                 }
             }
             if (!found_command) {
-                LOG_ERROR(std::format("Error loading key bindings: Could not find command {}", 
+                LOG_WARNING(std::format("Error loading key bindings: Could not find command {}", 
                     line.substr(0, equals)));
                 result = false;
                 break;
@@ -599,8 +593,8 @@ namespace gui {
 
             std::string binding_string = line.substr(equals+1);
             KeyBinding binding = binding_from_string(binding_string);
-            if (binding.mod == KeyMod::_count || binding.key == Key::_count) {
-                LOG_ERROR(std::format("Unknown binding {}", binding_string));
+            if (binding.key == Key::NONE) {
+                LOG_WARNING(std::format("Unknown binding {}", binding_string));
                 result = false;
                 break;
             }
@@ -699,7 +693,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(Key::DOLLAR), "$");
         cache.emplace(static_cast<uint64_t>(Key::DOUBLE_QUOTE), "\"");
         cache.emplace(static_cast<uint64_t>(Key::EQUALS), "=");
-        cache.emplace(static_cast<uint64_t>(Key::EURO), "\u20AC");
+        cache.emplace(static_cast<uint64_t>(Key::EURO), "Euro");
         cache.emplace(static_cast<uint64_t>(Key::EXCLAMATION_MARK), "!");
         cache.emplace(static_cast<uint64_t>(Key::FORWARD_SLASH), "/");
         cache.emplace(static_cast<uint64_t>(Key::GREATER_THAN), ">");
@@ -713,7 +707,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(Key::PERIOD), ".");
         cache.emplace(static_cast<uint64_t>(Key::PIPE), "|");
         cache.emplace(static_cast<uint64_t>(Key::PLUS), "+");
-        cache.emplace(static_cast<uint64_t>(Key::POUND), "\u00A3");
+        cache.emplace(static_cast<uint64_t>(Key::POUND), "Pound");
         cache.emplace(static_cast<uint64_t>(Key::QUESTION_MARK), "?");
         cache.emplace(static_cast<uint64_t>(Key::RIGHT_BRACE), "}");
         cache.emplace(static_cast<uint64_t>(Key::RIGHT_BRACKET), "]");
@@ -842,7 +836,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::DOLLAR), "Shift+$");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::DOUBLE_QUOTE), "Shift+\"");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::EQUALS), "Shift+=");
-        cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::EURO), "Shift+\u20AC");
+        cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::EURO), "Shift+Euro");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::EXCLAMATION_MARK), "Shift+!");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::FORWARD_SLASH), "Shift+/");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::GREATER_THAN), "Shift+>");
@@ -856,7 +850,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::PERIOD), "Shift+.");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::PIPE), "Shift+|");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::PLUS), "Shift++");
-        cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::POUND), "Shift+\u00A3");
+        cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::POUND), "Shift+Pound");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::QUESTION_MARK), "Shift+?");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACE), "Shift+}");
         cache.emplace(static_cast<uint64_t>(KeyMod::SHIFT) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACKET), "Shift+]");
@@ -958,7 +952,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::DOLLAR), "Ctrl+$");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::DOUBLE_QUOTE), "Ctrl+\"");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::EQUALS), "Ctrl+=");
-        cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::EURO), "Ctrl+\u20AC");
+        cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::EURO), "Ctrl+Euro");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::EXCLAMATION_MARK), "Ctrl+!");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::FORWARD_SLASH), "Ctrl+/");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::GREATER_THAN), "Ctrl+>");
@@ -972,7 +966,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::PERIOD), "Ctrl+.");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::PIPE), "Ctrl+|");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::PLUS), "Ctrl++");
-        cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::POUND), "Ctrl+\u00A3");
+        cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::POUND), "Ctrl+Pound");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::QUESTION_MARK), "Ctrl+?");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACE), "Ctrl+}");
         cache.emplace(static_cast<uint64_t>(KeyMod::CTRL) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACKET), "Ctrl+]");
@@ -1074,7 +1068,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::DOLLAR), "Alt+$");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::DOUBLE_QUOTE), "Alt+\"");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::EQUALS), "Alt+=");
-        cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::EURO), "Alt+\u20AC");
+        cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::EURO), "Alt+Euro");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::EXCLAMATION_MARK), "Alt+!");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::FORWARD_SLASH), "Alt+/");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::GREATER_THAN), "Alt+>");
@@ -1088,7 +1082,7 @@ namespace gui {
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::PERIOD), "Alt+.");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::PIPE), "Alt+|");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::PLUS), "Alt++");
-        cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::POUND), "Alt+\u00A3");
+        cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::POUND), "Alt+Pound");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::QUESTION_MARK), "Alt+?");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACE), "Alt+}");
         cache.emplace(static_cast<uint64_t>(KeyMod::ALT) << 32 | static_cast<uint64_t>(Key::RIGHT_BRACKET), "Alt+]");

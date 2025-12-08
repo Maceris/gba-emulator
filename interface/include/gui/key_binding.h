@@ -101,13 +101,11 @@ namespace gui {
         SINGLE_QUOTE,
         UNDERSCORE,
         // Special keys
-        ALT,
         ARROW_DOWN,
         ARROW_LEFT,
         ARROW_RIGHT,
         ARROW_UP,
         BACKSPACE,
-        CTRL,
         DELETE,
         END,
         ENTER,
@@ -117,7 +115,6 @@ namespace gui {
         MENU,
         PAGE_DOWN,
         PAGE_UP,
-        SHIFT,
         SPACE,
         SUPER,
         TAB,
@@ -199,7 +196,7 @@ namespace gui {
 
     /// <summary>
     /// Convert from a string to key binding. Invalid bindings will have values
-    /// of _count.
+    /// of NONE.
     /// </summary>
     /// <param name="binding_string">The string to convert from.</param>
     /// <returns>The key binding that is written as the provided string.</returns>
