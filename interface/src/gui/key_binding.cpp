@@ -558,7 +558,6 @@ namespace gui {
     }
 
     bool load_key_bindings() {
-        //TODO(ches) load key bindings
         std::ifstream input_file(keybinds_file_path());
 
         bool result = true;
@@ -586,7 +585,7 @@ namespace gui {
             bool found_command = false;
             Command command;
             for (const auto& [key, value] : COMMAND_NAMES) {
-                if (strncmp(line.data(), value, equals) == 0) {
+                if (strlen(value) == equals && strncmp(line.data(), value, equals) == 0) {
                     command = key;
                     found_command = true;
                     break;
@@ -623,6 +622,7 @@ namespace gui {
             return;
         }
 
+        //TODO(ches) can we sort these?
         for (const auto& [key, value] : command_bindings) {
             const auto& command_name = COMMAND_NAMES.find(key);
             LOG_ASSERT(command_name != COMMAND_NAMES.end());
