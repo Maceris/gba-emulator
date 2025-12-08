@@ -22,13 +22,28 @@ namespace gui {
 			0xF8F8F8,
 			0xA8A8A8,
 			0x606060,
-			0x000000
+			0x000000,
 		},
 		{
 			0xF8F8F8,
 			0xA8A8A8,
 			0x606060,
-			0x000000
+			0x000000,
+		}
+	};
+
+	constexpr ColorSet COLOR_SET_GREEN = {
+		{
+			0x9BBC0F,
+			0x8BAC0F,
+			0x306230,
+			0x0F380F,
+		},
+		{
+			0x9BBC0F,
+			0x8BAC0F,
+			0x306230,
+			0x0F380F,
 		}
 	};
 
