@@ -66,11 +66,19 @@ void gba::initialize() {
 		gui::set_default_settings();
 		gui::save_settings();
 	}
+#if _DEBUG
+	//TODO(ches) find a way to notice that we are missing settings and only save then
+	gui::save_settings();
+#endif
 
 	if (!gui::load_key_bindings()) {
 		gui::set_default_bindings();
 		gui::save_key_bindings();
 	}
+#if _DEBUG
+	//TODO(ches) just save when we change these
+	gui::save_key_bindings();
+#endif
 
 	render::create_vulkan_instance();
 	render::create_vulkan_window();
