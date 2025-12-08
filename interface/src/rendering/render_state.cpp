@@ -1,5 +1,6 @@
 #include "rendering/render_state.h"
 
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/instance.h"
 #include "rendering/pipeline.h"
@@ -8,7 +9,7 @@
 
 namespace render {
 
-	RenderState* g_render_state = new RenderState();
+	RenderState* g_render_state = ALLOC RenderState();
 
 	void unload_debug_messenger();
 

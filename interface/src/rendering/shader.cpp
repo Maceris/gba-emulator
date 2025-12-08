@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "debugging/logger.h"
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/render_state.h"
 
@@ -36,7 +37,7 @@ namespace render {
 
 		size_t size = fs::file_size(full_path);
 
-		char* shader_data = new char[size];
+		char* shader_data = ALLOC char[size];
 		memset(shader_data, 0, size);
 		std::ifstream file(full_path, std::ios::binary);
 

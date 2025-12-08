@@ -5,6 +5,7 @@
 #include "gui/gui.h"
 #include "gui/key_binding.h"
 #include "gui/settings.h"
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/instance.h"
 #include "rendering/pipeline.h"
@@ -82,7 +83,7 @@ void gba::initialize() {
 
 	render::create_vulkan_instance();
 	render::create_vulkan_window();
-	render::g_render_state->device = new render::Device();
+	render::g_render_state->device = ALLOC render::Device();
 	render::create_swap_chain();
 	render::create_pipeline();
 

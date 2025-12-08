@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "debugging/logger.h"
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/pipeline.h"
 #include "rendering/render.h"
@@ -163,7 +164,7 @@ namespace render {
 
 	void create_swap_chain()
 	{
-		g_render_state->window_state->swap_chain = new SwapChain();
+		g_render_state->window_state->swap_chain = ALLOC SwapChain();
 	}
 
 	void recreate_swap_chain()

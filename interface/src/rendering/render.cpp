@@ -5,6 +5,7 @@
 #include "imgui_impl_vulkan.h"
 
 #include "debugging/logger.h"
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/pipeline.h"
 #include "rendering/render_state.h"
@@ -334,7 +335,7 @@ namespace render {
 
 	void create_draw_state()
 	{
-		g_render_state->draw_state = new DrawState();
+		g_render_state->draw_state = ALLOC DrawState();
 	}
 
 	void destroy_draw_state()

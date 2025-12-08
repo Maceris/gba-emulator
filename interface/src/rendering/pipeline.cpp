@@ -5,6 +5,7 @@
 #include "imgui_impl_vulkan.h"
 
 #include "debugging/logger.h"
+#include "memory/memory_util.h"
 #include "rendering/device.h"
 #include "rendering/render.h"
 #include "rendering/render_state.h"
@@ -223,7 +224,7 @@ namespace render {
 			ShaderStage{ ShaderType::vertex, "shaders/simple.vert.spv" },
 				ShaderStage{ ShaderType::fragment, "shaders/simple.frag.spv" }
 		};
-		g_render_state->pipeline = new Pipeline(
+		g_render_state->pipeline = ALLOC Pipeline(
 			std::make_unique<Shader>(shader_stages));
 		create_frame_buffers();
 	}

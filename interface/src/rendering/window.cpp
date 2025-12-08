@@ -6,6 +6,7 @@
 
 #include "revision.h"
 #include "debugging/logger.h"
+#include "memory/memory_util.h"
 #include "rendering/render.h"
 #include "rendering/render_state.h"
 #include "rendering/swap_chain.h"
@@ -92,10 +93,10 @@ namespace render {
 			LOG_FATAL("We are trying to create a second window");
 		}
 
-		WindowState* state = new WindowState();
+		WindowState* state = ALLOC WindowState();
 		g_render_state->window_state = state;
-		state->window = new Window();
-		state->surface = new WindowSurface(state->window);
+		state->window = ALLOC Window();
+		state->surface = ALLOC WindowSurface(state->window);
 	}
 
 	WindowSurface::WindowSurface(Window* window)
