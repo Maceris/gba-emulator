@@ -232,6 +232,13 @@ namespace gui {
     /// <param name="command">The command to find a key binding for.</param>
     /// <returns>The key binding, falls back to None+None if not mapped.</returns>
     KeyBinding get_binding(const Command command);
+
+    /// <summary>
+    /// Fetch the binding string, or nullptr if there is not one.
+    /// </summary>
+    /// <param name="command">The command to find a key binding for.</param>
+    /// <returns>The key binding, falls back to nullptr if not mapped.</returns>
+    const char* get_binding_text(const Command command);
     
     /// <summary>
     /// Fetch the binding, assuming the key has one.

@@ -475,6 +475,14 @@ namespace gui {
         return result->second;
     }
 
+    const char* get_binding_text(const Command command) {
+        const auto result = command_bindings.find(command);
+        if (result == command_bindings.end()) {
+            return nullptr;
+        }
+        return to_string(result->second);
+    }
+
     Command get_binding(const KeyBinding key) {
         const auto result = key_bindings.find(key.to_map_key());
         if (result == key_bindings.end()) {
