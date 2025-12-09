@@ -227,8 +227,6 @@ namespace gui {
 				if (ImGui::MenuItem("Exit", get_binding_text(Command::FileExit), NOT_SELECTED, ENABLED))
 				{
 					brain::g_brain_data->command_queue.add(Command::FileExit);
-					//TODO(ches) do this in the command handing
-					render::g_render_state->close_requested = true;
 				}
 				ImGui::PopStyleColor();
 
