@@ -16,6 +16,16 @@ namespace render {
 	void draw_frame();
 
 	/// <summary>
+	/// Clean up once finished rendering.
+	/// </summary>
+	void cleanup();
+
+	/// <summary>
+	/// Set up for rendering.
+	/// </summary>
+	void initialize();
+
+	/// <summary>
 	/// Prepare things for the UI.
 	/// </summary>
 	void init_UI();

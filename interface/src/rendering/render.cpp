@@ -1,5 +1,8 @@
 #include "rendering/render.h"
 
+#define GLFW_INCLUDE_VULKAN
+#include "GLFW/glfw3.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
@@ -7,6 +10,7 @@
 #include "debugging/logger.h"
 #include "memory/memory_util.h"
 #include "rendering/device.h"
+#include "rendering/instance.h"
 #include "rendering/pipeline.h"
 #include "rendering/render_state.h"
 #include "rendering/window.h"
@@ -107,6 +111,33 @@ namespace render {
 
 		draw_state->current_frame =
 			(current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
+	}
+
+	void cleanup() {
+		vkDeviceWaitIdle(g_render_state->device->logical_device);
+		teardown_UI();
+
+		safe_delete(g_render_state);
+		glfwTerminate();
+	}
+
+	void initialize() {
+		glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_TRUE);
+		glfwInit();
+
+		if (!glfwVulkanSupported())
+		{
+			LOG_FATAL("Vulkan is not supported on this system!");
+		}
+
+		create_vulkan_instance();
+		create_vulkan_window();
+		g_render_state->device = ALLOC Device();
+		create_swap_chain();
+		create_pipeline();
+		create_draw_state();
+
+		init_UI();
 	}
 
 	void init_UI()

@@ -1,17 +1,11 @@
-#define GLFW_INCLUDE_VULKAN
-#include "GLFW/glfw3.h"
 
+#include "brain/brain.h"
 #include "debugging/logger.h"
 #include "gui/gui.h"
 #include "gui/key_binding.h"
 #include "gui/settings.h"
 #include "memory/memory_util.h"
-#include "rendering/device.h"
-#include "rendering/instance.h"
-#include "rendering/pipeline.h"
 #include "rendering/render.h"
-#include "rendering/swap_chain.h"
-#include "rendering/window.h"
 
 namespace gba {
 	/// <summary>
@@ -40,12 +34,7 @@ int gba::main()
 {
 	initialize();
 
-	while (!render::g_render_state->should_close())
-	{
-		glfwPollEvents();
-		gui::draw_ui();
-		render::draw_frame();
-	}
+	brain::run_application();
 
 	cleanup();
 	return 0;
@@ -54,14 +43,6 @@ int gba::main()
 void gba::initialize() {
 	Logger::init();
 	Logger::set_display_flags("Debug", FLAG_WRITE_TO_DEBUGGER);
-
-	glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_TRUE);
-	glfwInit();
-
-	if (!glfwVulkanSupported())
-	{
-		LOG_FATAL("Vulkan is not supported on this system!");
-	}
 
 	if (!gui::load_settings()) {
 		gui::set_default_settings();
@@ -81,23 +62,11 @@ void gba::initialize() {
 	gui::save_key_bindings();
 #endif
 
-	render::create_vulkan_instance();
-	render::create_vulkan_window();
-	render::g_render_state->device = ALLOC render::Device();
-	render::create_swap_chain();
-	render::create_pipeline();
-
-	render::create_draw_state();
-
-	render::init_UI();
+	render::initialize();
 }
 
 void gba::cleanup()
 {
-	vkDeviceWaitIdle(render::g_render_state->device->logical_device);
-	render::teardown_UI();
-
-	safe_delete(render::g_render_state);
-	glfwTerminate();
+	render::cleanup();
 	Logger::destroy();
 }

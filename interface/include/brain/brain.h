@@ -16,4 +16,9 @@ namespace brain {
 	};
 
 	extern BrainData* g_brain_data;
+
+	/// <summary>
+	/// Run the application until it requests to be closed.
+	/// </summary>
+	void run_application();
 }
