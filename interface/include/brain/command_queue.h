@@ -2,9 +2,9 @@
 
 #include <cstdint>
 
-#include "gui/commands.h"
+#include "brain/commands.h"
 
-namespace gui {
+namespace brain {
 	constexpr size_t COMMAND_QUEUE_CAPACITY = 32;
 
 	/// <summary>

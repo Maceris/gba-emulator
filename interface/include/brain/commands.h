@@ -184,7 +184,7 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 	GBA_GUI_COMMANDS_MAPPING(HelpAbout)\
 	GBA_GUI_COMMANDS_END_OF_LIST
 
-namespace gui {
+namespace brain {
 
 #define GBA_GUI_COMMANDS_MAPPING(X) X,
 #define GBA_GUI_COMMANDS_END_OF_LIST _count

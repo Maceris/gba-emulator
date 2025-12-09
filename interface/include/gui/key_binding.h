@@ -4,9 +4,10 @@
 #include <map>
 #include <string>
 
-#include "gui/commands.h"
+#include "brain/commands.h"
 
 namespace gui {
+    using brain::Command;
 
 	enum class Key : uint32_t {
         NONE,

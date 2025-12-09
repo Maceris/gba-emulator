@@ -584,7 +584,7 @@ namespace gui {
 
             bool found_command = false;
             Command command;
-            for (const auto& [key, value] : COMMAND_NAMES) {
+            for (const auto& [key, value] : brain::COMMAND_NAMES) {
                 if (strlen(value) == equals && strncmp(line.data(), value, equals) == 0) {
                     command = key;
                     found_command = true;
@@ -624,8 +624,8 @@ namespace gui {
 
         //TODO(ches) can we sort these?
         for (const auto& [key, value] : command_bindings) {
-            const auto& command_name = COMMAND_NAMES.find(key);
-            LOG_ASSERT(command_name != COMMAND_NAMES.end());
+            const auto& command_name = brain::COMMAND_NAMES.find(key);
+            LOG_ASSERT(command_name != brain::COMMAND_NAMES.end());
 
             output_file << command_name->second;
             output_file << "=";

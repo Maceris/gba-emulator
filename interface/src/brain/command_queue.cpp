@@ -1,8 +1,8 @@
-#include "gui/command_queue.h"
+#include "brain/command_queue.h"
 
 #include "debugging/logger.h"
 
-namespace gui {
+namespace brain {
 	CommandQueue::CommandQueue()
 		: data{}
 		, head{ 0 }

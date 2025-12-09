@@ -6,8 +6,9 @@ SET(IMGUI_PATH ${THIRD_PARTY_DIR}/imgui)
 SET(GLFW_PATH ${THIRD_PARTY_DIR}/glfw)
 
 SET(HEADER_FILES
-  ${INTERFACE_HEADER_DIR}/gui/commands.h
-  ${INTERFACE_HEADER_DIR}/gui/command_queue.h
+  ${INTERFACE_HEADER_DIR}/brain/brain.h
+  ${INTERFACE_HEADER_DIR}/brain/commands.h
+  ${INTERFACE_HEADER_DIR}/brain/command_queue.h
   ${INTERFACE_HEADER_DIR}/gui/gui.h
   ${INTERFACE_HEADER_DIR}/gui/key_binding.h
   ${INTERFACE_HEADER_DIR}/gui/settings.h
@@ -35,8 +36,9 @@ SET(THIRD_PARTY_HEADERS
 )
 
 SET(SOURCE_FILES
-  ${INTERFACE_SOURCE_DIR}/gui/commands.cpp
-  ${INTERFACE_SOURCE_DIR}/gui/command_queue.cpp
+  ${INTERFACE_SOURCE_DIR}/brain/brain.cpp
+  ${INTERFACE_SOURCE_DIR}/brain/commands.cpp
+  ${INTERFACE_SOURCE_DIR}/brain/command_queue.cpp
   ${INTERFACE_SOURCE_DIR}/gui/gui.cpp
   ${INTERFACE_SOURCE_DIR}/gui/key_binding.cpp
   ${INTERFACE_SOURCE_DIR}/gui/settings.cpp
@@ -137,28 +139,16 @@ FILE(GLOB SHADERS
   ${SHADER_SOURCE_DIR}/*.rmiss
 )
 
-ADD_CUSTOM_COMMAND(COMMAND
-  ${CMAKE_COMMAND} -E make_directory ${RESOURCE_BINARY_DIR}
-  OUTPUT ${RESOURCE_BINARY_DIR}
-  COMMENT "Creating resource output directory ${RESOURCE_BINARY_DIR}"
-)
-
-ADD_CUSTOM_COMMAND(COMMAND
-  ${CMAKE_COMMAND} -E make_directory ${SHADER_BINARY_DIR}
-  OUTPUT ${SHADER_BINARY_DIR}
-  COMMENT "Creating shader output directory ${SHADER_BINARY_DIR}"
-)
-
 FOREACH(source IN LISTS SHADERS)
   GET_FILENAME_COMPONENT(FILENAME ${source} NAME)
   ADD_CUSTOM_COMMAND(
     COMMAND
-      ${glslc_executable}
+    ${glslc_executable}
       # -MD -MF ${SHADER_BINARY_DIR}/${FILENAME}.d
       -o ${SHADER_BINARY_DIR}/${FILENAME}.spv
       ${source}
     OUTPUT ${SHADER_BINARY_DIR}/${FILENAME}.spv
-    DEPENDS ${source} ${SHADER_BINARY_DIR}
+    DEPENDS ${source}
     COMMENT "Compiling shader ${FILENAME}"
   )
   LIST(APPEND SPV_SHADERS ${SHADER_BINARY_DIR}/${FILENAME}.spv)
