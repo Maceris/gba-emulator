@@ -195,6 +195,11 @@ void ARM7TDMI::arm_teq(ArmInstruction instruction)
 void ARM7TDMI::arm_tst(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_udf(ArmInstruction instruction)
+{
+	//TODO(ches) confirm GBA supports this
+}
+
 void ARM7TDMI::arm_umlal(ArmInstruction instruction)
 {}
 
@@ -928,6 +933,72 @@ namespace DecodeArm
 	}
 
 	ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction)
+	{
+		const ArmInstruction op1 = (instruction >> 20) & 0b11111;
+
+		if ((op1 & 0b11100) == 0b00000)
+		{
+			return decode_parallel_addition_and_subtraction_signed(instruction);
+		}
+		if ((op1 & 0b11100) == 0b00100)
+		{
+			return decode_parallel_addition_and_subtraction_unsigned(instruction);
+		}
+		if ((op1 & 0b11000) == 0b01000)
+		{
+			return decode_packing_unpacking_saturation_and_reversal(instruction);
+		}
+		if ((op1 & 0b11000) == 0b10000)
+		{
+			return decode_signed_multiply_signed_and_unsigned_divide(instruction);
+		}
+		const ArmInstruction op2 = (instruction >> 5) & 0b111;
+
+		if (op1 == 0b11111 && op2 == 0b111) {
+			const ArmInstruction cond = (instruction >> 28) & 0b1111;
+
+			if (cond == 0b1110) {
+				return ARMInstructionType::UDF;
+			}
+			// not 1110 does not have a mnemonic, we are considering it undefined
+		}
+
+		// const ArmInstruction op2 = (instruction >> 5) & 0b111;
+		// const ArmInstruction rd = (instruction >> 12) & 0b1111;
+		// const ArmInstruction rn = instruction & 0b1111;
+
+		// op1 = 11000, op2 = 000, rd = 1111 is USAD8 in v6
+		// op1 = 11000, op2 = 000, rd = 1111 is USADA8 in v6
+		// op1 = 1101x, op2 = x10, is SBFX in v6T2
+		// op1 = 1110x, op2 = x00, rn = 1111 is BFC in v6T2
+		// op1 = 1110x, op2 = x00, rn != 1111 is BFI in v6T2
+		// op1 = 1111x, op2 = x10, rn != 1111 is UBFX in v6T2
+		
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_signed(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_unsigned(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_packing_unpacking_saturation_and_reversal(ArmInstruction instruction)
+	{
+		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
+		//TODO(ches) fill this out
+		return ARMInstructionType::UNIMPLEMENTED;
+	}
+
+	ARMInstructionType constexpr decode_signed_multiply_signed_and_unsigned_divide(ArmInstruction instruction)
 	{
 		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
 		//TODO(ches) fill this out

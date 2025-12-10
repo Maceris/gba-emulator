@@ -237,11 +237,15 @@ enum class ARMInstructionType : uint8_t
 	/// </summary>
 	TST,
 	/// <summary>
+	/// Permanently undefined.
+	/// </summary>
+	UDF,
+	/// <summary>
 	/// Multiply unsigned accumulate long.
 	/// </summary>
 	UMLAL,
 	/// <summary>
-	/// Multiply unsigned long
+	/// Multiply unsigned long.
 	/// </summary>
 	UMULL,
 	UNIMPLEMENTED
@@ -483,6 +487,11 @@ namespace DecodeArm
 	/// <returns></returns>
 	ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction);
+	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_signed(ArmInstruction instruction);
+	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_unsigned(ArmInstruction instruction);
+	ARMInstructionType constexpr decode_packing_unpacking_saturation_and_reversal(ArmInstruction instruction);
+	ARMInstructionType constexpr decode_signed_multiply_signed_and_unsigned_divide(ArmInstruction instruction);
+
 	ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_coprocessor_and_supervisor_call(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_unconditional_instruction(ArmInstruction instruction);
@@ -801,11 +810,15 @@ struct ARM7TDMI
 	/// </summary>
 	void arm_tst(ArmInstruction instruction);
 	/// <summary>
+	/// Permanently undefined.
+	/// </summary>
+	void arm_udf(ArmInstruction instruction);
+	/// <summary>
 	/// Multiply unsigned accumulate long.
 	/// </summary>
 	void arm_umlal(ArmInstruction instruction);
 	/// <summary>
-	/// Multiply unsigned long
+	/// Multiply unsigned long.
 	/// </summary>
 	void arm_umull(ArmInstruction instruction);
 #pragma endregion
