@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 
 #include "revision.h"
+#include "brain/key_mapping.h"
 #include "debugging/logger.h"
 #include "memory/memory_util.h"
 #include "rendering/render.h"
@@ -16,7 +17,7 @@ namespace render {
 	constexpr int DEFAULT_WIDTH = 640;
 	constexpr int DEFAULT_HEIGHT = 480;
 
-	void callback_iconify(GLFWwindow* window, int iconified)
+	static void callback_iconify(GLFWwindow* window, int iconified)
 	{
 		if (iconified == GLFW_TRUE)
 		{
@@ -26,6 +27,10 @@ namespace render {
 		{
 			resume_rendering();
 		}
+	}
+
+	static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		brain::key_callback(key, scancode, action, mods);
 	}
 
 	void Window::callback_resized(GLFWwindow* glfw_window, int width,
@@ -47,6 +52,8 @@ namespace render {
 			std::format("GBA Emulator v{}", VERSION_STR).c_str(), NULL, NULL);
 		glfwSetWindowIconifyCallback(glfw_window, callback_iconify);
 		glfwSetFramebufferSizeCallback(glfw_window, callback_resized);
+
+		glfwSetKeyCallback(glfw_window, glfw_key_callback);
 	}
 
 	Window::~Window()

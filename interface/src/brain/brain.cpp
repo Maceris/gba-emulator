@@ -35,7 +35,7 @@ namespace brain {
 	void run_application() {
 		while (!render::g_render_state->should_close())
 		{
-			glfwPollEvents();//TODO(ches) I'd like to move this entirely to render
+			glfwPollEvents();
 			gui::draw_ui();
 			render::draw_frame();
 			process_commands();

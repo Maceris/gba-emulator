@@ -9,6 +9,7 @@ SET(HEADER_FILES
   ${INTERFACE_HEADER_DIR}/brain/brain.h
   ${INTERFACE_HEADER_DIR}/brain/commands.h
   ${INTERFACE_HEADER_DIR}/brain/command_queue.h
+  ${INTERFACE_HEADER_DIR}/brain/key_mapping.h
   ${INTERFACE_HEADER_DIR}/gui/gui.h
   ${INTERFACE_HEADER_DIR}/gui/key_binding.h
   ${INTERFACE_HEADER_DIR}/gui/settings.h
@@ -39,6 +40,7 @@ SET(SOURCE_FILES
   ${INTERFACE_SOURCE_DIR}/brain/brain.cpp
   ${INTERFACE_SOURCE_DIR}/brain/commands.cpp
   ${INTERFACE_SOURCE_DIR}/brain/command_queue.cpp
+  ${INTERFACE_SOURCE_DIR}/brain/key_mapping.cpp
   ${INTERFACE_SOURCE_DIR}/gui/gui.cpp
   ${INTERFACE_SOURCE_DIR}/gui/key_binding.cpp
   ${INTERFACE_SOURCE_DIR}/gui/settings.cpp
