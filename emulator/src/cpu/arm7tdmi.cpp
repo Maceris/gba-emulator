@@ -40,11 +40,6 @@ void ARM7TDMI::arm_cmn(ArmInstruction instruction)
 void ARM7TDMI::arm_cmp(ArmInstruction instruction)
 {}
 
-void ARM7TDMI::arm_csdb(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
-
 void ARM7TDMI::arm_eor(ArmInstruction instruction)
 {}
 
@@ -58,34 +53,22 @@ void ARM7TDMI::arm_ldr(ArmInstruction instruction)
 {}
 
 void ARM7TDMI::arm_ldrb(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_ldrbt(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_ldrh(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_ldrsb(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_ldrsh(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_ldrt(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_lsl(ArmInstruction instruction)
 {}
@@ -160,25 +143,19 @@ void ARM7TDMI::arm_str(ArmInstruction instruction)
 {}
 
 void ARM7TDMI::arm_strb(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
+
 void ARM7TDMI::arm_strbt(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
+
 void ARM7TDMI::arm_strd(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
+
 void ARM7TDMI::arm_strh(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
+
 void ARM7TDMI::arm_strt(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_sub(ArmInstruction instruction)
 {}
@@ -196,9 +173,7 @@ void ARM7TDMI::arm_tst(ArmInstruction instruction)
 {}
 
 void ARM7TDMI::arm_udf(ArmInstruction instruction)
-{
-	//TODO(ches) confirm GBA supports this
-}
+{}
 
 void ARM7TDMI::arm_umlal(ArmInstruction instruction)
 {}
@@ -835,7 +810,8 @@ namespace DecodeArm
 		{
 			if (op1 == 0b00000)
 			{
-				return ARMInstructionType::STRD;
+				// STRD Store Register Dual is v5TE
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if (op1 == 0b00001)
 			{
@@ -843,7 +819,8 @@ namespace DecodeArm
 			}
 			if (op1 == 0b00100)
 			{
-				return ARMInstructionType::STRD;
+				// STRD Store Register Dual is v5TE
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if (op1 == 0b00101)
 			{
@@ -863,18 +840,17 @@ namespace DecodeArm
 		{
 			if (op1 == 0b0000)
 			{
-				const ArmInstruction op2 = instruction & 0b1111'1111;
+				//const ArmInstruction op2 = instruction & 0b1111'1111;
 
 				// 00000000 = NOP No Operation hint, v6K and v6T2
 				// 00000001 = YIELD Yield hint, v6K
 				// 00000010 = WFE Wait For Event hint, v6K
 				// 00000011 = WFI Wait For Interrupt hint, v6K
 				// 00000100 = SEV Send Event hint, v6K
+				// 00010100 = CSDB Consumption of Speculative Data Barrier, v7
 				// 1111xxxx = DBG Debug hint, v7
-				if (op2 == 0b00010100)
-				{
-					return ARMInstructionType::CSDB;
-				}
+
+				return ARMInstructionType::UNIMPLEMENTED;
 			}
 			if (op1 == 0b0100 || (op1 & 0b1011) == 0b1000)
 			{

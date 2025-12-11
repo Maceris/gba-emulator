@@ -57,10 +57,6 @@ enum class ARMInstructionType : uint8_t
 	/// </summary>
 	CMP,
 	/// <summary>
-	/// Consumption of Speculative Data Barrier.
-	/// </summary>
-	CSDB,
-	/// <summary>
 	/// Exclusive or.
 	/// </summary>
 	EOR,
@@ -204,10 +200,6 @@ enum class ARMInstructionType : uint8_t
 	/// Store register byte unprivileged.
 	/// </summary>
 	STRBT,
-	/// <summary>
-	/// Store register dual.
-	/// </summary>
-	STRD,
 	/// <summary>
 	/// Store register halfword.
 	/// </summary>
@@ -629,10 +621,6 @@ struct ARM7TDMI
 	/// Compare.
 	/// </summary>
 	void arm_cmp(ArmInstruction instruction);
-	/// <summary>
-	/// Consumption of speculative data barrier.
-	/// </summary>
-	void arm_csdb(ArmInstruction instruction);
 	/// <summary>
 	/// Exclusive or.
 	/// </summary>
