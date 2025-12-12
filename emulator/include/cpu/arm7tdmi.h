@@ -475,14 +475,10 @@ namespace DecodeArm
 	/// Either bits A or B may be 1, but not both.
 	/// 
 	/// </summary>
-	/// <param name="instruction"></param>
-	/// <returns></returns>
+	/// <param name="instruction">The instruction to decode.</param>
+	/// <returns>The appropriate instruction.</returns>
 	ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_signed(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_unsigned(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_packing_unpacking_saturation_and_reversal(ArmInstruction instruction);
-	ARMInstructionType constexpr decode_signed_multiply_signed_and_unsigned_divide(ArmInstruction instruction);
 
 	ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction);
 	ARMInstructionType constexpr decode_coprocessor_and_supervisor_call(ArmInstruction instruction);

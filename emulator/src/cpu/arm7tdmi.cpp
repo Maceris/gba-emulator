@@ -914,19 +914,36 @@ namespace DecodeArm
 
 		if ((op1 & 0b11100) == 0b00000)
 		{
-			return decode_parallel_addition_and_subtraction_signed(instruction);
+			// Parallel addition and subtration (signed) are not on v4T:
+			// SADD16, SASX, SSAX, SSUB16, SADD8, SSUB8
+			// QADD16, QASX, QSAX, QSUB16, QADD8, QSUB8
+			// SHADD16, SHASX, SHSAX, SHSUB16, SHADD8, SHSUB8
+			return ARMInstructionType::UNIMPLEMENTED;
 		}
 		if ((op1 & 0b11100) == 0b00100)
 		{
-			return decode_parallel_addition_and_subtraction_unsigned(instruction);
+			// Parallel addition and subtration (unsigned) are not on v4T:
+			// UADD16, UASX, USAX, USUB16, UADD8, USUB8
+			// UQADD16, UQASX, UQSAX, UQSUB16, UQADD8, UQSUB8
+			// UHADD16, UHASX, UHSAX, UHSUB16, UHADD8, UHSUB8
+			return ARMInstructionType::UNIMPLEMENTED;
 		}
 		if ((op1 & 0b11000) == 0b01000)
 		{
-			return decode_packing_unpacking_saturation_and_reversal(instruction);
+			// Packing, unpacking, saturation, and reversal instructions are v6+
+
+			// PKH, SXTAB16, SXTB16, SEL, SSAT, SSAT16, SXTAB, SXTB
+			// REV, SXTAH, SXTH, REV16, UXTAB16, UXTB16, USAT, USAT16
+			// UXTAB, UXTB, RBIT, UXTAHm UXTH, REVSH
+			return ARMInstructionType::UNIMPLEMENTED;
 		}
 		if ((op1 & 0b11000) == 0b10000)
 		{
-			return decode_signed_multiply_signed_and_unsigned_divide(instruction);
+			// Signed multiply instructions are v6+
+
+			// SMLAD, SMUAD, SMLSD, SMUSD, SDIV, UDIV, SMLALD, SMLSLD
+			// SMMLA, SMMUL, SMMLS
+			return ARMInstructionType::UNIMPLEMENTED;
 		}
 		const ArmInstruction op2 = (instruction >> 5) & 0b111;
 
@@ -950,34 +967,6 @@ namespace DecodeArm
 		// op1 = 1110x, op2 = x00, rn != 1111 is BFI in v6T2
 		// op1 = 1111x, op2 = x10, rn != 1111 is UBFX in v6T2
 		
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_signed(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_parallel_addition_and_subtraction_unsigned(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_packing_unpacking_saturation_and_reversal(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
-		return ARMInstructionType::UNIMPLEMENTED;
-	}
-
-	ARMInstructionType constexpr decode_signed_multiply_signed_and_unsigned_divide(ArmInstruction instruction)
-	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
