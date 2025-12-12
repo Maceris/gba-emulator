@@ -139,6 +139,18 @@ void ARM7TDMI::arm_stc(ArmInstruction instruction)
 void ARM7TDMI::arm_stm(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_stmda(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_stmdb(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_stmia(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_stmib(ArmInstruction instruction)
+{}
+
 void ARM7TDMI::arm_str(ArmInstruction instruction)
 {}
 
@@ -972,6 +984,11 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction)
 	{
+		const ArmInstruction cond = (instruction >> 28) & 0b1111;
+		const ArmInstruction op = (instruction >> 20) & 0b111111;
+		const ArmInstruction rn = (instruction >> 16) & 0b1111;
+		const ArmInstruction r = (instruction >> 15) & 0b1;
+
 		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
 		//TODO(ches) fill this out
 		return ARMInstructionType::UNIMPLEMENTED;

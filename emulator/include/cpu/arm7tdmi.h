@@ -189,6 +189,22 @@ enum class ARMInstructionType : uint8_t
 	/// </summary>
 	STM,
 	/// <summary>
+	/// Store multiple, decrement after.
+	/// </summary>
+	STMDA,
+	/// <summary>
+	/// Store multiple, decrement before.
+	/// </summary>
+	STMDB,
+	/// <summary>
+	/// Store multiple, increment after.
+	/// </summary>
+	STMIA,
+	/// <summary>
+	/// Store multiple, increment before.
+	/// </summary>
+	STMIB,
+	/// <summary>
 	/// Store register to memory.
 	/// </summary>
 	STR,
@@ -749,6 +765,22 @@ struct ARM7TDMI
 	/// Store multiple.
 	/// </summary>
 	void arm_stm(ArmInstruction instruction);
+	/// <summary>
+	/// Store multiple, decrement after.
+	/// </summary>
+	void arm_stmda(ArmInstruction instruction);
+	/// <summary>
+	/// Store multiple, decrement before.
+	/// </summary>
+	void arm_stmdb(ArmInstruction instruction);
+	/// <summary>
+	/// Store multiple, increment after.
+	/// </summary>
+	void arm_stmia(ArmInstruction instruction);
+	/// <summary>
+	/// Store multiple, increment before.
+	/// </summary>
+	void arm_stmib(ArmInstruction instruction);
 	/// <summary>
 	/// Store register to memory.
 	/// </summary>
