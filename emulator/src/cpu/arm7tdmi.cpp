@@ -49,6 +49,21 @@ void ARM7TDMI::arm_ldc(ArmInstruction instruction)
 void ARM7TDMI::arm_ldm(ArmInstruction instruction)
 {}
 
+void ARM7TDMI::arm_ldm_exception(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_ldmda(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_ldmdb(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_ldmia(ArmInstruction instruction)
+{}
+
+void ARM7TDMI::arm_ldmib(ArmInstruction instruction)
+{}
+
 void ARM7TDMI::arm_ldr(ArmInstruction instruction)
 {}
 
@@ -984,13 +999,68 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction)
 	{
-		const ArmInstruction cond = (instruction >> 28) & 0b1111;
 		const ArmInstruction op = (instruction >> 20) & 0b111111;
 		const ArmInstruction rn = (instruction >> 16) & 0b1111;
 		const ArmInstruction r = (instruction >> 15) & 0b1;
 
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		if ((op & 0x111101) == 0x000000) {
+			return ARMInstructionType::STMDA;
+		}
+		if ((op & 0x111101) == 0x000001) {
+			return ARMInstructionType::LDMDA;
+		}
+		if ((op & 0x111101) == 0x001000) {
+			return ARMInstructionType::STMIA;
+		}
+		if (op == 0x001001) {
+			return ARMInstructionType::LDMIA;
+		}
+		if (op == 0x001011) {
+			if (rn == 0b1101) {
+				return ARMInstructionType::POP;
+			}
+			else {
+				return ARMInstructionType::LDMIA;
+			}
+		}
+		if (op == 0x010000) {
+			return ARMInstructionType::STMDB;
+		}
+		if (op == 0x010010) {
+			if (rn == 0b1101) {
+				return ARMInstructionType::PUSH;
+			}
+			else {
+				return ARMInstructionType::STMDB;
+			}
+		}
+		if ((op & 0x111101) == 0x010001) {
+			return ARMInstructionType::LDMDB;
+		}
+		if ((op & 0x111101) == 0x011000) {
+			return ARMInstructionType::STMIB;
+		}
+		if ((op & 0x111101) == 0x011001) {
+			return ARMInstructionType::LDMIB;
+		}
+		if ((op & 0x100101) == 0x000100) {
+			return ARMInstructionType::STM;
+		}
+		if ((op & 0x100101) == 0x000101) {
+			if (r == 0x0) {
+				return ARMInstructionType::LDM;
+			}
+			else {
+				return ARMInstructionType::LDM_EXCEPTION;
+			}
+		}
+		if ((op & 0x110000) == 0x100000) {
+			return ARMInstructionType::B;
+		}
+		if ((op & 0x110000) == 0x110000) {
+			return ARMInstructionType::BL;
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 

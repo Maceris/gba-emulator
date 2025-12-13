@@ -69,6 +69,26 @@ enum class ARMInstructionType : uint8_t
 	/// </summary>
 	LDM,
 	/// <summary>
+	/// Load multiple registers, exception return.
+	/// </summary>
+	LDM_EXCEPTION,
+	/// <summary>
+	/// Load multiple, decrement after.
+	/// </summary>
+	LDMDA,
+	/// <summary>
+	/// Load multiple, decrement before.
+	/// </summary>
+	LDMDB,
+	/// <summary>
+	/// Load multiple, increment after.
+	/// </summary>
+	LDMIA,
+	/// <summary>
+	/// Load multiple, increment before.
+	/// </summary>
+	LDMIB,
+	/// <summary>
 	/// Load register from memory.
 	/// </summary>
 	LDR,
@@ -645,6 +665,26 @@ struct ARM7TDMI
 	/// Load multiple registers.
 	/// </summary>
 	void arm_ldm(ArmInstruction instruction);
+	/// <summary>
+	/// Load multiple registers, exception return.
+	/// </summary>
+	void arm_ldm_exception(ArmInstruction instruction);
+	/// <summary>
+	/// Load multiple, decrement after.
+	/// </summary>
+	void arm_ldmda(ArmInstruction instruction);
+	/// <summary>
+	/// Load multiple, decrement before.
+	/// </summary>
+	void arm_ldmdb(ArmInstruction instruction);
+	/// <summary>
+	/// Load multiple, increment after.
+	/// </summary>
+	void arm_ldmia(ArmInstruction instruction);
+	/// <summary>
+	/// Load multiple, increment before.
+	/// </summary>
+	void arm_ldmib(ArmInstruction instruction);
 	/// <summary>
 	/// Load register from memory.
 	/// </summary>
