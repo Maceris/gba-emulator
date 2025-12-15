@@ -1066,8 +1066,60 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_coprocessor_and_supervisor_call(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		const ArmInstruction op1 = (instruction >> 20) & 0b111111;
+
+		if ((op1 & 0b000001) == 0b000000) {
+			// Technically, undefined but I think not the mnemonic
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+		if ((op1 & 0b110000) == 0b110000) {
+			// SVC?
+			return ARMInstructionType::SWI;
+		}
+		
+		const ArmInstruction coproc = (instruction >> 8) & 0b1111;
+		const ArmInstruction op = (instruction >> 4) & 0b1;
+
+		if ((coproc & 0x1110) != 0b1010) {
+			if ((op1 & 0b100001) == 0b000000 && (op1 & 0b111011) != 0b000000) {
+				return ARMInstructionType::STC;
+			}
+			if ((op1 & 0b100001) == 0b000001 && (op1 & 0b111011) != 0b000001) {
+				// const ArmInstruction rn = (instruction >> 16) & 0b1111;
+				// rn = 1111 is Load Coprocessor (literal)
+				// rn != 1111 is Load Coprocessor (immediate)
+				return ARMInstructionType::LDC;
+			}
+			if (op1 == 0b000100 || op1 == 0b000101) {
+				// 000100 = MCRR, v5TE
+				// 000101 = MRRC, v5TE
+				return ARMInstructionType::UNIMPLEMENTED;
+			}
+			if ((op1 & 0b110000) == 0b100000 && op == 0b0) {
+				return ARMInstructionType::CDP;
+			}
+			if ((op1 & 0b110001) == 0b100000 && op == 0b1) {
+				return ARMInstructionType::MCR;
+			}
+			if ((op1 & 0b110001) == 0b100001 && op == 0b1) {
+				return ARMInstructionType::MRC;
+			}
+		}
+		else {
+			// coproc = 101x
+
+			// op1 = 0xxxxx (!000x0x) - Advanced SIMD and Floating-point (VFP) 
+			// op1 = 00010x - 64-bit transfers between ARM core and extension
+			// registers
+			// op1 = 10xxxx, op = 0 - Floating-point data-processing
+			// instructions
+			// op1 = 10xxxx, op = 1 - 8, 16, and 32-bit transfer between
+			// ARM core and extension registers
+
+			// We don't have any of these
+			return ARMInstructionType::UNIMPLEMENTED;
+		}
+
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 
