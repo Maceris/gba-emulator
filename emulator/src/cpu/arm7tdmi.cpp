@@ -1149,6 +1149,44 @@ namespace DecodeArm
 	}
 }
 
+#pragma endregion
+
+#pragma region Thumb Decoding
+
+// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/Thumb-instruction-set-encoding?lang=en
+namespace DecodeThumb {
+
+	ThumbInstructionType constexpr decode(ThumbInstruction instruction)
+	{
+		const ThumbInstruction important_bits = (instruction >> 11) & 0b11111;
+
+		if (important_bits == 0b11101
+		 || important_bits == 0b11110
+		 || important_bits == 0b11111)
+		{
+			return decode_32(instruction);
+		}
+		else {
+			return decode_16(instruction);
+		}
+	}
+
+	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+}
+
+#pragma endregion
+
 ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
 {
 	return DecodeArm::decode(instruction);
@@ -1156,8 +1194,5 @@ ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
 
 ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction)
 {
-	//TODO(ches) fill this out
-	return ThumbInstructionType::CMP;
+	return DecodeThumb::decode(instruction);
 }
-
-#pragma endregion

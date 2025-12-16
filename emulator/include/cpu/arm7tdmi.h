@@ -521,6 +521,12 @@ namespace DecodeArm
 	ARMInstructionType constexpr decode_unconditional_instruction(ArmInstruction instruction);
 }
 
+namespace DecodeThumb {
+	ThumbInstructionType constexpr decode(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction);
+}
+
 /// <summary>
 /// A 16.78 MHz ARM7TDMI RISC processor, featuring 16-bit Thumb, JTAG Debug,
 /// fast multiplier, and enhanced ICE.
