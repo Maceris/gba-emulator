@@ -1125,8 +1125,25 @@ namespace DecodeArm
 
 	ARMInstructionType constexpr decode_unconditional_instruction(ArmInstruction instruction)
 	{
-		const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
-		//TODO(ches) fill this out
+		// const ArmInstruction op1 = (instruction >> 20) & 0b11111111;
+
+		// op1 = 0xxxxxxx:
+		
+		// SRS,RFE, MCRR, MRRC are v6
+		// BL, STC, LDC, CDP, MCR, MRC are v5
+		
+		// op1 != 0xxxxxxx:
+
+		// op1 = 01111111, op2 = 1111 is pernamently undefined but on v5
+		// some PLD is v5TE
+		// CPS, SETEND are v6
+		// CLREX is v6K
+		// DSB, ISB are v6T2
+		// Advanced SIMD, PLI, DMB are v7
+		// Memory hints, some PLD are MP Ext (which are in turn were 
+		// introduced for v7 chips)
+		// The rest are, and I quote the spec, "unpredictable".
+		
 		return ARMInstructionType::UNIMPLEMENTED;
 	}
 }
