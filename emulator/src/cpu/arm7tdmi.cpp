@@ -365,6 +365,7 @@ void ARM7TDMI::execute()
 
 #pragma region ARM Decoding
 
+// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/ARM-Instruction-Set-Encoding?lang=en
 namespace DecodeArm
 {
 	ARMInstructionType constexpr decode(ArmInstruction instruction)
