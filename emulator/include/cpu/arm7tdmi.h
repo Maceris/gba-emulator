@@ -524,6 +524,12 @@ namespace DecodeArm
 namespace DecodeThumb {
 	ThumbInstructionType constexpr decode(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_special_data_branch_exchange(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction);
 }
 

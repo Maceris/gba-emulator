@@ -1173,6 +1173,91 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction)
 	{
+		const ThumbInstruction opcode = (instruction >> 10) & 0b111111;
+
+		if ((opcode & 0b110000) == 0b000000) {
+			// Shift (immediate), add, subtract, move, and compare
+			return decode_16_shift_add_sub_mov_cmp(instruction);
+		}
+		if (opcode == 0b010000) {
+			// Data-processing
+			return decode_16_data_processing(instruction);
+		}
+		if (opcode == 0b010001) {
+			// Special data instructions and branch and exchange
+			return decode_16_special_data_branch_exchange(instruction);
+		}
+		if ((opcode & 0b111110) == 0b010010) {
+			return ThumbInstructionType::LDR;
+		}
+		if ((opcode & 0b111100) == 0b010100
+			|| (opcode & 0b111000) == 0b011000
+			|| (opcode & 0b111000) == 0b100000) {
+			// Load/store single data item
+			return decode_16_load_store_single_data(instruction);
+		}
+		if ((opcode & 0b111110) == 0b101000) {
+			// Generate PC-relative address, see ADR
+			return ThumbInstructionType::ADD;
+		}
+		if ((opcode & 0b111110) == 0b101010) {
+			// Generate SP-relative address
+			return ThumbInstructionType::ADD;
+		}
+		if ((opcode & 0b111100) == 0b101100) {
+			// Miscellaneous 16-bit instructions
+			return decode_16_misc(instruction);
+		}
+		if ((opcode & 0b111110) == 0b110000) {
+			return ThumbInstructionType::STMIA;
+		}
+		if ((opcode & 0b111110) == 0b110010) {
+			// Load multiple registers, see LDM/LDMIA/LDMFD (Thumb)
+			return ThumbInstructionType::LDMIA;
+		}
+		if ((opcode & 0b111100) == 0b110100) {
+			// Conditional branch, and Supervisor Call
+			return decode_16_conditional_branch_supervisor(instruction);
+		}
+		if ((opcode & 0b111110) == 0b111000) {
+			return ThumbInstructionType::B;
+		}
+
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_special_data_branch_exchange(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction)
+	{
 		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
