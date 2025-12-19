@@ -286,6 +286,10 @@ enum class ThumbInstructionType
 	/// </summary>
 	ADD,
 	/// <summary>
+	/// Add with carry.
+	/// </summary>
+	ADC,
+	/// <summary>
 	/// And.
 	/// </summary>
 	AND,
@@ -430,7 +434,7 @@ enum class ThumbInstructionType
 	/// <summary>
 	/// Or.
 	/// </summary>
-	OR,
+	ORR,
 	/// <summary>
 	/// Pop registers from stack, or pop registers and PC from stack.
 	/// </summary>
@@ -443,6 +447,10 @@ enum class ThumbInstructionType
 	/// Rotate right.
 	/// </summary>
 	ROR,
+	/// <summary>
+	/// Reverse subtract.
+	/// </summary>
+	RSB,
 	/// <summary>
 	/// Subtract with carry.
 	/// </summary>
@@ -897,6 +905,10 @@ struct ARM7TDMI
 	/// </summary>
 	void thumb_add(ThumbInstruction instruction);
 	/// <summary>
+	/// Add with carry.
+	/// </summary>
+	void thumb_adc(ThumbInstruction instruction);
+	/// <summary>
 	/// And.
 	/// </summary>
 	void thumb_and(ThumbInstruction instruction);
@@ -1054,6 +1066,10 @@ struct ARM7TDMI
 	/// Rotate right.
 	/// </summary>
 	void thumb_ror(ThumbInstruction instruction);
+	/// <summary>
+	/// Reverse subtract.
+	/// </summary>
+	void thumb_rsb(ThumbInstruction instruction);
 	/// <summary>
 	/// Subtract with carry.
 	/// </summary>

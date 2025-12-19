@@ -214,6 +214,9 @@ void ARM7TDMI::arm_umull(ArmInstruction instruction)
 void ARM7TDMI::thumb_add(ThumbInstruction instruction)
 {}
 
+void ARM7TDMI::thumb_adc(ThumbInstruction instruction)
+{}
+
 void ARM7TDMI::thumb_and(ThumbInstruction instruction)
 {}
 
@@ -327,6 +330,11 @@ void ARM7TDMI::thumb_push(ThumbInstruction instruction)
 
 void ARM7TDMI::thumb_ror(ThumbInstruction instruction)
 {}
+
+void ARM7TDMI::thumb_rsb(ThumbInstruction instruction)
+{
+	// TODO(ches) confirm GBA supports this, can't find in ARM7TDMI-S docs
+}
 
 void ARM7TDMI::thumb_sbc(ThumbInstruction instruction)
 {}
@@ -1280,7 +1288,27 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction opcode = (instruction >> 6) & 0b1111;
+
+		switch (opcode) {
+		case 0b0000: return ThumbInstructionType::AND;
+		case 0b0001: return ThumbInstructionType::EOR;
+		case 0b0010: return ThumbInstructionType::LSL;
+		case 0b0011: return ThumbInstructionType::LSR;
+		case 0b0100: return ThumbInstructionType::ASR;
+		case 0b0101: return ThumbInstructionType::ADC;
+		case 0b0110: return ThumbInstructionType::SBC;
+		case 0b0111: return ThumbInstructionType::ROR;
+		case 0b1000: return ThumbInstructionType::TST;
+		case 0b1001: return ThumbInstructionType::RSB;
+		case 0b1010: return ThumbInstructionType::CMP;
+		case 0b1011: return ThumbInstructionType::CMN;
+		case 0b1100: return ThumbInstructionType::ORR;
+		case 0b1101: return ThumbInstructionType::MUL;
+		case 0b1110: return ThumbInstructionType::BIC;
+		case 0b1111: return ThumbInstructionType::MVN;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
