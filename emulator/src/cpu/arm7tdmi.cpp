@@ -1228,7 +1228,53 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction opcode = (instruction >> 9) & 0b11111;
+
+		if ((opcode & 0b11100) == 0b00000) {
+			if (((instruction >> 6) & 0b11111111) == 0b00000000) {
+				// opcode = 0b00000 and bits[8:6] are 0b000
+				// MOV (register, Thumb)
+				return ThumbInstructionType::MOV;
+			}
+			return ThumbInstructionType::LSL;
+		}
+		if ((opcode & 0b11100) == 0b00100) {
+			return ThumbInstructionType::LSR;
+		}
+		if ((opcode & 0b11100) == 0b01000) {
+			return ThumbInstructionType::ASR;
+		}
+		if (opcode == 0b01100) {
+			// Add register
+			return ThumbInstructionType::ADD;
+		}
+		if (opcode == 0b01101) {
+			// Subtract register
+			return ThumbInstructionType::SUB;
+		}
+		if (opcode == 0b01110) {
+			// Add 3-bit immediate
+			return ThumbInstructionType::ADD;
+		}
+		if (opcode == 0b01111) {
+			// Subtract 3-bit immediate
+			return ThumbInstructionType::SUB;
+		}
+		if ((opcode & 0b11100) == 0b10000) {
+			return ThumbInstructionType::MOV;
+		}
+		if ((opcode & 0b11100) == 0b10100) {
+			return ThumbInstructionType::CMP;
+		}
+		if ((opcode & 0b11100) == 0b11000) {
+			// Add 8-bit immediate
+			return ThumbInstructionType::ADD;
+		}
+		if ((opcode & 0b11100) == 0b11100) {
+			// Subtract 8-bit immediate
+			return ThumbInstructionType::SUB;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
