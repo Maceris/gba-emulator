@@ -1167,19 +1167,11 @@ namespace DecodeArm
 // https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/Thumb-instruction-set-encoding?lang=en
 namespace DecodeThumb {
 
-	ThumbInstructionType constexpr decode(ThumbInstruction instruction)
-	{
+	bool constexpr is_32_bit(ThumbInstruction instruction) {
 		const ThumbInstruction important_bits = (instruction >> 11) & 0b11111;
-
-		if (important_bits == 0b11101
-		 || important_bits == 0b11110
-		 || important_bits == 0b11111)
-		{
-			return decode_32(instruction);
-		}
-		else {
-			return decode_16(instruction);
-		}
+		return important_bits == 0b11101
+			|| important_bits == 0b11110
+			|| important_bits == 0b11111;
 	}
 
 	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction)
@@ -1462,9 +1454,77 @@ namespace DecodeThumb {
 		}
 	}
 
-	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction)
+	ThumbInstructionType constexpr decode_32(ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (first_instruction >> 11) & 0b11;
+		const ThumbInstruction op2 = (first_instruction >> 4) & 0b1111111;
+
+		if (op1 == 0b01) {
+			if ((op2 & 0b1100100) == 0b0000000) {
+				//TODO(ches) load/store multiple
+			}
+			if ((op2 & 0b1100100) == 0b0000100) {
+				//TODO(ches) Load/store dual, load/store exclusive, table branch
+			}
+			if ((op2 & 0b1100000) == 0b0100000) {
+				//TODO(ches) Data-processing (shifted register)
+			}
+			if ((op2 & 0b1000000) == 0b1000000) {
+				//TODO(ches) Coprocessor, Advanced SIMD, and Floating-point instructions
+			}
+		}
+		else if (op1 == 0b10) {
+			const ThumbInstruction op = (second_instruction >> 15) & 0b1;
+
+			if (op == 0b1) {
+				//TODO(ches) Branches and miscellaneous control
+			}
+			if ((op2 & 0b0100000) == 0b0000000) {
+				//TODO(ches) Data-processing (modified immediate)
+			}
+			if ((op2 & 0b0100000) == 0b0100000) {
+				//TODO(ches) Data-processing (plain binary immediate)
+			}
+		}
+		else if (op1 == 0b11) {
+			if ((op2 & 0b1110001) == 0b0000000) {
+				//TODO(ches) Store single data item
+			}
+			if ((op2 & 0b1100111) == 0b0000001) {
+				//TODO(ches) Load byte, memory hints
+			}
+			if ((op2 & 0b1100111) == 0b0000011) {
+				//TODO(ches) Load halfword, memory hints
+			}
+			if ((op2 & 0b1100111) == 0b0000101) {
+				//TODO(ches) Load word
+			}
+			if ((op2 & 0b1100111) == 0b0000111) {
+				// explicitly undefined
+				return ThumbInstructionType::UNIMPLEMENTED;
+			}
+			if ((op2 & 0b1110001) == 0b0010000) {
+				//TODO(ches) Advanced SIMD element or structure load/store instructions
+			}
+			if ((op2 & 0b1110000) == 0b0100000) {
+				//TODO(ches) Data-processing (register)
+			}
+			if ((op2 & 0b1111000) == 0b0110000) {
+				//TODO(ches) Multiply, multiply accumulate, and absolute difference
+			}
+			if ((op2 & 0b1111000) == 0b0111000) {
+				//TODO(ches) Long multiply, long multiply accumulate, and divide
+			}
+			if ((op2 & 0b1000000) == 0b1000000) {
+				//TODO(ches) Coprocessor, Advanced SIMD, and Floating-point instructions
+			}
+		}
+		else {
+			// This must be a 16-bit instruction, shouldn't have gotten here
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
@@ -1477,7 +1537,16 @@ ARMInstructionType ARM7TDMI::decode_arm(ArmInstruction instruction)
 	return DecodeArm::decode(instruction);
 }
 
-ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction)
+ThumbInstructionType ARM7TDMI::decode_thumb(ThumbInstruction instruction, 
+	ThumbInstruction next_instruction)
 {
-	return DecodeThumb::decode(instruction);
+	//TODO(ches) figure out how to pull instructions, rather than paramters
+
+	if (DecodeThumb::is_32_bit(instruction)) {
+		return DecodeThumb::decode_16(instruction);
+	}
+	else {
+		return DecodeThumb::decode_32(instruction, next_instruction);
+	}
+	
 }

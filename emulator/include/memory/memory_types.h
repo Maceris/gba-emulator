@@ -13,6 +13,12 @@ using Address16 = uint16_t;
 using Register = Word;
 
 using ArmInstruction = uint32_t;
+/// <summary>
+/// Technically, Thumb instructions can be either 16-bit or 32-bit. In order
+/// to suppor both, we consider them always 16-bit with the 32-bit instructions
+/// being encoded as a pair of 16-bit instructions. This means that not
+/// everything encoded as a ThumbInstruction will be valid by itself.
+/// </summary>
 using ThumbInstruction = uint16_t;
 
 struct AddressRange

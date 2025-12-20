@@ -534,7 +534,7 @@ namespace DecodeArm
 }
 
 namespace DecodeThumb {
-	ThumbInstructionType constexpr decode(ThumbInstruction instruction);
+	bool constexpr is_32_bit(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction);
@@ -542,7 +542,8 @@ namespace DecodeThumb {
 	ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction);
 	ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction);
-	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction);
+	ThumbInstructionType constexpr decode_32(ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction);
 }
 
 /// <summary>
@@ -1120,7 +1121,8 @@ struct ARM7TDMI
 private:
 #pragma region ARM Decoding
 	ARMInstructionType decode_arm(ArmInstruction instruction);
-	ThumbInstructionType decode_thumb(ThumbInstruction instruction);
+	ThumbInstructionType decode_thumb(ThumbInstruction instruction, 
+		ThumbInstruction next_instruction);
 #pragma endregion
 
 };
