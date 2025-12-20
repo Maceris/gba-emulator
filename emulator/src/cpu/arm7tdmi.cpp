@@ -1314,7 +1314,33 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_special_data_branch_exchange(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction opcode = (instruction >> 6) & 0b1111;
+
+		if (opcode == 0b0000) {
+			// Add low registers, v6T2
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+		if (opcode == 0b0001 || (opcode & 0b1110) == 0b0010) {
+			return ThumbInstructionType::ADD;
+		}
+		if ((opcode & 0b1100) == 0b0100) {
+			return ThumbInstructionType::CMP;
+		}
+		if (opcode == 0b1000) {
+			// Move low registers, v6
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+		if (opcode == 0b1001 || (opcode & 0b1110) == 0b1010) {
+			return ThumbInstructionType::MOV;
+		}
+		if ((opcode & 0b1110) == 0b1100) {
+			return ThumbInstructionType::BX;
+		}
+		if ((opcode & 0b1110) == 0b1110) {
+			// Branch with Link and Exchange, v5T
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
