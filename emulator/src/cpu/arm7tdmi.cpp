@@ -301,6 +301,9 @@ void ARM7TDMI::thumb_ldrh(ThumbInstruction instruction)
 void ARM7TDMI::thumb_ldrsb(ThumbInstruction instruction)
 {}
 
+void ARM7TDMI::thumb_ldrsh(ThumbInstruction instruction)
+{}
+
 void ARM7TDMI::thumb_lsl(ThumbInstruction instruction)
 {}
 
@@ -1346,8 +1349,59 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
+		const ThumbInstruction opA = (instruction >> 12) & 0b1111;
+		const ThumbInstruction opB = (instruction >> 9) & 0b111;
+
+		if (opA == 0b0101) {
+			switch (opB) {
+			case 0b000: return ThumbInstructionType::STR;
+			case 0b001: return ThumbInstructionType::STRH;
+			case 0b010: return ThumbInstructionType::STRB;
+			case 0b011: return ThumbInstructionType::LDRSB;
+			case 0b100: return ThumbInstructionType::LDR;
+			case 0b101: return ThumbInstructionType::LDRH;
+			case 0b110: return ThumbInstructionType::LDRB;
+			case 0b111: return ThumbInstructionType::LDRSH;
+			}
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+		else if (opA == 0b0110) {
+			if ((opB & 0b100) == 0b000) {
+				return ThumbInstructionType::STR;
+			}
+			else {
+				return ThumbInstructionType::LDR;
+			}
+		}
+		else if (opA == 0b0111) {
+			if ((opB & 0b100) == 0b000) {
+				return ThumbInstructionType::STRB;
+			}
+			else {
+				return ThumbInstructionType::LDRB;
+			}
+		}
+		else if (opA == 0b1000) {
+			if ((opB & 0b100) == 0b000) {
+				return ThumbInstructionType::STRH;
+			}
+			else {
+				return ThumbInstructionType::LDRH;
+			}
+		}
+		else if (opA == 0b1001) {
+			if ((opB & 0b100) == 0b000) {
+				// Store register SP relative
+				return ThumbInstructionType::STR;
+			}
+			else {
+				// Load register SP relative
+				return ThumbInstructionType::LDR;
+			}
+		}
+		else {
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
 	}
 
 	ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction)

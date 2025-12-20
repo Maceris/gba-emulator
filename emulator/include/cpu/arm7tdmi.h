@@ -408,6 +408,10 @@ enum class ThumbInstructionType
 	/// </summary>
 	LDRSB,
 	/// <summary>
+	/// Load signed halfword with register offset.
+	/// </summary>
+	LDRSH,
+	/// <summary>
 	/// Logical shift left.
 	/// </summary>
 	LSL,
@@ -1026,6 +1030,10 @@ struct ARM7TDMI
 	/// Load signed byte with register offset.
 	/// </summary>
 	void thumb_ldrsb(ThumbInstruction instruction);
+	/// <summary>
+	/// Load signed halfword with register offset.
+	/// </summary>
+	void thumb_ldrsh(ThumbInstruction instruction);
 	/// <summary>
 	/// Logical shift left.
 	/// </summary>
