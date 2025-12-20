@@ -1406,7 +1406,41 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction opcode = (instruction >> 5) & 0b1111111;
+		
+		if ((opcode & 0b1111100) == 0b0000000) {
+			// Add immediate to SP
+			return ThumbInstructionType::ADD;
+		}
+		if ((opcode & 0b1111100) == 0b0000100) {
+			// Subtract immediate from SP
+			return ThumbInstructionType::SUB;
+		}
+		if ((opcode & 0b1110000) == 0b0100000) {
+			return ThumbInstructionType::PUSH;
+		}
+		if ((opcode & 0b1110000) == 0b1100000) {
+			return ThumbInstructionType::POP;
+		}
+
+		// opcode = 0001xxx - CBNZ/CBZ Compare and Branch on Zero - v6T2
+		// opcode = 001000x - SXTH Signed Extend Halfword - v6
+		// opcode = 001001x - SXTB Signed Extend Byte - v6
+		// opcode = 001010x - UXTH Unsigned Extend Halfword - v6
+		// opcode = 001011x - UXTB Unsigned Extend Byte - v6
+		// opcode = 0011xxx - CBNZ/CBZ Compare and Branch on Zero - v6T2
+		// opcode = 0110010 - STEND Set Endianness - v6
+		// opcode = 0110011 - CPS Change Processor State - v6
+		// opcode = 1001xxx - CBNZ/CBZ Compare and Branch on Nonzero - v6T2
+		// opcode = 101000x - REV Byte-Reverse Word - v6
+		// opcode = 101001x - REV16 Byte-Reverse Packed Halfword - v6
+		// opcode = 101011x - REVSH Byte-Reverse Signed Halfword - v6
+		// opcode = 1011xxx - CBNZ/CBZ Compare and Branch on Nonzero - v6T2
+		// opcode = 1110xxx - BKPT Breakpoint - v5
+		// opcode = 1111xxx - if-then and hints:
+		// IT, NOP are v6T2
+		// YIELD, WFE, WFI, SEV are v7
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
