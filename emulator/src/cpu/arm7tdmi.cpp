@@ -1446,8 +1446,20 @@ namespace DecodeThumb {
 
 	ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction)
 	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
+		const ThumbInstruction opcode = (instruction >> 8) & 0b1111;
+
+		if (opcode == 0b1110) {
+			// Permanently undefined
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+		else if (opcode == 0b1111) {
+			// or SVC, supervisor call, previously called SWI
+			return ThumbInstructionType::SWI;
+		}
+		else {
+			// not 111x
+			return ThumbInstructionType::B;
+		}
 	}
 
 	ThumbInstructionType constexpr decode_32(ThumbInstruction instruction)
