@@ -1462,62 +1462,78 @@ namespace DecodeThumb {
 
 		if (op1 == 0b01) {
 			if ((op2 & 0b1100100) == 0b0000000) {
-				//TODO(ches) load/store multiple
+				return decode_32_load_store_multiple(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100100) == 0b0000100) {
-				//TODO(ches) Load/store dual, load/store exclusive, table branch
+				return decode_32_load_store_dual_load_store_exclusive_table_branch(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100000) == 0b0100000) {
-				//TODO(ches) Data-processing (shifted register)
+				return decode_32_data_processing_shifted_register(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1000000) == 0b1000000) {
-				//TODO(ches) Coprocessor, Advanced SIMD, and Floating-point instructions
+				return decode_32_coprocessor_advanced_simd_floating_point(
+					first_instruction, second_instruction);
 			}
 		}
 		else if (op1 == 0b10) {
 			const ThumbInstruction op = (second_instruction >> 15) & 0b1;
 
 			if (op == 0b1) {
-				//TODO(ches) Branches and miscellaneous control
+				return decode_32_branches_and_misc_control(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b0100000) == 0b0000000) {
-				//TODO(ches) Data-processing (modified immediate)
+				return decode_32_data_processing_modified_immediate(
+					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b0100000) == 0b0100000) {
-				//TODO(ches) Data-processing (plain binary immediate)
+				return decode_32_data_processing_plain_binary_immediate(
+					first_instruction, second_instruction);
 			}
 		}
 		else if (op1 == 0b11) {
 			if ((op2 & 0b1110001) == 0b0000000) {
-				//TODO(ches) Store single data item
+				return decode_32_load_store_single(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100111) == 0b0000001) {
-				//TODO(ches) Load byte, memory hints
+				return decode_32_load_byte_memory_hints(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100111) == 0b0000011) {
-				//TODO(ches) Load halfword, memory hints
+				return decode_32_load_halfword_memory_hints(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100111) == 0b0000101) {
-				//TODO(ches) Load word
+				return decode_32_load_word(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1100111) == 0b0000111) {
 				// explicitly undefined
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 			if ((op2 & 0b1110001) == 0b0010000) {
-				//TODO(ches) Advanced SIMD element or structure load/store instructions
+				return decode_32_advanced_simd_structure_load_store(
+					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b1110000) == 0b0100000) {
-				//TODO(ches) Data-processing (register)
+				return decode_32_data_processing_register(first_instruction,
+					second_instruction);
 			}
 			if ((op2 & 0b1111000) == 0b0110000) {
-				//TODO(ches) Multiply, multiply accumulate, and absolute difference
+				return decode_32_multiply_multiply_accumulate_absolute_difference(
+					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b1111000) == 0b0111000) {
-				//TODO(ches) Long multiply, long multiply accumulate, and divide
+				return decode_32_long_multiply_long_multiply_accumulate_divide(
+					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b1000000) == 0b1000000) {
-				//TODO(ches) Coprocessor, Advanced SIMD, and Floating-point instructions
+				return decode_32_coprocessor_advanced_simd_floating_point(
+					first_instruction, second_instruction);
 			}
 		}
 		else {
@@ -1525,6 +1541,128 @@ namespace DecodeThumb {
 			return ThumbInstructionType::UNIMPLEMENTED;
 		}
 
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_store_multiple(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_store_dual_load_store_exclusive_table_branch(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		// NOTE(ches) okay we officially passed the point of reasonable name length
+
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_data_processing_shifted_register(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_coprocessor_advanced_simd_floating_point(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_data_processing_modified_immediate(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_data_processing_plain_binary_immediate(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_branches_and_misc_control(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_store_single(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_byte_memory_hints(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_halfword_memory_hints(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_load_word(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_advanced_simd_structure_load_store(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_data_processing_register(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_multiply_multiply_accumulate_absolute_difference(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
+		return ThumbInstructionType::UNIMPLEMENTED;
+	}
+
+	ThumbInstructionType constexpr decode_32_long_multiply_long_multiply_accumulate_divide(
+		ThumbInstruction first_instruction, 
+		ThumbInstruction second_instruction)
+	{
+		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
