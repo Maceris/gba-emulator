@@ -1548,8 +1548,41 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
+		const ThumbInstruction op = (first_instruction >> 7) & 0b11;
+		const ThumbInstruction l = (first_instruction >> 4) & 0b1;
+		const ThumbInstruction wrn = (((first_instruction >> 5) & 0b1) << 4) 
+			| (first_instruction & 0b1111);
+
+		if (op == 0b01) {
+			if (l == 0b0) {
+				return ThumbInstructionType::STMIA;
+			}
+			else if (wrn == 0b11101) {
+				return ThumbInstructionType::POP;
+			}
+			else {
+				return ThumbInstructionType::LDMIA;
+			}
+		}
+		else if (op == 0b10) {
+			if (l == 0b1) {
+				// I don't think we have LDMDB
+				return ThumbInstructionType::UNIMPLEMENTED;
+			}
+			else if (wrn == 0b11101) {
+				return ThumbInstructionType::PUSH;
+			}
+			else {
+				// I don't think we have STMDB
+				return ThumbInstructionType::UNIMPLEMENTED;
+			}
+		}
+		else {
+			// 0b00, 0b11
+			// SRS Store Return State is ARMv6T2
+			// RFE Return From Exception is ARMv6T2
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
 	}
 
 	ThumbInstructionType constexpr decode_32_load_store_dual_load_store_exclusive_table_branch(
