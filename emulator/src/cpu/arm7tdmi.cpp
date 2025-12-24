@@ -1591,7 +1591,18 @@ namespace DecodeThumb {
 	{
 		// NOTE(ches) okay we officially passed the point of reasonable name length
 
-		//TODO(ches) fill this out
+		// STREX Store Register Exclusive is v6T2
+		// LDREX Loard Register Exclusive is v6T2
+		// STRD Store Register Dual is v6T2
+		// LDRD Loard Register immediate or dual are v6T2
+		// STREXB Store Register Exclusive Byte is v7
+		// STREXH Store Register Exclusive halfword is v7
+		// STREXD Store Register Exclusive Doubleword is v7
+		// TBB Table Branch Byte is v6T2
+		// TBH Table Branch Halfword is v6T2
+		// LDREXB Loard Register Exclusive Byte is v7
+		// LDREXH Loard Register Exclusive Halfword is v7
+		// LDREXD Loard Register Exclusive Doubleword is v7
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
