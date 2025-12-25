@@ -1474,8 +1474,9 @@ namespace DecodeThumb {
 					second_instruction);
 			}
 			if ((op2 & 0b1000000) == 0b1000000) {
-				return decode_32_coprocessor_advanced_simd_floating_point(
-					first_instruction, second_instruction);
+				// Coprocessor, Advanced SIMD, and Floating-point instructions
+				// These encodings are all available in ARMv6T2 and above.
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 		}
 		else if (op1 == 0b10) {
@@ -1486,12 +1487,14 @@ namespace DecodeThumb {
 					second_instruction);
 			}
 			if ((op2 & 0b0100000) == 0b0000000) {
-				return decode_32_data_processing_modified_immediate(
-					first_instruction, second_instruction);
+				// Data-processing (modified immediate)
+				// These encodings are all available in ARMv6T2 and above.
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 			if ((op2 & 0b0100000) == 0b0100000) {
-				return decode_32_data_processing_plain_binary_immediate(
-					first_instruction, second_instruction);
+				// Data-processing (plain binary immediate)
+				// These encodings are all available in ARMv6T2 and above.
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 		}
 		else if (op1 == 0b11) {
@@ -1532,8 +1535,9 @@ namespace DecodeThumb {
 					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b1000000) == 0b1000000) {
-				return decode_32_coprocessor_advanced_simd_floating_point(
-					first_instruction, second_instruction);
+				// Coprocessor, Advanced SIMD, and Floating-point instructions
+				// These encodings are all available in ARMv6T2 and above.
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 		}
 		else {
@@ -1713,30 +1717,6 @@ namespace DecodeThumb {
 			return ThumbInstructionType::RSB;
 		}
 
-		return ThumbInstructionType::UNIMPLEMENTED;
-	}
-
-	ThumbInstructionType constexpr decode_32_coprocessor_advanced_simd_floating_point(
-		ThumbInstruction first_instruction, 
-		ThumbInstruction second_instruction)
-	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
-	}
-
-	ThumbInstructionType constexpr decode_32_data_processing_modified_immediate(
-		ThumbInstruction first_instruction, 
-		ThumbInstruction second_instruction)
-	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
-	}
-
-	ThumbInstructionType constexpr decode_32_data_processing_plain_binary_immediate(
-		ThumbInstruction first_instruction, 
-		ThumbInstruction second_instruction)
-	{
-		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
