@@ -1610,7 +1610,109 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+
+		const ThumbInstruction op = (first_instruction >> 5) & 0b1111;
+		const ThumbInstruction rn = first_instruction & 0b111;
+		const ThumbInstruction rds = (((second_instruction >> 8) & 0b1111) << 1)
+			| ((first_instruction >> 4) & 0b1);
+
+		if (op == 0b0000) {
+			if (rds == 0b11111) {
+				return ThumbInstructionType::TST;
+			}
+			else {
+				return ThumbInstructionType::AND;
+			}
+		}
+		else if (op == 0b0001) {
+			return ThumbInstructionType::BIC;
+		}
+		else if (op == 0b0010) {
+			if (rn == 0b11111) {
+				const ThumbInstruction imm3imm2 = 
+					(((second_instruction >> 12) & 0b111) << 2)
+					| ((second_instruction >> 6) & 0b11);
+				const ThumbInstruction type = (second_instruction >> 4) & 0b11;
+
+				if (type == 0b00) {
+					if (imm3imm2 == 0b00000) {
+						return ThumbInstructionType::MOV;
+					}
+					else {
+						return ThumbInstructionType::LSL;
+					}
+				}
+				else if (type == 0b01) {
+					return ThumbInstructionType::LSR;
+				}
+				else if (type == 0b10) {
+					return ThumbInstructionType::ASR;
+				}
+				else {
+					// type == 0b11
+					if (imm3imm2 == 0b00000) {
+						//TODO(ches) figure out if we support this
+						// RRX Rotate Right with Extend
+						return ThumbInstructionType::UNIMPLEMENTED;
+					}
+					else {
+						return ThumbInstructionType::ROR;
+					}
+				}
+			}
+			else {
+				return ThumbInstructionType::ORR;
+			}
+		}
+		else if (op == 0b0011) {
+			if (rn == 0b11111) {
+				return ThumbInstructionType::MVN;
+			}
+			else {
+				// ORN Bitwise OR NOT is ARMv6T2
+				return ThumbInstructionType::UNIMPLEMENTED;
+			}
+		}
+		else if (op == 0b0100) {
+			if (rds == 0b11111) {
+				//TODO(ches) figure out if we support this
+				// TEQ Test Equivalence
+				return ThumbInstructionType::UNIMPLEMENTED;
+			}
+			else {
+				return ThumbInstructionType::EOR;
+			}
+		}
+		else if (op == 0b0110) {
+			// PKH Pakc Halfword is ARMv6T2
+			return ThumbInstructionType::UNIMPLEMENTED;
+		}
+		else if (op == 0b1000) {
+			if (rds == 0b11111) {
+				return ThumbInstructionType::CMN;
+			}
+			else {
+				return ThumbInstructionType::ADD;
+			}
+		}
+		else if (op == 0b1010) {
+			return ThumbInstructionType::ADC;
+		}
+		else if (op == 0b1011) {
+			return ThumbInstructionType::SBC;
+		}
+		else if (op == 0b1101) {
+			if (rds == 0b11111) {
+				return ThumbInstructionType::CMP;
+			}
+			else {
+				return ThumbInstructionType::SUB;
+			}
+		}
+		else if (op == 0b1110) {
+			return ThumbInstructionType::RSB;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
