@@ -1724,7 +1724,33 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (second_instruction >> 12) & 0b111;
+		// const ThumbInstruction imm8 = second_instruction & 0b1111'1111;
+		// const ThumbInstruction op = (first_instruction >> 4) & 0b111'1111;
+		// const ThumbInstruction op2 = (second_instruction >> 8) & 0b1111;
+		
+		// op1 == 0b000, op == 0b111111x
+		// 1111110 - HVC Hypervisor Call is v7TE
+		// 1111111 - SMC/SMI Secure Monitor Call is Security Extensions
+
+		// op1 == 0b010, op = 0b1111111
+		// Permanently undefined
+		
+		// op1 == 0b0x0
+		// NOTE(ches) These should all be unimplemented, from what I can tell
+		// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/32-bit-Thumb-instruction-encoding/Branches-and-miscellaneous-control?lang=en
+		// MSR Move to Banked or Special Register
+		// B Conditional Branch - v6T2
+		// MSR (Banked Register) Move to Banked or Special register - v7VE
+		// BXJ Branch and Exchange Jazelle - v6T2
+		// ERET Exception Return - v6T2
+		// SUBS PC, LR Exception Return - v6T2
+		// MRS (Banked Register) Move from Banked or Special register - v7VE
+
+		if ((op1 & 0b101) == 0b101) {
+			return ThumbInstructionType::BL;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
