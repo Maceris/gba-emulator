@@ -1499,7 +1499,7 @@ namespace DecodeThumb {
 		}
 		else if (op1 == 0b11) {
 			if ((op2 & 0b1110001) == 0b0000000) {
-				return decode_32_load_store_single(first_instruction,
+				return decode_32_load_single(first_instruction,
 					second_instruction);
 			}
 			if ((op2 & 0b1100111) == 0b0000001) {
@@ -1754,11 +1754,47 @@ namespace DecodeThumb {
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
-	ThumbInstructionType constexpr decode_32_load_store_single(
+	ThumbInstructionType constexpr decode_32_load_single(
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (first_instruction >> 5) & 0b111;
+		const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+
+		if (op1 == 0b000) {
+			if (((op2 & 0b100100) == 0b100100)
+				|| ((op2 & 0b111100) == 0b110000)
+				|| (op2 == 0b000000)) {
+				return ThumbInstructionType::STRB;
+			}
+			// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+		}
+		else if (op1 == 0b001) {
+			if (((op2 & 0b100100) == 0b100100)
+				|| ((op2 & 0b111100) == 0b11000)
+				|| (op2 == 0b000000)) {
+				return ThumbInstructionType::STRH;
+			}
+			// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+		}
+		else if (op1 == 0b010) {
+			if (((op2 & 0b100100) == 0b100100)
+				|| ((op2 & 0b111100) == 0b110000)
+				|| (op2 == 0b000000)) {
+				return ThumbInstructionType::STR;
+			}
+			// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+		}
+		else if (op1 == 0b100) {
+			return ThumbInstructionType::STRB;
+		}
+		else if (op1 == 0b101) {
+			return ThumbInstructionType::STRH;
+		}
+		else if (op1 == 0b110) {
+			return ThumbInstructionType::STR;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
