@@ -290,6 +290,8 @@ void LogManager::output_buffer_to_logs(std::string_view final_buffer,
 		OutputDebugStringA(final_buffer.data());
 #elif defined(UNIX)
 		std::clog << final_buffer << std::endl;
+#else
+		std::cout << final_buffer << std::endl;
 #endif
 	}
 	if ((flags & FLAG_WRITE_TO_LOG_FILE) != FLAG_WRITE_NOWHERE)
@@ -300,12 +302,18 @@ void LogManager::output_buffer_to_logs(std::string_view final_buffer,
 
 void LogManager::write_to_log_file(std::string_view data)
 {
-	FILE* log_file = nullptr;
 	// Opens for reading and appending. Creates the file if it doesn't exist.
-	errno_t error = fopen_s(&log_file, ERROR_LOG_FILENAME, "a+");
-	if (error != 0)
+	FILE* log_file = fopen(ERROR_LOG_FILENAME, "a+");
+	if (log_file == nullptr)
 	{
+		
+#if defined(WIN32)
 		OutputDebugStringA("Failed to open log file");
+#elif defined(UNIX)
+		std::clog << "Failed to open log file" << std::endl;
+#else
+		std::cout << "Failed to open log file" << std::endl;
+#endif
 		return;
 	}
 	fprintf(log_file, data.data());

@@ -28,13 +28,15 @@ ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
-ADD_COMPILE_OPTIONS(
-  $<$<CONFIG:>:/MT>
-  $<$<CONFIG:Debug>:/MTd>
-  $<$<CONFIG:Release>:/MT>
-)
-ADD_COMPILE_OPTIONS(/MP /bigobj)
-ADD_COMPILE_OPTIONS(/wd4244) # Warn about converting from types with possible loss of data
+IF(MSVC)
+  ADD_COMPILE_OPTIONS(
+    $<$<CONFIG:>:/MT>
+    $<$<CONFIG:Debug>:/MTd>
+    $<$<CONFIG:Release>:/MT>
+  )
+  ADD_COMPILE_OPTIONS(/MP /bigobj)
+  ADD_COMPILE_OPTIONS(/wd4244) # Warn about converting from types with possible loss of data
+ENDIF()
 
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DDEBUG /Zi /Od")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
