@@ -375,3 +375,6 @@ log.txt
 **/CMakeScripts
 **/compile_commands.json
 **/generated/
+
+
+**/.DS_Store
