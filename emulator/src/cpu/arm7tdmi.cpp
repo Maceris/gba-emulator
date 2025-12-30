@@ -1802,6 +1802,35 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
+		const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
+		const ThumbInstruction rn = first_instruction & 0b1111;
+		const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+		const ThumbInstruction rt = (second_instruction >> 12) & 0b1111;
+
+		if (op1 == 0b00 && op2 == 0b000000 && rn != 0b1111) {
+
+		}
+		else if ((op1 & 0b10) == 0b00 && rn == 0b1111) {
+
+		}
+		else if (op1 == 0b00) {
+
+		}
+		else if (op1 == 0b01 && rn != 0b1111) {
+
+		}
+		else if (op1 == 0b10 && op2 == 0b000000 && rn != 0b1111) {
+
+		}
+		else if ((op1 & 0b10) == 0b10 && rn == 0b1111) {
+
+		}
+		else if (op1 == 0b10) {
+
+		}
+		else if (op1 == 0b11 && rn != 0b1111) {
+			
+		}
 		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
