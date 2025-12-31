@@ -1808,30 +1808,61 @@ namespace DecodeThumb {
 		const ThumbInstruction rt = (second_instruction >> 12) & 0b1111;
 
 		if (op1 == 0b00 && op2 == 0b000000 && rn != 0b1111) {
-
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRB;
+			}
+			// PLD Preload Data is at least v5TE
 		}
 		else if ((op1 & 0b10) == 0b00 && rn == 0b1111) {
-
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRB;
+			}
+			// PLD Preload Data is at least v5TE
 		}
 		else if (op1 == 0b00) {
-
+			if ((op2 & 0b100100) == 0b100100 && rn != 0b1111) {
+				return ThumbInstructionType::LDRB;
+			}
+			else if ((op2 & 0b111100) == 0b110000 && rn != 0b1111) {
+				return ThumbInstructionType::LDRB;
+			}
+			// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 is PLD
+			// op2 == 0b1110xx, rn != 0b1111 is LDRBT, which I don't think we have
 		}
 		else if (op1 == 0b01 && rn != 0b1111) {
-
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRB;
+			}
+			// PLD Preload Data is at least v5TE
 		}
 		else if (op1 == 0b10 && op2 == 0b000000 && rn != 0b1111) {
-
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRSB;
+			}
+			// else PLI Preload Instruction, v7
 		}
 		else if ((op1 & 0b10) == 0b10 && rn == 0b1111) {
-
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRSB;
+			}
+			// else PLI Preload Instruction, v7
 		}
 		else if (op1 == 0b10) {
-
+			if ((op2 & 0b100100) == 0b100100 && rn != 0b1111) {
+				return ThumbInstructionType::LDRSB;
+			}
+			else if ((op2 & 0b111100) == 0b110000 && rn != 0b1111) {
+				return ThumbInstructionType::LDRSB;
+			}
+			// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 is PLI
+			// op2 == 0b1110xx, rn != 0b1111 is LDRSBT, which I don't think we have
 		}
 		else if (op1 == 0b11 && rn != 0b1111) {
-			
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRSB;
+			}
+			// else PLI Preload Instruction, v7
 		}
-		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
