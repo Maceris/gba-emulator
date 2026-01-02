@@ -322,6 +322,11 @@ void ARM7TDMI::thumb_mvn(ThumbInstruction instruction)
 void ARM7TDMI::thumb_neg(ThumbInstruction instruction)
 {}
 
+void ARM7TDMI::thumb_nop(ThumbInstruction instruction)
+{
+	//NOTE(ches) this one is easy.
+}
+
 void ARM7TDMI::thumb_or(ThumbInstruction instruction)
 {}
 
@@ -1870,7 +1875,48 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
+		const ThumbInstruction rn = first_instruction & 0b1111;
+		const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+		const ThumbInstruction rt = (second_instruction >> 12) & 0b1111;
+
+		if ((op1 & 0b10) == 0b00 && rn == 0b1111) {
+			if (rt != 0b1111) {
+				return ThumbInstructionType::LDRH;
+			}
+			// PLD Preload Data is v5TE
+		}
+		else if ((op1 == 0b00 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
+			|| (op1 == 0b00 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt != 0b1111)
+			|| (op1 == 0b01 && rn != 0b1111 && rt != 0b1111)
+			) {
+			return ThumbInstructionType::LDRH;
+		}
+		else if (op1 == 0b00 && op2 == 0b000000 && rn != 0b1111 && rt != 0b1111) {
+			// op2 == 0b1110xx, rn != 0b1111 - LDRHT Load Register Halfword Unprivileged is v6T2
+			// op2 == 0b000000, rn != 0b1111, rt == 0b1111 - PLD
+			// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 - PLD
+			return ThumbInstructionType::LDRH;
+		}
+		// op1 == 0b01, rn != 0b1111, rt == 0b1111 - PLD
+		else if ((op1 == 0b10 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
+			|| (op1 == 0b10 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt != 0b1111)
+			|| (op1 == 0b11 && rn == 0b1111 && rt != 0b1111)
+			|| ((op1 & 0b10) == 0b10 && rn == 0b1111 && rt != 0b1111)
+			|| (op1 == 0b10 && op2 == 0b000000 && rn != 0b1111 && rt != 0b1111)
+			) {
+			return ThumbInstructionType::LDRSH;
+		}
+		// LDRSHT is ambiguous in the spec regarding rt, but we don't have that anyway
+		else if ((op1 == 0b10 && op2 == 0b000000 && rn != 0b1111 && rt == 0b1111)
+			|| (op1 == 0b10 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt == 0b1111)
+			|| ((op1 & 0b10) == 0b10 && rn == 0b1111 && rt == 0b1111)
+			|| (op1 == 0b11 && rn != 0b1111 && rt == 0b1111)
+			) {
+			// Unallocated memory hint (treat as NOP)
+			return ThumbInstructionType::NOP;
+		}
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 

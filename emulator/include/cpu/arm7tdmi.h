@@ -436,6 +436,10 @@ enum class ThumbInstructionType
 	/// </summary>
 	NEG,
 	/// <summary>
+	/// No Operation.
+	/// </summary>
+	NOP,
+	/// <summary>
 	/// Or.
 	/// </summary>
 	ORR,
@@ -1070,6 +1074,10 @@ struct ARM7TDMI
 	/// Negate.
 	/// </summary>
 	void thumb_neg(ThumbInstruction instruction);
+	/// <summary>
+	/// No operation.
+	/// </summary>
+	void thumb_nop(ThumbInstruction instruction);
 	/// <summary>
 	/// Or.
 	/// </summary>
