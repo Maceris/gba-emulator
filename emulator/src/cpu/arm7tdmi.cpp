@@ -1924,7 +1924,20 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
+		const ThumbInstruction rn = first_instruction & 0b1111;
+		const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+
+		if ((op1 == 0b00 && op2 == 0b000000 && rn != 0b1111)
+		|| (op1 == 0b00 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
+		|| (op1 == 0b00 && (op2 & 0b111100) == 0b110000 && rn != 0b1111)
+		|| (op1 == 0b01 && rn != 0b1111)
+		|| ((op1 & 0b10) == 0b00 && rn == 0b1111)
+		) {
+			return ThumbInstructionType::LDR;
+		}
+		// op1 == 0b00, op2 == 1110xx, rn != 0b1111 - LDRT Load Register Unprivileged
+		
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
