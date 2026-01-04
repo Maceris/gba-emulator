@@ -1524,8 +1524,9 @@ namespace DecodeThumb {
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 			if ((op2 & 0b1110001) == 0b0010000) {
-				return decode_32_advanced_simd_structure_load_store(
-					first_instruction, second_instruction);
+				// Advanced SIMD element or structure load/store instructions
+				// We don't have these
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 			if ((op2 & 0b1110000) == 0b0100000) {
 				return decode_32_data_processing_register(first_instruction,
@@ -1938,14 +1939,6 @@ namespace DecodeThumb {
 		}
 		// op1 == 0b00, op2 == 1110xx, rn != 0b1111 - LDRT Load Register Unprivileged
 		
-		return ThumbInstructionType::UNIMPLEMENTED;
-	}
-
-	ThumbInstructionType constexpr decode_32_advanced_simd_structure_load_store(
-		ThumbInstruction first_instruction, 
-		ThumbInstruction second_instruction)
-	{
-		//TODO(ches) fill this out
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
