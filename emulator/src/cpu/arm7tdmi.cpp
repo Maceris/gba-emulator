@@ -1946,7 +1946,24 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
+		const ThumbInstruction op1 = (first_instruction >> 4) & 0b1111;
+		const ThumbInstruction op2 = (second_instruction >> 4) & 0b1111;
+
+		if ((op1 & 0b1110) == 0b0000 && op2 == 0b0000) {
+			return ThumbInstructionType::LSL;
+		}
+		else if ((op1 & 0b1110) == 0b0010 && op2 == 0b0000) {
+			return ThumbInstructionType::LSR;
+		}
+		else if ((op1 & 0b1110) == 0b0100 && op2 == 0b0000) {
+			return ThumbInstructionType::ASR;
+		}
+		else if ((op1 & 0b1110) == 0b0110 && op2 == 0b0000) {
+			return ThumbInstructionType::ROR;
+		}
+		// Everything else is newer
+		// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/32-bit-Thumb-instruction-encoding/Data-processing--register-?lang=en
+
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 
