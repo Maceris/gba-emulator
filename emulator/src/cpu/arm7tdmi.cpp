@@ -1537,8 +1537,9 @@ namespace DecodeThumb {
 					first_instruction, second_instruction);
 			}
 			if ((op2 & 0b1111000) == 0b0111000) {
-				return decode_32_long_multiply_long_multiply_accumulate_divide(
-					first_instruction, second_instruction);
+				// Long multiply, long multiply accumulate, and divide
+				// These are all v6T2 or v7-R
+				return ThumbInstructionType::UNIMPLEMENTED;
 			}
 			if ((op2 & 0b1000000) == 0b1000000) {
 				// Coprocessor, Advanced SIMD, and Floating-point instructions
@@ -1971,15 +1972,16 @@ namespace DecodeThumb {
 		ThumbInstruction first_instruction, 
 		ThumbInstruction second_instruction)
 	{
-		//TODO(ches) fill this out
-		return ThumbInstructionType::UNIMPLEMENTED;
-	}
+		const ThumbInstruction op1 = (first_instruction >> 4) & 0b111;
+		const ThumbInstruction op2 = (second_instruction >> 4) & 0b11;
+		const ThumbInstruction ra = (second_instruction >> 12) & 0b1111;
 
-	ThumbInstructionType constexpr decode_32_long_multiply_long_multiply_accumulate_divide(
-		ThumbInstruction first_instruction, 
-		ThumbInstruction second_instruction)
-	{
-		//TODO(ches) fill this out
+		if (op1 == 0b000 && op2 == 0b00 && ra == 0b1111) {
+			return ThumbInstructionType::MUL;
+		}
+
+		// We don't have the rest of these in thumb mode
+		// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/32-bit-Thumb-instruction-encoding/Multiply--multiply-accumulate--and-absolute-difference?lang=en
 		return ThumbInstructionType::UNIMPLEMENTED;
 	}
 

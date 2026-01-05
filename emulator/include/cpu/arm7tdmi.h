@@ -557,7 +557,6 @@ namespace DecodeThumb {
 	ThumbInstructionType constexpr decode_32_load_word(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 	ThumbInstructionType constexpr decode_32_data_processing_register(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 	ThumbInstructionType constexpr decode_32_multiply_multiply_accumulate_absolute_difference(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-	ThumbInstructionType constexpr decode_32_long_multiply_long_multiply_accumulate_divide(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 }
 
 /// <summary>
