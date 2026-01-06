@@ -568,20 +568,62 @@ namespace DecodeThumb {
 struct ARM7TDMI
 {
 #pragma region Registers
-	// System/User Registers
+	// System (sys)/User (usr) Registers
+
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R0;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R1;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R2;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R3;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R4;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R5;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R6;
+	/// <summary>
+	/// General purpose register. Available in both ARM and THUMB state.
+	/// </summary>
 	Register R7;
+
+	/// <summary>
+	/// General purpose register. Only available in ARM state.
+	/// </summary>
 	Register R8;
+	/// <summary>
+	/// General purpose register. Only available in ARM state.
+	/// </summary>
 	Register R9;
+	/// <summary>
+	/// General purpose register. Only available in ARM state.
+	/// </summary>
 	Register R10;
+	/// <summary>
+	/// General purpose register. Only available in ARM state.
+	/// </summary>
 	Register R11;
+	/// <summary>
+	/// General purpose register. Only available in ARM state.
+	/// </summary>
 	Register R12;
+
 	/// <summary>
 	/// Stack Pointer (SP) in THUMB state. ARM state may or may not use this as
 	/// a stack pointer.
@@ -607,34 +649,139 @@ struct ARM7TDMI
 	/// </summary>
 	Register CPSR;
 
-	// FIQ Registers
+	// Fast Interrupt (fiq) Registers
+
+	/// <summary>
+	/// Banked version of a general purpose register for FIQ mode.
+	/// Only available in ARM state.
+	/// </summary>
 	Register R8_fiq;
+	/// <summary>
+	/// Banked version of a general purpose register for FIQ mode.
+	/// Only available in ARM state.
+	/// </summary>
 	Register R9_fiq;
+	/// <summary>
+	/// Banked version of a general purpose register for FIQ mode.
+	/// Only available in ARM state.
+	/// </summary>
 	Register R10_fiq;
+	/// <summary>
+	/// Banked version of a general purpose register for FIQ mode.
+	/// Only available in ARM state.
+	/// </summary>
 	Register R11_fiq;
+	/// <summary>
+	/// Banked version of a general purpose register for FIQ mode.
+	/// Only available in ARM state.
+	/// </summary>
 	Register R12_fiq;
+	/// <summary>
+	/// Banked version for FIQ mode, used as the Stack Pointer (SP)
+	/// in THUMB state, the ARM state may or may not use this as
+	/// a stack pointer.
+	/// </summary>
 	Register R13_fiq;
+	/// <summary>
+	/// Banked version of the Link Register (LR) for FIQ mode. 
+	/// When calling a sub-routine using a BL instruction, 
+	/// the return address is saved here. ARM state may use this as a
+	/// general register.
+	/// </summary>
 	Register R14_fiq;
+	/// <summary>
+	/// Banked version of the Saved Program Status Register for FIQ mode. 
+	/// Contains condition code flags, and mode bits saved as a result of
+	/// the exception that caused entry to the current mode.
+	/// </summary>
 	Register SPSR_fiq;
 
-	// Supervisor Registers
+	// Supervisor (svc) Registers
+
+	/// <summary>
+	/// Banked version for SVC mode, used as the Stack Pointer (SP)
+	/// in THUMB state, the ARM state may or may not use this as
+	/// a stack pointer.
+	/// </summary>
 	Register R13_svc;
+	/// <summary>
+	/// Banked version of the Link Register (LR) for SVC mode. 
+	/// When calling a sub-routine using a BL instruction, 
+	/// the return address is saved here. ARM state may use this as a
+	/// general register.
+	/// </summary>
 	Register R14_svc;
+	/// <summary>
+	/// Banked version of the Saved Program Status Register for SVC mode. 
+	/// Contains condition code flags, and mode bits saved as a result of
+	/// the exception that caused entry to the current mode.
+	/// </summary>
 	Register SPSR_svc;
 
-	// Abort Registers
+	// Abort (abt) Registers
+
+	/// <summary>
+	/// Banked version for ABT mode, used as the Stack Pointer (SP)
+	/// in THUMB state, the ARM state may or may not use this as
+	/// a stack pointer.
+	/// </summary>
 	Register R13_abt;
+	/// <summary>
+	/// Banked version of the Link Register (LR) for ABT mode. 
+	/// When calling a sub-routine using a BL instruction, 
+	/// the return address is saved here. ARM state may use this as a
+	/// general register.
+	/// </summary>
 	Register R14_abt;
+	/// <summary>
+	/// Banked version of the Saved Program Status Register for ABT mode. 
+	/// Contains condition code flags, and mode bits saved as a result of
+	/// the exception that caused entry to the current mode.
+	/// </summary>
 	Register SPSR_abt;
 
-	// IRQ Registers
+	// Interrupt (irq) Registers
+
+	/// <summary>
+	/// Banked version for IRQ mode, used as the Stack Pointer (SP)
+	/// in THUMB state, the ARM state may or may not use this as
+	/// a stack pointer.
+	/// </summary>
 	Register R13_irq;
+	/// <summary>
+	/// Banked version of the Link Register (LR) for IRQ mode. 
+	/// When calling a sub-routine using a BL instruction, 
+	/// the return address is saved here. ARM state may use this as a
+	/// general register.
+	/// </summary>
 	Register R14_irq;
+	/// <summary>
+	/// Banked version of the Saved Program Status Register for IRQ mode. 
+	/// Contains condition code flags, and mode bits saved as a result of
+	/// the exception that caused entry to the current mode.
+	/// </summary>
 	Register SPSR_irq;
 
-	// Undefined Registers
+	// Undefined (und) Registers
+
+	/// <summary>
+	/// Banked version for UND mode, used as the Stack Pointer (SP)
+	/// in THUMB state, the ARM state may or may not use this as
+	/// a stack pointer.
+	/// </summary>
 	Register R13_und;
+	/// <summary>
+	/// Banked version of the Link Register (LR) for UND mode. 
+	/// When calling a sub-routine using a BL instruction, 
+	/// the return address is saved here. ARM state may use this as a
+	/// general register.
+	/// </summary>
 	Register R14_und;
+	/// <summary>
+	/// Banked version of the Saved Program Status Register for UND mode. 
+	/// Contains condition code flags, and mode bits saved as a result of
+	/// the exception that caused entry to the current mode.
+	/// </summary>
 	Register SPSR_und;
 #pragma endregion
 
