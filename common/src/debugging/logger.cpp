@@ -260,6 +260,12 @@ bool LogManager::error(
 	}
 
 #if defined(WIN32)
+	std::string instructions("\nSelect Abort to exit the application.\n"
+		"Select Retry to attempt opening a debugger.\n"
+		"Select Ignore to ignore this error going forward, which is risky."
+	);
+	buffer += instructions;
+
 	// Show a dialog box, with an error icon, defaulting to abort
 	int response = MessageBoxA(nullptr, buffer.c_str(), tag.c_str(),
 		MB_ABORTRETRYIGNORE | MB_ICONERROR | MB_DEFBUTTON1);
@@ -267,13 +273,13 @@ bool LogManager::error(
 	switch (response)
 	{
 	case IDABORT:
-		__debugbreak();// breaks into the debugger
 		std::exit(-1);
 		return false;
 	case IDIGNORE:
 		return true;
 	case IDRETRY:
 	default:
+		__debugbreak();// breaks into the debugger
 		return false;
 	}
 #elif defined(UNIX)
