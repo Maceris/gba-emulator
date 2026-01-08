@@ -42,12 +42,12 @@ namespace Logger
 		ErrorLogger();
 
 		/// <summary>
-		/// Record a log.
+		/// Record an error, which may not terminate depending on the
+		/// users actions.
 		/// </summary>
 		/// <param name="error_message">The message to log.</param>
-		/// <param name="fatal">Whether the message is fatal.</param>
 		/// <param name="location">The location of the log line.</param>
-		void log_error(std::string_view error_message, bool fatal,
+		void log_error(std::string_view error_message,
 			std::source_location location);
 	};
 
@@ -78,6 +78,15 @@ namespace Logger
 		std::source_location location);
 
 	/// <summary>
+	/// Record a fatal error, we cannot recover from this.
+	/// </summary>
+	/// <param name="error_message">The message to log.</param>
+	/// <param name="location">The location of the log line.</param>
+	[[noreturn]]
+	void log_fatal(std::string_view error_message, 
+		std::source_location location);
+
+	/// <summary>
 	/// Set up display flags for any particular flag, so tags can be used
 	/// when logging.
 	/// </summary>
@@ -97,11 +106,10 @@ in all contexts, like after conditionals.
 #define LOG_FATAL(str) \
 	do \
 	{ \
-		static Logger::ErrorLogger* error_logger = ALLOC Logger::ErrorLogger; \
 		std::string s((str)); \
-		error_logger->log_error(s, true, std::source_location::current()); \
+		Logger::log_fatal(s, std::source_location::current()); \
 	} \
-	while (0)\
+	while (0)
 
 #if DEBUG
 
@@ -114,9 +122,9 @@ in all contexts, like after conditionals.
 		{ \
 			static Logger::ErrorLogger* error_logger = ALLOC Logger::ErrorLogger; \
 			std::string s((str)); \
-			error_logger->log_error(s, false, std::source_location::current()); \
+			error_logger->log_error(s, std::source_location::current()); \
 		} \
-		while (0)\
+		while (0)
 
 	/// <summary>
 	/// Log a warning, which is recoverable.
@@ -127,7 +135,7 @@ in all contexts, like after conditionals.
 			std::string s((str)); \
 			Logger::log("WARNING", s, std::source_location::current()); \
 		}\
-		while (0)\
+		while (0)
 
 	/// <summary>
 	/// Log some information without any kind of tags (technically has a tag 
@@ -139,7 +147,7 @@ in all contexts, like after conditionals.
 			std::string s((str)); \
 			Logger::log("INFO", s); \
 		} \
-		while (0) \
+		while (0)
 
 	/// <summary>
 	/// Used for logging any desired tag string, but tags should be enabled during
@@ -151,7 +159,7 @@ in all contexts, like after conditionals.
 			std::string s((str)); \
 			Logger::log(tag, s); \
 		} \
-		while (0) \
+		while (0)
 
 	/// <summary>
 	/// Asserts that an expression is true, and if it is not then we log the
@@ -162,11 +170,11 @@ in all contexts, like after conditionals.
 		{ \
 			if (!(expr)) \
 			{ \
-				static Logger::ErrorLogger* error_logger = ALLOC Logger::ErrorLogger; \
-				error_logger->log_error(#expr, false, std::source_location::current()); \
+				std::string s(("Assertion failed: " #expr)); \
+				Logger::log_fatal(s, std::source_location::current()); \
 			} \
 		} \
-		while (0) \
+		while (0)
 
 #else
 

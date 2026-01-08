@@ -28,15 +28,6 @@ const LogFlag DEFAULT_FLAG_INFO = FLAG_WRITE_NOWHERE;
 class LogManager
 {
 public:
-	/// <summary>
-	/// The possible results from an error dialog.
-	/// </summary>
-	enum ErrorDialogResult
-	{
-		LOG_MANAGER_ERROR_ABORT,
-		LOG_MANAGER_ERROR_RETRY,
-		LOG_MANAGER_ERROR_IGNORE
-	};
 
 	using Tags = std::map<std::string, LogFlag, std::less<>>;
 	using ErrorLoggerList = std::list<Logger::ErrorLogger*>;
@@ -108,14 +99,38 @@ public:
 	void add_error_logger(Logger::ErrorLogger* logger);
 
 	/// <summary>
+	/// Log an error, and show an error dialog to the user. Might not
+	/// terminate, depending on the users action.
+	/// </summary>
+	/// <param name="error_message">The error message to show.</param>
+	/// <param name="location">The location of the log line.</param>
+	/// <returns>Whether we want to ignore the error.</returns>
+	bool error(std::string_view error_message, std::source_location location);
+
+	/// <summary>
 	/// Log an error, and show an error dialog to the user.
 	/// </summary>
 	/// <param name="error_message">The error message to show.</param>
-	/// <param name="fatal">Whether the error is fatal.</param>
 	/// <param name="location">The location of the log line.</param>
-	/// <returns>The result of the user's choice on the dialog.</returns>
-	LogManager::ErrorDialogResult error(std::string_view error_message,
-		bool fatal, std::source_location location);
+	[[noreturn]]
+	void fatal(std::string_view error_message,
+		std::source_location location);
+
+	/// <summary>
+	/// Format a message and return it back out in the first parameter.
+	/// </summary>
+	/// <param name="tag">The tag we are logging.</param>
+	/// <param name="message">The message to log, pre-formatting.</param>
+	/// <param name="function_name">The function that log was called from.
+	/// </param>
+	/// <param name="source_file">The file that log was called from.</param>
+	/// <param name="line_number">The line number that log was called from.
+	/// </param>
+	/// <returns>The resulting message.</returns>
+	static std::string format_message(
+		std::string_view tag, std::string_view message,
+		const char* function_name, const char* source_file,
+		unsigned int line_number);
 
 private:
 	/// <summary>
@@ -133,21 +148,7 @@ private:
 	/// <param name="data">The data to write.</param>
 	void write_to_log_file(std::string_view data);
 
-	/// <summary>
-	/// Format a message and return it back out in the first parameter.
-	/// </summary>
-	/// <param name="tag">The tag we are logging.</param>
-	/// <param name="message">The message to log, pre-formatting.</param>
-	/// <param name="function_name">The function that log was called from.
-	/// </param>
-	/// <param name="source_file">The file that log was called from.</param>
-	/// <param name="line_number">The line number that log was called from.
-	/// </param>
-	/// <returns>The resulting message.</returns>
-	std::string format_message(
-		std::string_view tag, std::string_view message,
-		const char* function_name, const char* source_file,
-		unsigned int line_number);
+	
 };
 
 static LogManager* log_manager = nullptr;
@@ -240,10 +241,10 @@ void LogManager::add_error_logger(Logger::ErrorLogger* logger)
 	error_loggers.push_back(logger);
 }
 
-LogManager::ErrorDialogResult LogManager::error(
-	std::string_view error_message, bool fatal, std::source_location location)
+bool LogManager::error(
+	std::string_view error_message, std::source_location location)
 {
-	std::string tag = fatal ? "FATAL" : "ERROR";
+	std::string tag = "ERROR";
 
 	std::string buffer = format_message(tag, error_message,
 		location.function_name(), location.file_name(), location.line());
@@ -267,18 +268,50 @@ LogManager::ErrorDialogResult LogManager::error(
 	{
 	case IDABORT:
 		__debugbreak();// breaks into the debugger
-		return LogManager::LOG_MANAGER_ERROR_RETRY;
+		std::exit(-1);
+		return false;
 	case IDIGNORE:
-		return LogManager::LOG_MANAGER_ERROR_IGNORE;
+		return true;
 	case IDRETRY:
 	default:
-		return LogManager::LOG_MANAGER_ERROR_RETRY;
+		return false;
 	}
 #elif defined(UNIX)
 	//TODO(ches) figure out how to ask the user what to do
-
-	abort();//NOTE(ches) just hard crash I guess
+	std::exit(-1);//NOTE(ches) just hard crash I guess
+#else
+	std::exit(-1);//NOTE(ches) just hard crash I guess
 #endif
+}
+
+void LogManager::fatal(
+	std::string_view error_message, std::source_location location)
+{
+	std::string tag = "FATAL";
+	std::string buffer = format_message(tag, error_message,
+		location.function_name(), location.file_name(), location.line());
+
+	{
+		std::scoped_lock lock{ tag_mutex };
+		// Log first, dialog later
+		Tags::iterator result = tags.find(tag);
+		if (result != tags.end())
+		{
+			output_buffer_to_logs(buffer, result->second);
+		}
+	}
+
+#if defined(WIN32)
+	// Show a dialog box, with an error icon, defaulting to abort
+	int response = MessageBoxA(nullptr, buffer.c_str(), tag.c_str(),
+		MB_ICONERROR | MB_DEFBUTTON1);
+	
+#elif defined(UNIX)
+	//TODO(ches) find a way to show message
+#else
+	//TODO(ches) find a way to show message
+#endif
+	std::exit(-1);
 }
 
 void LogManager::output_buffer_to_logs(std::string_view final_buffer,
@@ -375,11 +408,11 @@ namespace Logger
 	}
 
 	void ErrorLogger::log_error(std::string_view error_message,
-		bool fatal, std::source_location location)
+		std::source_location location)
 	{
 		if (enabled)
 		{
-			if (log_manager->error(error_message, fatal, location))
+			if (log_manager->error(error_message, location))
 			{
 				enabled = false;
 			}
@@ -388,6 +421,39 @@ namespace Logger
 }
 
 #pragma endregion
+
+static void log_a_big_goof(std::string_view error_message,
+	std::source_location location) {
+
+	std::string tag = "FATAL";
+	std::string buffer = LogManager::format_message(tag, error_message,
+		location.function_name(), location.file_name(), location.line());
+#if defined(WIN32)
+		OutputDebugStringA(buffer.data());
+		MessageBoxA(nullptr, buffer.c_str(), tag.c_str(),
+			MB_ICONERROR | MB_DEFBUTTON1);
+#elif defined(UNIX)
+		std::clog << final_buffer << std::endl;
+#else
+		std::cout << final_buffer << std::endl;
+#endif
+	std::exit(-1);
+}
+
+#if DEBUG
+#define INTERNAL_ASSERT(expr, location) \
+		do \
+		{ \
+			if (!(expr)) \
+			{ \
+				std::string s(("Assertion failed: " #expr)); \
+				log_a_big_goof(s, location); \
+			} \
+		} \
+		while (0)
+#else
+#define INTERNAL_ASSERT(expr) do { (void)sizeof(expr); } while(0) 
+#endif
 
 #pragma region Logger function definitions
 
@@ -412,19 +478,27 @@ namespace Logger
 
 	void log(std::string_view tag, std::string_view error_message)
 	{
-		LOG_ASSERT(log_manager);
+		INTERNAL_ASSERT(log_manager != nullptr, std::source_location::current());
 		log_manager->log(tag, error_message);
 	}
+
 	void log(std::string_view tag, std::string_view error_message,
 		std::source_location location)
 	{
-		LOG_ASSERT(log_manager);
+		INTERNAL_ASSERT(log_manager != nullptr, location);
 		log_manager->log(tag, error_message, location);
+	}
+
+	void log_fatal(std::string_view error_message,
+		std::source_location location)
+	{
+		INTERNAL_ASSERT(log_manager != nullptr, location);
+		log_manager->fatal(error_message, location);
 	}
 
 	void set_display_flags(std::string_view tag, unsigned char flags)
 	{
-		LOG_ASSERT(log_manager);
+		INTERNAL_ASSERT(log_manager != nullptr, std::source_location::current());
 		log_manager->set_display_flags(tag, flags);
 	}
 }
