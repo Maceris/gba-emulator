@@ -65,8 +65,26 @@ struct MemoryAccessInfo
 
 enum class MemoryCycleType
 {
-	IDLE,
+	/// <summary>
+	/// During this cycle, the core is performing an internal transfer and
+	/// no useful prefetching can be performed at the same time, 
+	/// so it does not require a transfer.
+	/// </summary>
+	INTERNAL,
+	/// <summary>
+	/// During this cycle, the core requests a transfer to or from an address
+	/// which is unrelated to the address used in the preceding cycle.
+	/// </summary>
 	NON_SEQUENTIAL,
+	/// <summary>
+	/// During this cycle, the core requests a transfer to or from an address
+	/// that is either one word or one halfword greater than the address used
+	/// in the preceding cycle.
+	/// </summary>
 	SEQUENTIAL,
+	/// <summary>
+	/// During this cycle, the core uses the data bus to communicate with a
+	/// coprocessor, but does not require any action by the memory system.
+	/// </summary>
 	COPROCESSOR_REGISTER_TRANSFER
 };
