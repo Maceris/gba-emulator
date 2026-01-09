@@ -4,6 +4,6 @@
 
 TEST(CPUTest, TypeChecks)
 {
-	EXPECT_EQ(sizeof(ArmInstruction), 4);
-	EXPECT_EQ(sizeof(ThumbInstruction), 2);
+	EXPECT_EQ(sizeof(emulator::ArmInstruction), 4);
+	EXPECT_EQ(sizeof(emulator::ThumbInstruction), 2);
 }

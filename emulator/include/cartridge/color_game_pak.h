@@ -2,6 +2,8 @@
 
 #include "game_pak.h"
 
-struct ColorGamePak : public GamePak
-{
-};
+namespace emulator {
+	struct ColorGamePak : public GamePak
+	{
+	};
+}
