@@ -1,5 +1,6 @@
 #pragma once
 
+#include "board/wire.h"
 #include "memory/memory_types.h"
 
 enum class ARMInstructionType : uint8_t
@@ -783,6 +784,102 @@ struct ARM7TDMI
 	/// the exception that caused entry to the current mode.
 	/// </summary>
 	Register SPSR_und;
+#pragma endregion
+
+#pragma region External interface
+	
+	// Clock
+	INCOMING Wire1 CLK;
+	INCOMING Wire1 CLKEN;
+
+	// Interrupts
+	INCOMING Wire1 nIRQ;
+	INCOMING Wire1 nFIQ;
+	INCOMING Wire1 nRESET;
+
+	// Bus control
+	INCOMING Wire1 CFGBIGEND;
+
+	// Arbitration
+	OUTGOING Wire1 DMORE;
+	OUTGOING Wire1 LOCK;
+
+	// Debug
+	OUTGOING Wire1 DBGINSTRVALID;
+	INCOMING Wire1 DBGRQ;
+	INCOMING Wire1 DBGBREAK;
+	OUTGOING Wire1 DBGACK;
+	OUTGOING Wire1 DBGnEXEC;
+	INCOMING Wire1 DBGEXT0;
+	INCOMING Wire1 DBGEXT1;
+	INCOMING Wire1 DBGGEN;
+	OUTGOING Wire1 DBGRNG0;
+	OUTGOING Wire1 DBGRNG1;
+	OUTGOING Wire1 DBGCOMMRX;
+	OUTGOING Wire1 DBGCOMMTX;
+
+	// Synchronized EmbeddedICE-RT scan debug access port
+	INCOMING Wire1 DBGTCKEN;
+	INCOMING Wire1 DBGTMS;
+	INCOMING Wire1 DBGTDI;
+	INCOMING Wire1 DBGnTRST;
+	OUTGOING Wire1 DBGTDO;
+	OUTGOING Wire1 DBGnTDOEN;
+
+	// Memory interface
+	OUTGOING Wire32 ADDR;
+	OUTGOING Wire32 WDATA;
+	INCOMING Wire32 RDATA;
+	INCOMING Wire1 ABORT;
+	OUTGOING Wire1 WRITE;
+	OUTGOING Wire2 SIZE;
+	OUTGOING Wire2 PROT;
+	OUTGOING Wire2 TRANS;
+
+	// Memory management interface
+	OUTGOING Wire1 CPnTRANS;
+	OUTGOING Wire1 CPnOPC;
+
+	// Coprocessor interface
+	OUTGOING Wire1 CPnMREQ;
+	OUTGOING Wire1 CPSEQ;
+	OUTGOING Wire1 CPTBIT;
+	OUTGOING Wire1 CPnl;
+	INCOMING Wire1 CPA;
+	INCOMING Wire1 CPB;
+
+#pragma endregion
+
+#pragma region Internal wires
+
+	/// <summary>
+	/// Connects from the register bank to the 32x8 multiplier and 32-bit ALU.
+	/// </summary>
+	INTERNAL Wire32 bus_A;
+
+	/// <summary>
+	/// Connects from the register bank, barrel shifter, instruction pipeline,
+	/// read sata register, thumb instruction decoder, and 32x8 multiplier
+	/// to the write data register, and 32x8 multiplier.
+	/// </summary>
+	INTERNAL Wire32 bus_B;
+
+	/// <summary>
+	/// Connects from the 32-bit ALU to the register bank, and address 
+	/// register.
+	/// </summary>
+	INTERNAL Wire32 bus_ALU;
+
+	/// <summary>
+	/// Connects from the address incrementer to the address register, and
+	/// the register bank.
+	/// </summary>
+	INTERNAL Wire32 bus_incrementer;
+
+	/// <summary>
+	/// Connects from the register bank to the address register.
+	/// </summary>
+	INTERNAL Wire32 bus_PC;
 #pragma endregion
 
 #pragma region ARM Instructions
