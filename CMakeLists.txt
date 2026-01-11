@@ -34,8 +34,46 @@ IF(MSVC)
     $<$<CONFIG:Debug>:/MTd>
     $<$<CONFIG:Release>:/MT>
   )
+  SET(GBA_OPTIONS "${GBA_OPTIONS};/Wall")
   ADD_COMPILE_OPTIONS(/MP /bigobj)
   ADD_COMPILE_OPTIONS(/wd4244) # Warn about converting from types with possible loss of data
+  ADD_COMPILE_OPTIONS(/wd5045) # /Qspectre mitigation location warning, we don't use that flag
+ELSEIF ((CMAKE_C_COMPILER_ID MATCHES "GNU") AND NOT MINGW AND NOT HAIKU)
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wall")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-pedantic")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wextra")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wcast-align")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wcast-qual")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wctor-dtor-privacy")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wdisabled-optimization")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wformat=2")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Winit-self")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wlogical-op")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wmissing-declarations")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wmissing-include-dirs")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wnoexcept")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wold-style-cast")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Woverloaded-virtual")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wredundant-decls")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wshadow")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wsign-conversion")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wsign-promo")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wstrict-null-sentinel")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wstrict-overflow=5")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wswitch-default")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wundef")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-Wno-unused")
+  
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-fsanitize=undefined,shift,shift-exponent,integer-divide-by-zero,unreachable,vla-bound,null,return,signed-integer-overflow,bounds,float-divide-by-zero,float-cast-overflow,nonnull-attribute,returns-nonnull-attribute,bool,enum,vptr,pointer-overflow,builtin")
+  SET(GBA_OPTIONS "${GBA_OPTIONS};-fno-sanitize-recover=all")
+ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  # clang-cl
+  SET(GBA_OPTIONS "${GBA_OPTIONS};/bigobj")
+  
+  IF(CMAKE_CXX_COMPILER_VERSION GREATER_EQUAL 14)
+    SET(GBA_OPTIONS "${GBA_OPTIONS};-ffp-contract=off")
+  ENDIF()
+
 ENDIF()
 
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DDEBUG /Zi /Od")
