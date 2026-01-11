@@ -46,8 +46,8 @@ namespace render {
 
 		static void callback_resized(GLFWwindow* window, int width, int height);
 	private:
-		std::atomic<int> height;
 		std::atomic<int> width;
+		std::atomic<int> height;
 		std::atomic_bool resized = false;
 	};
 

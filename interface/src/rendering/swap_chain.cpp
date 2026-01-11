@@ -43,7 +43,7 @@ namespace render {
 			device.swap_chain_support);
 		const SwapChainSupport& support = device.swap_chain_support;
 
-		VkExtent2D extent = select_extent(support.capabilities);
+		VkExtent2D selected_extent = select_extent(support.capabilities);
 		uint32_t image_count = support.capabilities.minImageCount + 1;
 		if (support.capabilities.maxImageCount > 0
 			&& image_count > support.capabilities.maxImageCount)
@@ -57,7 +57,7 @@ namespace render {
 		create_info.minImageCount = image_count;
 		create_info.imageFormat = surface.surface_format->format;
 		create_info.imageColorSpace = surface.surface_format->colorSpace;
-		create_info.imageExtent = extent;
+		create_info.imageExtent = selected_extent;
 		create_info.imageArrayLayers = 1;
 		create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		create_info.preTransform = support.capabilities.currentTransform;
@@ -97,7 +97,7 @@ namespace render {
 			&image_count, images.data());
 
 		image_format = surface.surface_format->format;
-		this->extent = extent;
+		this->extent = selected_extent;
 	}
 
 	void SwapChain::initialize_image_views()

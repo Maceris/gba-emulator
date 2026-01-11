@@ -154,7 +154,7 @@ namespace brain {
         return gui::KeyMod::NONE;
     }
 
-	void key_callback(int key, int scancode, int action, int mods) {
+	void key_callback(int key, int /*scancode*/, int action, int mods) {
         gui::KeyBinding binding = { map_key_mod(mods), map_key(key) };
 
         if (!gui::has_binding(binding)) {

@@ -220,9 +220,11 @@ namespace render {
 
 	void create_pipeline()
 	{
+		ShaderStage vertex_stage = { ShaderType::vertex, "shaders/simple.vert.spv" };
+		ShaderStage fragment_stage = { ShaderType::fragment, "shaders/simple.frag.spv" };
+
 		auto shader_stages = std::initializer_list<ShaderStage>{
-			ShaderStage{ ShaderType::vertex, "shaders/simple.vert.spv" },
-				ShaderStage{ ShaderType::fragment, "shaders/simple.frag.spv" }
+			vertex_stage, fragment_stage
 		};
 		g_render_state->pipeline = ALLOC Pipeline(
 			std::make_unique<Shader>(shader_stages));

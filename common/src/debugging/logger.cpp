@@ -4,7 +4,10 @@
 #include <map>
 #include <mutex>
 #if defined(WIN32)
+#pragma warning(push)
+#pragma warning(disable : 5039)
 #include <Windows.h>
+#pragma warning(pop)
 #elif defined(UNIX)
 #endif
 #include <iostream>
@@ -58,6 +61,11 @@ public:
 	/// Set up the log manager.
 	/// </summary>
 	LogManager();
+
+	LogManager(const LogManager&) = delete;
+	LogManager(LogManager&&) = delete;
+	LogManager& operator=(const LogManager&) = delete;
+	LogManager& operator=(LogManager&&) = delete;
 
 	/// <summary>
 	/// Clean up the log manager.
@@ -309,7 +317,7 @@ void LogManager::fatal(
 
 #if defined(WIN32)
 	// Show a dialog box, with an error icon, defaulting to abort
-	int response = MessageBoxA(nullptr, buffer.c_str(), tag.c_str(),
+	MessageBoxA(nullptr, buffer.c_str(), tag.c_str(),
 		MB_ICONERROR | MB_DEFBUTTON1);
 	
 #elif defined(UNIX)
@@ -342,6 +350,9 @@ void LogManager::output_buffer_to_logs(std::string_view final_buffer,
 void LogManager::write_to_log_file(std::string_view data)
 {
 	// Opens for reading and appending. Creates the file if it doesn't exist.
+	
+	// NOTE(ches) fopen_s isn't very portable, fopen is fine
+#pragma warning(suppress : 4996)
 	FILE* log_file = fopen(ERROR_LOG_FILENAME, "a+");
 	if (log_file == nullptr)
 	{
@@ -355,7 +366,7 @@ void LogManager::write_to_log_file(std::string_view data)
 #endif
 		return;
 	}
-	fprintf(log_file, data.data());
+	fputs(data.data(), log_file);
 	fclose(log_file);
 }
 

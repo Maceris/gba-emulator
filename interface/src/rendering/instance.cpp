@@ -15,7 +15,7 @@ namespace render {
         VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
         VkDebugUtilsMessageTypeFlagsEXT message_type,
         const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
-        void* user_data)
+        void* /*user_data*/)
     {
         std::string tag;
         switch (message_type)
@@ -59,6 +59,8 @@ namespace render {
             // Invalid behavior that may cause crashes
             LOG_ERROR(message);
             break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
+            LOG_FATAL("Weird message severity: " + message);
         }
 
         return VK_FALSE;

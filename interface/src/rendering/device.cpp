@@ -34,7 +34,6 @@ namespace render {
 		LOG_ASSERT(present_family != nullptr);
 		if (graphics_family == nullptr || present_family == nullptr) {
 			LOG_FATAL("Internal error: Null pointer finding queue families");
-			return false;
 		}
 
 		uint32_t queue_family_count = 0;
@@ -48,7 +47,7 @@ namespace render {
 		bool found_graphics = false;
 		bool found_present = false;
 
-		int i = 0;
+		uint32_t i = 0;
 		for (const auto& queue_family : queue_families)
 		{
 			if (queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT)
@@ -121,7 +120,6 @@ namespace render {
 		LOG_ASSERT(present_family != nullptr);
 		if (graphics_family == nullptr || present_family == nullptr) {
 			LOG_FATAL("Internal error: Null pointer finding queue families");
-			return 0;
 		}
 
 		int score = 0;

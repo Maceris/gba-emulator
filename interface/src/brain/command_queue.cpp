@@ -29,7 +29,7 @@ namespace brain {
 
 	Command CommandQueue::remove() {
 		if (head == tail) {
-			LOG_ASSERT(false && "Reading from an empty queue, check is_empty() or size() first");
+			LOG_ERROR("Reading from an empty queue, check is_empty() or size() first");
 			return Command::_count;
 		}
 

@@ -539,7 +539,7 @@ namespace gui {
             }
 
             bool found_command = false;
-            Command command;
+            Command command = Command::_count;
             for (const auto& [key, value] : brain::COMMAND_NAMES) {
                 if (strlen(value) == equals && strncmp(line.data(), value, equals) == 0) {
                     command = key;

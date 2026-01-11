@@ -19,7 +19,7 @@ namespace render {
 
 	void imgui_result_callback(VkResult err)
 	{
-		LOG_ASSERT("Issue with ImGui");
+		LOG_ERROR("Issue with ImGui, error code " + err);
 	}
 
 	void draw_frame()
@@ -314,7 +314,7 @@ namespace render {
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = extent;
 
-		VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+		VkClearValue clearColor = {{ 0.0f, 0.0f, 0.0f, 1.0f }};
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = &clearColor;
 
@@ -342,7 +342,7 @@ namespace render {
 
 		ImGui::Render();
 		ImDrawData* draw_data = ImGui::GetDrawData();
-		const bool is_minimized = (extent.width <= 0.0f || extent.height <= 0.0f);
+		const bool is_minimized = (extent.width == 0 || extent.height == 0);
 		if (!is_minimized)
 		{
 			ImGui_ImplVulkan_RenderDrawData(draw_data,

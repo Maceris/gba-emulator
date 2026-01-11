@@ -23,9 +23,9 @@ namespace render {
 		std::vector<VkFramebuffer> frame_buffers;
 
 	private:
+		std::vector<VkDynamicState> dynamic_states;
 		std::unique_ptr<Shader> shader;
 		VkPipelineLayout layout = nullptr;
-		std::vector<VkDynamicState> dynamic_states;
 	};
 
 	void create_pipeline();

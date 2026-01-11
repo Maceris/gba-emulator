@@ -47,7 +47,7 @@ namespace render {
 			return;
 		}
 
-		if (!file.read(shader_data, size)) {
+		if (!file.read(shader_data, static_cast<std::streamsize>(size))) {
 			delete[] shader_data;
 			LOG_FATAL("Can't read file " + full_path);
 			return;

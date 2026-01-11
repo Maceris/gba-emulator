@@ -56,10 +56,10 @@ namespace render {
 			, location{ location }
 		{
 		}
-		constexpr ShaderStage(const ShaderStage&) = delete;
-		ShaderStage& operator=(const ShaderStage&) = delete;
-		constexpr ShaderStage(ShaderStage&&) = delete;
-		ShaderStage& operator=(ShaderStage&&) = delete;
+		constexpr ShaderStage(const ShaderStage&) = default;
+		ShaderStage& operator=(const ShaderStage&) = default;
+		constexpr ShaderStage(ShaderStage&&) = default;
+		ShaderStage& operator=(ShaderStage&&) = default;
 		~ShaderStage() = default;
 	};
 

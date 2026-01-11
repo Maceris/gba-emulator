@@ -550,8 +550,7 @@ namespace emulator {
 		ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction);
 		ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction);
 		ThumbInstructionType constexpr decode_32(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_store_multiple(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_store_dual_load_store_exclusive_table_branch(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
+		ThumbInstructionType constexpr decode_32_load_store_multiple(ThumbInstruction first_instruction);
 		ThumbInstructionType constexpr decode_32_data_processing_shifted_register(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 		ThumbInstructionType constexpr decode_32_branches_and_misc_control(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 		ThumbInstructionType constexpr decode_32_load_single(ThumbInstruction first_instruction, ThumbInstruction second_instruction);

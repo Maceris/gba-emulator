@@ -696,7 +696,7 @@ namespace emulator {
 				}
 				else
 				{
-					const ArmInstruction op1 = (instruction >> 16) & 0b1111;
+					//const ArmInstruction op1 = (instruction >> 16) & 0b1111;
 					if ((op & 0b01) == 0b00)
 					{
 						return ARMInstructionType::MRS;
@@ -807,10 +807,9 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction)
 		{
-			const ArmInstruction OP_MASK = 0b0000'0000'0000'0000'0000'0000'0000'0000;
 			const ArmInstruction op1 = (instruction >> 20) & 0b00101;
 			const ArmInstruction op2 = (instruction >> 5) & 0b11;
-			const ArmInstruction rn = (instruction >> 16) & 0b1111;
+			//const ArmInstruction rn = (instruction >> 16) & 0b1111;
 
 			if (op2 == 0b01)
 			{
@@ -1469,12 +1468,22 @@ namespace emulator {
 
 			if (op1 == 0b01) {
 				if ((op2 & 0b1100100) == 0b0000000) {
-					return decode_32_load_store_multiple(first_instruction,
-						second_instruction);
+					return decode_32_load_store_multiple(first_instruction);
 				}
 				if ((op2 & 0b1100100) == 0b0000100) {
-					return decode_32_load_store_dual_load_store_exclusive_table_branch(first_instruction,
-						second_instruction);
+					// STREX Store Register Exclusive is v6T2
+					// LDREX Loard Register Exclusive is v6T2
+					// STRD Store Register Dual is v6T2
+					// LDRD Loard Register immediate or dual are v6T2
+					// STREXB Store Register Exclusive Byte is v7
+					// STREXH Store Register Exclusive halfword is v7
+					// STREXD Store Register Exclusive Doubleword is v7
+					// TBB Table Branch Byte is v6T2
+					// TBH Table Branch Halfword is v6T2
+					// LDREXB Loard Register Exclusive Byte is v7
+					// LDREXH Loard Register Exclusive Halfword is v7
+					// LDREXD Loard Register Exclusive Doubleword is v7
+					return ThumbInstructionType::UNIMPLEMENTED;
 				}
 				if ((op2 & 0b1100000) == 0b0100000) {
 					return decode_32_data_processing_shifted_register(first_instruction,
@@ -1558,8 +1567,7 @@ namespace emulator {
 		}
 
 		ThumbInstructionType constexpr decode_32_load_store_multiple(
-			ThumbInstruction first_instruction, 
-			ThumbInstruction second_instruction)
+			ThumbInstruction first_instruction)
 		{
 			const ThumbInstruction op = (first_instruction >> 7) & 0b11;
 			const ThumbInstruction l = (first_instruction >> 4) & 0b1;
@@ -1596,27 +1604,6 @@ namespace emulator {
 				// RFE Return From Exception is ARMv6T2
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-		}
-
-		ThumbInstructionType constexpr decode_32_load_store_dual_load_store_exclusive_table_branch(
-			ThumbInstruction first_instruction, 
-			ThumbInstruction second_instruction)
-		{
-			// NOTE(ches) okay we officially passed the point of reasonable name length
-
-			// STREX Store Register Exclusive is v6T2
-			// LDREX Loard Register Exclusive is v6T2
-			// STRD Store Register Dual is v6T2
-			// LDRD Loard Register immediate or dual are v6T2
-			// STREXB Store Register Exclusive Byte is v7
-			// STREXH Store Register Exclusive halfword is v7
-			// STREXD Store Register Exclusive Doubleword is v7
-			// TBB Table Branch Byte is v6T2
-			// TBH Table Branch Halfword is v6T2
-			// LDREXB Loard Register Exclusive Byte is v7
-			// LDREXH Loard Register Exclusive Halfword is v7
-			// LDREXD Loard Register Exclusive Doubleword is v7
-			return ThumbInstructionType::UNIMPLEMENTED;
 		}
 
 		ThumbInstructionType constexpr decode_32_data_processing_shifted_register(

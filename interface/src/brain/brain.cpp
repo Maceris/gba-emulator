@@ -3,6 +3,7 @@
 
 #include "brain/brain.h"
 
+#include "debugging/logger.h"
 #include "gui/gui.h"
 #include "memory/memory_util.h"
 #include "rendering/render.h"
@@ -21,7 +22,7 @@ namespace brain {
 			Command command = g_brain_data->command_queue.remove();
 
 #define GBA_GUI_COMMANDS_MAPPING(X) case Command::X: process_command_##X(); break;
-#define GBA_GUI_COMMANDS_END_OF_LIST
+#define GBA_GUI_COMMANDS_END_OF_LIST case Command::_count: LOG_ERROR("Provided an invalid command"); break;
 
 			switch (command) {
 				GBA_GUI_COMMANDS_LIST

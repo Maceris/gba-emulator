@@ -17,7 +17,7 @@ namespace render {
 	constexpr int DEFAULT_WIDTH = 640;
 	constexpr int DEFAULT_HEIGHT = 480;
 
-	static void callback_iconify(GLFWwindow* window, int iconified)
+	static void callback_iconify(GLFWwindow* /*window*/, int iconified)
 	{
 		if (iconified == GLFW_TRUE)
 		{
@@ -29,7 +29,7 @@ namespace render {
 		}
 	}
 
-	static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	static void glfw_key_callback(GLFWwindow* /*window*/, int key, int scancode, int action, int mods) {
 		brain::key_callback(key, scancode, action, mods);
 	}
 
@@ -78,7 +78,7 @@ namespace render {
 
 	[[nodiscard]] bool Window::should_close() const
 	{
-		return glfwWindowShouldClose(glfw_window);
+		return glfwWindowShouldClose(glfw_window) == GLFW_TRUE;
 	}
 
 	[[nodiscard]] bool Window::was_resized() const
