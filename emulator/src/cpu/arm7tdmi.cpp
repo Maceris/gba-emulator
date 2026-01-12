@@ -388,8 +388,8 @@ namespace emulator {
 	{
 		ARMInstructionType constexpr decode(ArmInstruction instruction)
 		{
-			const ArmInstruction CONDITIONAL_MASK = 0b1111'0000'0000'0000'0000'0000'0000'0000;
-			const ArmInstruction UNCONDITIONAL_FORMAT = 0b1111'0000'0000'0000'0000'0000'0000'0000;
+			const ArmInstruction CONDITIONAL_MASK = 0b1111'0000'0000'0000'0000'0000'0000'0000u;
+			const ArmInstruction UNCONDITIONAL_FORMAT = 0b1111'0000'0000'0000'0000'0000'0000'0000u;
 
 			const ArmInstruction conditional = instruction & CONDITIONAL_MASK;
 
@@ -402,30 +402,30 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_conditional_instruction(ArmInstruction instruction)
 		{
-			const ArmInstruction op1 = (instruction >> 26) & 0b111;
+			const ArmInstruction op1 = (instruction >> 26) & 0b111u;
 
-			if ((op1 & 0b110) == 0b000)
+			if ((op1 & 0b110u) == 0b000u)
 			{
 				return decode_data_processing_and_miscellaneous(instruction);
 			}
-			if (op1 == 0b010)
+			if (op1 == 0b010u)
 			{
 				return decode_load_store_word_and_unsigned_byte(instruction);
 			}
-			if (op1 == 0b011)
+			if (op1 == 0b011u)
 			{
-				const ArmInstruction b = (instruction >> 4) & 0b1;
+				const ArmInstruction b = (instruction >> 4) & 0b1u;
 				if (b == 1)
 				{
 					return decode_media_instructions(instruction);
 				}
 				return decode_load_store_word_and_unsigned_byte(instruction);
 			}
-			if ((op1 & 0b110) == 0b100)
+			if ((op1 & 0b110u) == 0b100u)
 			{
 				return decode_branch_branch_with_link_and_block_data_transfer(instruction);
 			}
-			if ((op1 & 0b110) == 0b110)
+			if ((op1 & 0b110u) == 0b110u)
 			{
 				return decode_coprocessor_and_supervisor_call(instruction);
 			}
@@ -434,9 +434,9 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_data_processing_and_miscellaneous(ArmInstruction instruction)
 		{
-			const ArmInstruction OP_MASK = 0b0000'0010'0000'0000'0000'0000'0000'0000;
-			const ArmInstruction OP1_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
-			const ArmInstruction OP2_MASK = 0b0000'0000'0000'0000'0000'0000'1111'0000;
+			const ArmInstruction OP_MASK = 0b0000'0010'0000'0000'0000'0000'0000'0000u;
+			const ArmInstruction OP1_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000u;
+			const ArmInstruction OP2_MASK = 0b0000'0000'0000'0000'0000'0000'1111'0000u;
 
 			const ArmInstruction op = (instruction & OP_MASK) >> 25;
 			const ArmInstruction op1 = (instruction & OP1_MASK) >> 20;
@@ -445,67 +445,67 @@ namespace emulator {
 			{
 				const ArmInstruction op2 = (instruction & OP2_MASK) >> 4;
 
-				if ((op1 & 0b11001) != 0b10000 && (op2 & 0x0001) == 0x0000)
+				if ((op1 & 0b11001u) != 0b10000u && (op2 & 0x0001) == 0x0000)
 				{
 					return decode_data_processing_register(instruction);
 				}
-				if ((op1 & 0b11001) != 0b10000 && (op2 & 0x1001) == 0x0001)
+				if ((op1 & 0b11001u) != 0b10000u && (op2 & 0x1001) == 0x0001)
 				{
 					return decode_data_processing_register_shifted_register(instruction);
 				}
-				if ((op1 & 0b11001) == 0b10000 && (op2 & 0x1000) == 0x0000)
+				if ((op1 & 0b11001u) == 0b10000u && (op2 & 0x1000) == 0x0000)
 				{
 					return decode_miscellaneous(instruction);
 				}
-				if ((op1 & 0b11001) == 0b10000 && (op2 & 0x1001) == 0x1000)
+				if ((op1 & 0b11001u) == 0b10000u && (op2 & 0x1001) == 0x1000)
 				{
 					// Halfword multiply and multiply accumulate are only on
 					// ARMv5TE and above
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if ((op1 & 0b10000) == 0b00000 && op2 == 0x1001)
+				if ((op1 & 0b10000u) == 0b00000u && op2 == 0x1001)
 				{
 					return decode_multiply_and_multiply_accumulate(instruction);
 				}
-				if ((op1 & 0b10000) == 0b10000 && op2 == 0x1001)
+				if ((op1 & 0b10000u) == 0b10000u && op2 == 0x1001)
 				{
 					return decode_synchronization_primitives(instruction);
 				}
-				if ((op1 & 0b10010) != 0b00010 && op2 == 0x1011)
+				if ((op1 & 0b10010u) != 0b00010u && op2 == 0x1011)
 				{
 					return decode_extra_load_store(instruction);
 				}
-				if ((op1 & 0b10010) != 0b00010 && (op2 & 0x1101) == 0x1101)
+				if ((op1 & 0b10010u) != 0b00010u && (op2 & 0x1101) == 0x1101)
 				{
 					return decode_extra_load_store(instruction);
 				}
-				if ((op1 & 0b10010) == 0b00010 && op2 == 0x1011)
+				if ((op1 & 0b10010u) == 0b00010u && op2 == 0x1011)
 				{
 					// Unprivileged load/store instructions are all v6T2 and above
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if ((op1 & 0b10010) == 0b00010 && (op2 & 0x1101) == 0x1101)
+				if ((op1 & 0b10010u) == 0b00010u && (op2 & 0x1101) == 0x1101)
 				{
 					return decode_extra_load_store(instruction);
 				}
 			}
 			else
 			{
-				if ((op1 & 0b11001) != 0b10000)
+				if ((op1 & 0b11001u) != 0b10000u)
 				{
 					return decode_data_processing_immediate(instruction);
 				}
-				if (op1 == 0b10000)
+				if (op1 == 0b10000u)
 				{
 					// v6T2 instruction, 16-bit immediate load, MOV (immediate)
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b10100)
+				if (op1 == 0b10100u)
 				{
 					// High halfword 16-bit immediate load, MOVT
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if ((op1 & 0b11011) != 0b10010)
+				if ((op1 & 0b11011u) != 0b10010u)
 				{
 					return decode_msr_and_hints(instruction);
 				}
@@ -516,20 +516,20 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b11111;
-			const ArmInstruction rn = (instruction >> 16) & 0b1111;
+			const ArmInstruction op = (instruction >> 20) & 0b11111u;
+			const ArmInstruction rn = (instruction >> 16) & 0b1111u;
 
-			const ArmInstruction op_first_4 = (instruction >> 20) & 0b11110;
+			const ArmInstruction op_first_4 = (instruction >> 20) & 0b11110u;
 
-			if ((op_first_4 == 0b00010 || op_first_4 == 0b01000) && rn == 0b1111)
+			if ((op_first_4 == 0b00010u || op_first_4 == 0b01000u) && rn == 0b1111u)
 			{
 				return ARMInstructionType::ADR;
 			}
-			if ((op & 0b11001) == 0b10000)
+			if ((op & 0b11001u) == 0b10000u)
 			{
 				return decode_data_processing_and_miscellaneous(instruction);
 			}
-			if (op_first_4 == 0b11010)
+			if (op_first_4 == 0b11010u)
 			{
 				return ARMInstructionType::MOV;
 			}
@@ -539,37 +539,37 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b11111;
+			const ArmInstruction op = (instruction >> 20) & 0b11111u;
 
-			if ((op & 0b11110) != 0b11010)
+			if ((op & 0b11110u) != 0b11010u)
 			{
 				return decode_data_processing_register_shared(instruction);
 			}
 		
-			const ArmInstruction op2 = (instruction >> 5) & 0b11;
-			const ArmInstruction imm5 = (instruction >> 7) & 0b11111;
+			const ArmInstruction op2 = (instruction >> 5) & 0b11u;
+			const ArmInstruction imm5 = (instruction >> 7) & 0b11111u;
 
-			if (op2 == 0b00 && imm5 == 0b00000)
+			if (op2 == 0b00u && imm5 == 0b00000u)
 			{
 				return ARMInstructionType::MOV;
 			}
-			if (op2 == 0b00 && imm5 != 0b00000)
+			if (op2 == 0b00u && imm5 != 0b00000u)
 			{
 				return ARMInstructionType::LSL;
 			}
-			if (op2 == 0b01)
+			if (op2 == 0b01u)
 			{
 				return ARMInstructionType::LSR;
 			}
-			if (op2 == 0b10)
+			if (op2 == 0b10u)
 			{
 				return ARMInstructionType::ASR;
 			}
-			if (op2 == 0b11 && imm5 == 0b00000)
+			if (op2 == 0b11u && imm5 == 0b00000u)
 			{
 				return ARMInstructionType::RRX;
 			}
-			if (op2 == 0b11 && imm5 != 0b00000)
+			if (op2 == 0b11u && imm5 != 0b00000u)
 			{
 				return ARMInstructionType::ROR;
 			}
@@ -579,68 +579,68 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_data_processing_register_shared(const ArmInstruction op)
 		{
-			if ((op & 0b11110) == 0b00000)
+			if ((op & 0b11110u) == 0b00000u)
 			{
 				return ARMInstructionType::AND;
 			}
-			if ((op & 0b11110) == 0b00010)
+			if ((op & 0b11110u) == 0b00010u)
 			{
 				return ARMInstructionType::EOR;
 			}
-			if ((op & 0b11110) == 0b00100)
+			if ((op & 0b11110u) == 0b00100u)
 			{
 				return ARMInstructionType::SUB;
 			}
-			if ((op & 0b11110) == 0b00110)
+			if ((op & 0b11110u) == 0b00110u)
 			{
 				return ARMInstructionType::RSB;
 			}
-			if ((op & 0b11110) == 0b01000)
+			if ((op & 0b11110u) == 0b01000u)
 			{
 				return ARMInstructionType::ADD;
 			}
-			if ((op & 0b11110) == 0b01010)
+			if ((op & 0b11110u) == 0b01010u)
 			{
 				return ARMInstructionType::ADC;
 			}
-			if ((op & 0b11110) == 0b01100)
+			if ((op & 0b11110u) == 0b01100u)
 			{
 				return ARMInstructionType::SBC;
 			}
-			if ((op & 0b11110) == 0b01110)
+			if ((op & 0b11110u) == 0b01110u)
 			{
 				return ARMInstructionType::RSC;
 			}
-			if ((op & 0b11001) == 0b10000)
+			if ((op & 0b11001u) == 0b10000u)
 			{
 				// Shouldn't be able to arrive here
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if (op == 0b10001)
+			if (op == 0b10001u)
 			{
 				return ARMInstructionType::TST;
 			}
-			if (op == 0b10011)
+			if (op == 0b10011u)
 			{
 				return ARMInstructionType::TEQ;
 			}
-			if (op == 0b10101)
+			if (op == 0b10101u)
 			{
 				return ARMInstructionType::CMP;
 			}
-			if (op == 0b10111)
+			if (op == 0b10111u)
 			{
 				return ARMInstructionType::CMN;
 			}
-			if ((op & 0b11110) == 0b11000)
+			if ((op & 0b11110u) == 0b11000u)
 			{
 				return ARMInstructionType::ORR;
 			}
-			if ((op & 0b11110) == 0b11100)
+			if ((op & 0b11110u) == 0b11100u)
 			{
 				return ARMInstructionType::BIC;
 			}
-			if ((op & 0b11110) == 0b11110)
+			if ((op & 0b11110u) == 0b11110u)
 			{
 				return ARMInstructionType::MVN;
 			}
@@ -649,30 +649,30 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction)
 		{
-			const ArmInstruction OP_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000;
+			const ArmInstruction OP_MASK = 0b0000'0001'1111'0000'0000'0000'0000'0000u;
 
 			const ArmInstruction op = (instruction & OP_MASK) >> 20;
 
-			if ((op & 0b11110) != 0b11010)
+			if ((op & 0b11110u) != 0b11010u)
 			{
 				return decode_data_processing_register_shared(instruction);
 			}
 		
-			const ArmInstruction op2 = (instruction >> 5) & 0b11;
+			const ArmInstruction op2 = (instruction >> 5) & 0b11u;
 
-			if (op2 == 0b00)
+			if (op2 == 0b00u)
 			{
 				return ARMInstructionType::LSL;
 			}
-			if (op2 == 0b01)
+			if (op2 == 0b01u)
 			{
 				return ARMInstructionType::LSR;
 			}
-			if (op2 == 0b10)
+			if (op2 == 0b10u)
 			{
 				return ARMInstructionType::ASR;
 			}
-			if (op2 == 0b11)
+			if (op2 == 0b11u)
 			{
 				return ARMInstructionType::ROR;
 			}
@@ -682,12 +682,12 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b11;
-			const ArmInstruction op2 = (instruction >> 4) & 0b111;
+			const ArmInstruction op = (instruction >> 20) & 0b11u;
+			const ArmInstruction op2 = (instruction >> 4) & 0b111u;
 
-			if (op2 == 0b000)
+			if (op2 == 0b000u)
 			{
-				const ArmInstruction b = (instruction >> 9) & 0b1;
+				const ArmInstruction b = (instruction >> 9) & 0b1u;
 
 				if (b == 1)
 				{
@@ -696,55 +696,55 @@ namespace emulator {
 				}
 				else
 				{
-					//const ArmInstruction op1 = (instruction >> 16) & 0b1111;
-					if ((op & 0b01) == 0b00)
+					//const ArmInstruction op1 = (instruction >> 16) & 0b1111u;
+					if ((op & 0b01u) == 0b00u)
 					{
 						return ARMInstructionType::MRS;
 					}
-					if (op == 0b01)
+					if (op == 0b01u)
 					{
 						//NOTE(ches) all 4 cases of op1 are some kind of MSR
 						return ARMInstructionType::MSR;
 					}
-					if (op == 0b11)
+					if (op == 0b11u)
 					{
 						return ARMInstructionType::MSR;
 					}
 				}
 			}
-			if (op2 == 0b001)
+			if (op2 == 0b001u)
 			{
-				if (op == 0b01)
+				if (op == 0b01u)
 				{
 					return ARMInstructionType::BX;
 				}
-				if (op == 0b11)
+				if (op == 0b11u)
 				{
 					// v5T instruction, CLZ Count Leading Zeros
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
 			}
-			if (op2 == 0b010)
+			if (op2 == 0b010u)
 			{
 				// v5TEJ instruction, BXJ Branch and Exchange Jazelle
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if (op2 == 0b011)
+			if (op2 == 0b011u)
 			{
 				// v5T instruction, BLX (register) Branch with Link and Exchange
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if (op2 == 0b101)
+			if (op2 == 0b101u)
 			{
 				// Saturating addition and subtraction are v5 and up
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if (op2 == 0b110)
+			if (op2 == 0b110u)
 			{
 				// v7VE instruction, ERET Exception Return
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if (op2 == 0b111)
+			if (op2 == 0b111u)
 			{
 				// either v5T instruction BKPT Breakpoint, the v7VE instruction
 				// HVC Hypervisor Call, or Security Extenions SMC/ (previously SMI)
@@ -757,16 +757,16 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b1111;
-			if ((op & 0b1110) == 0b0000)
+			const ArmInstruction op = (instruction >> 20) & 0b1111u;
+			if ((op & 0b1110u) == 0b0000u)
 			{
 				return ARMInstructionType::MUL;
 			}
-			if ((op & 0b1110) == 0b0010)
+			if ((op & 0b1110u) == 0b0010u)
 			{
 				return ARMInstructionType::MLA;
 			}
-			if ((op & 0b1100) == 0b0100)
+			if ((op & 0b1100u) == 0b0100u)
 			{
 				// 0100 is UMAAL Unsigned Multiply Accumulate Accumulate Long in v6
 				// 0101 is undefined
@@ -774,19 +774,19 @@ namespace emulator {
 				// 0111 is undefined
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if ((op & 0b1110) == 0b1000)
+			if ((op & 0b1110u) == 0b1000u)
 			{
 				return ARMInstructionType::UMULL;
 			}
-			if ((op & 0b1110) == 0b1010)
+			if ((op & 0b1110u) == 0b1010u)
 			{
 				return ARMInstructionType::UMLAL;
 			}
-			if ((op & 0b1110) == 0b1100)
+			if ((op & 0b1110u) == 0b1100u)
 			{
 				return ARMInstructionType::SMULL;
 			}
-			if ((op & 0b1110) == 0b1110)
+			if ((op & 0b1110u) == 0b1110u)
 			{
 				return ARMInstructionType::SMLAL;
 			}
@@ -795,9 +795,9 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b1111;
+			const ArmInstruction op = (instruction >> 20) & 0b1111u;
 
-			if ((op & 0b1011) == 0b0000)
+			if ((op & 0b1011u) == 0b0000u)
 			{
 				return ARMInstructionType::SWP;
 			}
@@ -807,67 +807,67 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction)
 		{
-			const ArmInstruction op1 = (instruction >> 20) & 0b00101;
-			const ArmInstruction op2 = (instruction >> 5) & 0b11;
-			//const ArmInstruction rn = (instruction >> 16) & 0b1111;
+			const ArmInstruction op1 = (instruction >> 20) & 0b00101u;
+			const ArmInstruction op2 = (instruction >> 5) & 0b11u;
+			//const ArmInstruction rn = (instruction >> 16) & 0b1111u;
 
-			if (op2 == 0b01)
+			if (op2 == 0b01u)
 			{
-				if (op1 == 0b00000)
+				if (op1 == 0b00000u)
 				{
 					return ARMInstructionType::STRH;
 				}
-				if (op1 == 0b00001)
+				if (op1 == 0b00001u)
 				{
 					return ARMInstructionType::LDRH;
 				}
-				if (op1 == 0b00100)
+				if (op1 == 0b00100u)
 				{
 					return ARMInstructionType::STRH;
 				}
-				if (op1 == 0b00101)
+				if (op1 == 0b00101u)
 				{
 					return ARMInstructionType::LDRH;
 				}
 			}
-			if (op2 == 0b10)
+			if (op2 == 0b10u)
 			{
-				if (op1 == 0b00000)
+				if (op1 == 0b00000u)
 				{
 					// LDRD Load Dual is v5TE
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b00001)
+				if (op1 == 0b00001u)
 				{
 					return ARMInstructionType::LDRSB;
 				}
-				if (op1 == 0b00100)
+				if (op1 == 0b00100u)
 				{
 					// LDRD Load Dual is v5TE
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b00101)
+				if (op1 == 0b00101u)
 				{
 					return ARMInstructionType::LDRSB;
 				}
 			}
-			if (op2 == 0b11)
+			if (op2 == 0b11u)
 			{
-				if (op1 == 0b00000)
+				if (op1 == 0b00000u)
 				{
 					// STRD Store Register Dual is v5TE
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b00001)
+				if (op1 == 0b00001u)
 				{
 					return ARMInstructionType::LDRSH;
 				}
-				if (op1 == 0b00100)
+				if (op1 == 0b00100u)
 				{
 					// STRD Store Register Dual is v5TE
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b00101)
+				if (op1 == 0b00101u)
 				{
 					return ARMInstructionType::LDRSH;
 				}
@@ -878,14 +878,14 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 22) & 0b1;
-			const ArmInstruction op1 = (instruction >> 16) & 0b1111;
+			const ArmInstruction op = (instruction >> 22) & 0b1u;
+			const ArmInstruction op1 = (instruction >> 16) & 0b1111u;
 
-			if (op == 0b0)
+			if (op == 0b0u)
 			{
-				if (op1 == 0b0000)
+				if (op1 == 0b0000u)
 				{
-					//const ArmInstruction op2 = instruction & 0b1111'1111;
+					//const ArmInstruction op2 = instruction & 0b1111'1111u;
 
 					// 00000000 = NOP No Operation hint, v6K and v6T2
 					// 00000001 = YIELD Yield hint, v6K
@@ -897,11 +897,11 @@ namespace emulator {
 
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if (op1 == 0b0100 || (op1 & 0b1011) == 0b1000)
+				if (op1 == 0b0100u || (op1 & 0b1011u) == 0b1000u)
 				{
 					return ARMInstructionType::MSR;
 				}
-				if ((op1 & 0b0011) == 0b0001 || (op1 & 0b0010) == 0b0010)
+				if ((op1 & 0b0011u) == 0b0001u || (op1 & 0b0010u) == 0b0010u)
 				{
 					return ARMInstructionType::MSR;
 				}
@@ -915,37 +915,37 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction)
 		{
-			const ArmInstruction op1 = (instruction >> 20) & 0b11111;
+			const ArmInstruction op1 = (instruction >> 20) & 0b11111u;
 
-			if ((op1 & 0b00101) == 0b00000 && (op1 & 0b10111) != 0b00010)
+			if ((op1 & 0b00101u) == 0b00000u && (op1 & 0b10111u) != 0b00010u)
 			{
 				return ARMInstructionType::STR;
 			}
-			if ((op1 & 0b10111) == 0b00010)
+			if ((op1 & 0b10111u) == 0b00010u)
 			{
 				return ARMInstructionType::STRT;
 			}
-			if ((op1 & 0b00101) == 0b00001 && (op1 & 0b10111) != 0b00011)
+			if ((op1 & 0b00101u) == 0b00001u && (op1 & 0b10111u) != 0b00011u)
 			{
 				return ARMInstructionType::LDR;
 			}
-			if ((op1 & 0b10111) == 0b00011)
+			if ((op1 & 0b10111u) == 0b00011u)
 			{
 				return ARMInstructionType::LDRT;
 			}
-			if ((op1 & 0b00101) == 0b00100 && (op1 & 0b10111) != 0b00110)
+			if ((op1 & 0b00101u) == 0b00100u && (op1 & 0b10111u) != 0b00110u)
 			{
 				return ARMInstructionType::STRB;
 			}
-			if ((op1 & 0b10111) == 0b00110)
+			if ((op1 & 0b10111u) == 0b00110u)
 			{
 				return ARMInstructionType::STRBT;
 			}
-			if ((op1 & 0b00101) == 0b00101 && (op1 & 0b10111) != 0b00111)
+			if ((op1 & 0b00101u) == 0b00101u && (op1 & 0b10111u) != 0b00111u)
 			{
 				return ARMInstructionType::LDRB;
 			}
-			if ((op1 & 0b10111) == 0b00111)
+			if ((op1 & 0b10111u) == 0b00111u)
 			{
 				return ARMInstructionType::LDRBT;
 			}
@@ -955,9 +955,9 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction)
 		{
-			const ArmInstruction op1 = (instruction >> 20) & 0b11111;
+			const ArmInstruction op1 = (instruction >> 20) & 0b11111u;
 
-			if ((op1 & 0b11100) == 0b00000)
+			if ((op1 & 0b11100u) == 0b00000u)
 			{
 				// Parallel addition and subtration (signed) are not on v4T:
 				// SADD16, SASX, SSAX, SSUB16, SADD8, SSUB8
@@ -965,7 +965,7 @@ namespace emulator {
 				// SHADD16, SHASX, SHSAX, SHSUB16, SHADD8, SHSUB8
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if ((op1 & 0b11100) == 0b00100)
+			if ((op1 & 0b11100u) == 0b00100u)
 			{
 				// Parallel addition and subtration (unsigned) are not on v4T:
 				// UADD16, UASX, USAX, USUB16, UADD8, USUB8
@@ -973,7 +973,7 @@ namespace emulator {
 				// UHADD16, UHASX, UHSAX, UHSUB16, UHADD8, UHSUB8
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if ((op1 & 0b11000) == 0b01000)
+			if ((op1 & 0b11000u) == 0b01000u)
 			{
 				// Packing, unpacking, saturation, and reversal instructions are v6+
 
@@ -982,7 +982,7 @@ namespace emulator {
 				// UXTAB, UXTB, RBIT, UXTAHm UXTH, REVSH
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if ((op1 & 0b11000) == 0b10000)
+			if ((op1 & 0b11000u) == 0b10000u)
 			{
 				// Signed multiply instructions are v6+
 
@@ -990,20 +990,20 @@ namespace emulator {
 				// SMMLA, SMMUL, SMMLS
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			const ArmInstruction op2 = (instruction >> 5) & 0b111;
+			const ArmInstruction op2 = (instruction >> 5) & 0b111u;
 
-			if (op1 == 0b11111 && op2 == 0b111) {
-				const ArmInstruction cond = (instruction >> 28) & 0b1111;
+			if (op1 == 0b11111u && op2 == 0b111u) {
+				const ArmInstruction cond = (instruction >> 28) & 0b1111u;
 
-				if (cond == 0b1110) {
+				if (cond == 0b1110u) {
 					return ARMInstructionType::UDF;
 				}
 				// not 1110 does not have a mnemonic, we are considering it undefined
 			}
 
-			// const ArmInstruction op2 = (instruction >> 5) & 0b111;
-			// const ArmInstruction rd = (instruction >> 12) & 0b1111;
-			// const ArmInstruction rn = instruction & 0b1111;
+			// const ArmInstruction op2 = (instruction >> 5) & 0b111u;
+			// const ArmInstruction rd = (instruction >> 12) & 0b1111u;
+			// const ArmInstruction rn = instruction & 0b1111u;
 
 			// op1 = 11000, op2 = 000, rd = 1111 is USAD8 in v6
 			// op1 = 11000, op2 = 000, rd = 1111 is USADA8 in v6
@@ -1017,9 +1017,9 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction)
 		{
-			const ArmInstruction op = (instruction >> 20) & 0b111111;
-			const ArmInstruction rn = (instruction >> 16) & 0b1111;
-			const ArmInstruction r = (instruction >> 15) & 0b1;
+			const ArmInstruction op = (instruction >> 20) & 0b111111u;
+			const ArmInstruction rn = (instruction >> 16) & 0b1111u;
+			const ArmInstruction r = (instruction >> 15) & 0b1u;
 
 			if ((op & 0x111101) == 0x000000) {
 				return ARMInstructionType::STMDA;
@@ -1034,7 +1034,7 @@ namespace emulator {
 				return ARMInstructionType::LDMIA;
 			}
 			if (op == 0x001011) {
-				if (rn == 0b1101) {
+				if (rn == 0b1101u) {
 					return ARMInstructionType::POP;
 				}
 				else {
@@ -1045,7 +1045,7 @@ namespace emulator {
 				return ARMInstructionType::STMDB;
 			}
 			if (op == 0x010010) {
-				if (rn == 0b1101) {
+				if (rn == 0b1101u) {
 					return ARMInstructionType::PUSH;
 				}
 				else {
@@ -1084,42 +1084,42 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_coprocessor_and_supervisor_call(ArmInstruction instruction)
 		{
-			const ArmInstruction op1 = (instruction >> 20) & 0b111111;
+			const ArmInstruction op1 = (instruction >> 20) & 0b111111u;
 
-			if ((op1 & 0b000001) == 0b000000) {
+			if ((op1 & 0b000001u) == 0b000000u) {
 				// Technically, undefined but I think not the mnemonic
 				return ARMInstructionType::UNIMPLEMENTED;
 			}
-			if ((op1 & 0b110000) == 0b110000) {
+			if ((op1 & 0b110000u) == 0b110000u) {
 				// SVC?
 				return ARMInstructionType::SWI;
 			}
 		
-			const ArmInstruction coproc = (instruction >> 8) & 0b1111;
-			const ArmInstruction op = (instruction >> 4) & 0b1;
+			const ArmInstruction coproc = (instruction >> 8) & 0b1111u;
+			const ArmInstruction op = (instruction >> 4) & 0b1u;
 
-			if ((coproc & 0x1110) != 0b1010) {
-				if ((op1 & 0b100001) == 0b000000 && (op1 & 0b111011) != 0b000000) {
+			if ((coproc & 0x1110) != 0b1010u) {
+				if ((op1 & 0b100001u) == 0b000000u && (op1 & 0b111011u) != 0b000000u) {
 					return ARMInstructionType::STC;
 				}
-				if ((op1 & 0b100001) == 0b000001 && (op1 & 0b111011) != 0b000001) {
-					// const ArmInstruction rn = (instruction >> 16) & 0b1111;
+				if ((op1 & 0b100001u) == 0b000001u && (op1 & 0b111011u) != 0b000001u) {
+					// const ArmInstruction rn = (instruction >> 16) & 0b1111u;
 					// rn = 1111 is Load Coprocessor (literal)
 					// rn != 1111 is Load Coprocessor (immediate)
 					return ARMInstructionType::LDC;
 				}
-				if (op1 == 0b000100 || op1 == 0b000101) {
+				if (op1 == 0b000100u || op1 == 0b000101u) {
 					// 000100 = MCRR, v5TE
 					// 000101 = MRRC, v5TE
 					return ARMInstructionType::UNIMPLEMENTED;
 				}
-				if ((op1 & 0b110000) == 0b100000 && op == 0b0) {
+				if ((op1 & 0b110000u) == 0b100000u && op == 0b0u) {
 					return ARMInstructionType::CDP;
 				}
-				if ((op1 & 0b110001) == 0b100000 && op == 0b1) {
+				if ((op1 & 0b110001u) == 0b100000u && op == 0b1u) {
 					return ARMInstructionType::MCR;
 				}
-				if ((op1 & 0b110001) == 0b100001 && op == 0b1) {
+				if ((op1 & 0b110001u) == 0b100001u && op == 0b1u) {
 					return ARMInstructionType::MRC;
 				}
 			}
@@ -1143,7 +1143,7 @@ namespace emulator {
 
 		ARMInstructionType constexpr decode_unconditional_instruction(ArmInstruction instruction)
 		{
-			// const ArmInstruction op1 = (instruction >> 20) & 0b11111111;
+			// const ArmInstruction op1 = (instruction >> 20) & 0b11111111u;
 
 			// op1 = 0xxxxxxx:
 		
@@ -1174,61 +1174,61 @@ namespace emulator {
 	namespace DecodeThumb {
 
 		bool constexpr is_32_bit(ThumbInstruction instruction) {
-			const ThumbInstruction important_bits = (instruction >> 11) & 0b11111;
-			return important_bits == 0b11101
-				|| important_bits == 0b11110
-				|| important_bits == 0b11111;
+			const ThumbInstruction important_bits = (instruction >> 11) & 0b11111u;
+			return important_bits == 0b11101u
+				|| important_bits == 0b11110u
+				|| important_bits == 0b11111u;
 		}
 
 		ThumbInstructionType constexpr decode_16(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 10) & 0b111111;
+			const ThumbInstruction opcode = (instruction >> 10) & 0b111111u;
 
-			if ((opcode & 0b110000) == 0b000000) {
+			if ((opcode & 0b110000u) == 0b000000u) {
 				// Shift (immediate), add, subtract, move, and compare
 				return decode_16_shift_add_sub_mov_cmp(instruction);
 			}
-			if (opcode == 0b010000) {
+			if (opcode == 0b010000u) {
 				// Data-processing
 				return decode_16_data_processing(instruction);
 			}
-			if (opcode == 0b010001) {
+			if (opcode == 0b010001u) {
 				// Special data instructions and branch and exchange
 				return decode_16_special_data_branch_exchange(instruction);
 			}
-			if ((opcode & 0b111110) == 0b010010) {
+			if ((opcode & 0b111110u) == 0b010010u) {
 				return ThumbInstructionType::LDR;
 			}
-			if ((opcode & 0b111100) == 0b010100
-				|| (opcode & 0b111000) == 0b011000
-				|| (opcode & 0b111000) == 0b100000) {
+			if ((opcode & 0b111100u) == 0b010100u
+				|| (opcode & 0b111000u) == 0b011000u
+				|| (opcode & 0b111000u) == 0b100000u) {
 				// Load/store single data item
 				return decode_16_load_store_single_data(instruction);
 			}
-			if ((opcode & 0b111110) == 0b101000) {
+			if ((opcode & 0b111110u) == 0b101000u) {
 				// Generate PC-relative address, see ADR
 				return ThumbInstructionType::ADD;
 			}
-			if ((opcode & 0b111110) == 0b101010) {
+			if ((opcode & 0b111110u) == 0b101010u) {
 				// Generate SP-relative address
 				return ThumbInstructionType::ADD;
 			}
-			if ((opcode & 0b111100) == 0b101100) {
+			if ((opcode & 0b111100u) == 0b101100u) {
 				// Miscellaneous 16-bit instructions
 				return decode_16_misc(instruction);
 			}
-			if ((opcode & 0b111110) == 0b110000) {
+			if ((opcode & 0b111110u) == 0b110000u) {
 				return ThumbInstructionType::STMIA;
 			}
-			if ((opcode & 0b111110) == 0b110010) {
+			if ((opcode & 0b111110u) == 0b110010u) {
 				// Load multiple registers, see LDM/LDMIA/LDMFD (Thumb)
 				return ThumbInstructionType::LDMIA;
 			}
-			if ((opcode & 0b111100) == 0b110100) {
+			if ((opcode & 0b111100u) == 0b110100u) {
 				// Conditional branch, and Supervisor Call
 				return decode_16_conditional_branch_supervisor(instruction);
 			}
-			if ((opcode & 0b111110) == 0b111000) {
+			if ((opcode & 0b111110u) == 0b111000u) {
 				return ThumbInstructionType::B;
 			}
 
@@ -1237,49 +1237,49 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 9) & 0b11111;
+			const ThumbInstruction opcode = (instruction >> 9) & 0b11111u;
 
-			if ((opcode & 0b11100) == 0b00000) {
-				if (((instruction >> 6) & 0b11111111) == 0b00000000) {
-					// opcode = 0b00000 and bits[8:6] are 0b000
+			if ((opcode & 0b11100u) == 0b00000u) {
+				if (((instruction >> 6) & 0b11111111u) == 0b00000000u) {
+					// opcode = 0b00000u and bits[8:6] are 0b000u
 					// MOV (register, Thumb)
 					return ThumbInstructionType::MOV;
 				}
 				return ThumbInstructionType::LSL;
 			}
-			if ((opcode & 0b11100) == 0b00100) {
+			if ((opcode & 0b11100u) == 0b00100u) {
 				return ThumbInstructionType::LSR;
 			}
-			if ((opcode & 0b11100) == 0b01000) {
+			if ((opcode & 0b11100u) == 0b01000u) {
 				return ThumbInstructionType::ASR;
 			}
-			if (opcode == 0b01100) {
+			if (opcode == 0b01100u) {
 				// Add register
 				return ThumbInstructionType::ADD;
 			}
-			if (opcode == 0b01101) {
+			if (opcode == 0b01101u) {
 				// Subtract register
 				return ThumbInstructionType::SUB;
 			}
-			if (opcode == 0b01110) {
+			if (opcode == 0b01110u) {
 				// Add 3-bit immediate
 				return ThumbInstructionType::ADD;
 			}
-			if (opcode == 0b01111) {
+			if (opcode == 0b01111u) {
 				// Subtract 3-bit immediate
 				return ThumbInstructionType::SUB;
 			}
-			if ((opcode & 0b11100) == 0b10000) {
+			if ((opcode & 0b11100u) == 0b10000u) {
 				return ThumbInstructionType::MOV;
 			}
-			if ((opcode & 0b11100) == 0b10100) {
+			if ((opcode & 0b11100u) == 0b10100u) {
 				return ThumbInstructionType::CMP;
 			}
-			if ((opcode & 0b11100) == 0b11000) {
+			if ((opcode & 0b11100u) == 0b11000u) {
 				// Add 8-bit immediate
 				return ThumbInstructionType::ADD;
 			}
-			if ((opcode & 0b11100) == 0b11100) {
+			if ((opcode & 0b11100u) == 0b11100u) {
 				// Subtract 8-bit immediate
 				return ThumbInstructionType::SUB;
 			}
@@ -1289,25 +1289,25 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 6) & 0b1111;
+			const ThumbInstruction opcode = (instruction >> 6) & 0b1111u;
 
 			switch (opcode) {
-			case 0b0000: return ThumbInstructionType::AND;
-			case 0b0001: return ThumbInstructionType::EOR;
-			case 0b0010: return ThumbInstructionType::LSL;
-			case 0b0011: return ThumbInstructionType::LSR;
-			case 0b0100: return ThumbInstructionType::ASR;
-			case 0b0101: return ThumbInstructionType::ADC;
-			case 0b0110: return ThumbInstructionType::SBC;
-			case 0b0111: return ThumbInstructionType::ROR;
-			case 0b1000: return ThumbInstructionType::TST;
-			case 0b1001: return ThumbInstructionType::RSB;
-			case 0b1010: return ThumbInstructionType::CMP;
-			case 0b1011: return ThumbInstructionType::CMN;
-			case 0b1100: return ThumbInstructionType::ORR;
-			case 0b1101: return ThumbInstructionType::MUL;
-			case 0b1110: return ThumbInstructionType::BIC;
-			case 0b1111: return ThumbInstructionType::MVN;
+			case 0b0000u: return ThumbInstructionType::AND;
+			case 0b0001u: return ThumbInstructionType::EOR;
+			case 0b0010u: return ThumbInstructionType::LSL;
+			case 0b0011u: return ThumbInstructionType::LSR;
+			case 0b0100u: return ThumbInstructionType::ASR;
+			case 0b0101u: return ThumbInstructionType::ADC;
+			case 0b0110u: return ThumbInstructionType::SBC;
+			case 0b0111u: return ThumbInstructionType::ROR;
+			case 0b1000u: return ThumbInstructionType::TST;
+			case 0b1001u: return ThumbInstructionType::RSB;
+			case 0b1010u: return ThumbInstructionType::CMP;
+			case 0b1011u: return ThumbInstructionType::CMN;
+			case 0b1100u: return ThumbInstructionType::ORR;
+			case 0b1101u: return ThumbInstructionType::MUL;
+			case 0b1110u: return ThumbInstructionType::BIC;
+			case 0b1111u: return ThumbInstructionType::MVN;
 			}
 
 			return ThumbInstructionType::UNIMPLEMENTED;
@@ -1315,29 +1315,29 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_special_data_branch_exchange(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 6) & 0b1111;
+			const ThumbInstruction opcode = (instruction >> 6) & 0b1111u;
 
-			if (opcode == 0b0000) {
+			if (opcode == 0b0000u) {
 				// Add low registers, v6T2
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-			if (opcode == 0b0001 || (opcode & 0b1110) == 0b0010) {
+			if (opcode == 0b0001u || (opcode & 0b1110u) == 0b0010u) {
 				return ThumbInstructionType::ADD;
 			}
-			if ((opcode & 0b1100) == 0b0100) {
+			if ((opcode & 0b1100u) == 0b0100u) {
 				return ThumbInstructionType::CMP;
 			}
-			if (opcode == 0b1000) {
+			if (opcode == 0b1000u) {
 				// Move low registers, v6
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-			if (opcode == 0b1001 || (opcode & 0b1110) == 0b1010) {
+			if (opcode == 0b1001u || (opcode & 0b1110u) == 0b1010u) {
 				return ThumbInstructionType::MOV;
 			}
-			if ((opcode & 0b1110) == 0b1100) {
+			if ((opcode & 0b1110u) == 0b1100u) {
 				return ThumbInstructionType::BX;
 			}
-			if ((opcode & 0b1110) == 0b1110) {
+			if ((opcode & 0b1110u) == 0b1110u) {
 				// Branch with Link and Exchange, v5T
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
@@ -1347,48 +1347,48 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opA = (instruction >> 12) & 0b1111;
-			const ThumbInstruction opB = (instruction >> 9) & 0b111;
+			const ThumbInstruction opA = (instruction >> 12) & 0b1111u;
+			const ThumbInstruction opB = (instruction >> 9) & 0b111u;
 
-			if (opA == 0b0101) {
+			if (opA == 0b0101u) {
 				switch (opB) {
-				case 0b000: return ThumbInstructionType::STR;
-				case 0b001: return ThumbInstructionType::STRH;
-				case 0b010: return ThumbInstructionType::STRB;
-				case 0b011: return ThumbInstructionType::LDRSB;
-				case 0b100: return ThumbInstructionType::LDR;
-				case 0b101: return ThumbInstructionType::LDRH;
-				case 0b110: return ThumbInstructionType::LDRB;
-				case 0b111: return ThumbInstructionType::LDRSH;
+				case 0b000u: return ThumbInstructionType::STR;
+				case 0b001u: return ThumbInstructionType::STRH;
+				case 0b010u: return ThumbInstructionType::STRB;
+				case 0b011u: return ThumbInstructionType::LDRSB;
+				case 0b100u: return ThumbInstructionType::LDR;
+				case 0b101u: return ThumbInstructionType::LDRH;
+				case 0b110u: return ThumbInstructionType::LDRB;
+				case 0b111u: return ThumbInstructionType::LDRSH;
 				}
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-			else if (opA == 0b0110) {
-				if ((opB & 0b100) == 0b000) {
+			else if (opA == 0b0110u) {
+				if ((opB & 0b100u) == 0b000u) {
 					return ThumbInstructionType::STR;
 				}
 				else {
 					return ThumbInstructionType::LDR;
 				}
 			}
-			else if (opA == 0b0111) {
-				if ((opB & 0b100) == 0b000) {
+			else if (opA == 0b0111u) {
+				if ((opB & 0b100u) == 0b000u) {
 					return ThumbInstructionType::STRB;
 				}
 				else {
 					return ThumbInstructionType::LDRB;
 				}
 			}
-			else if (opA == 0b1000) {
-				if ((opB & 0b100) == 0b000) {
+			else if (opA == 0b1000u) {
+				if ((opB & 0b100u) == 0b000u) {
 					return ThumbInstructionType::STRH;
 				}
 				else {
 					return ThumbInstructionType::LDRH;
 				}
 			}
-			else if (opA == 0b1001) {
-				if ((opB & 0b100) == 0b000) {
+			else if (opA == 0b1001u) {
+				if ((opB & 0b100u) == 0b000u) {
 					// Store register SP relative
 					return ThumbInstructionType::STR;
 				}
@@ -1404,20 +1404,20 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 5) & 0b1111111;
+			const ThumbInstruction opcode = (instruction >> 5) & 0b1111111u;
 		
-			if ((opcode & 0b1111100) == 0b0000000) {
+			if ((opcode & 0b1111100u) == 0b0000000u) {
 				// Add immediate to SP
 				return ThumbInstructionType::ADD;
 			}
-			if ((opcode & 0b1111100) == 0b0000100) {
+			if ((opcode & 0b1111100u) == 0b0000100u) {
 				// Subtract immediate from SP
 				return ThumbInstructionType::SUB;
 			}
-			if ((opcode & 0b1110000) == 0b0100000) {
+			if ((opcode & 0b1110000u) == 0b0100000u) {
 				return ThumbInstructionType::PUSH;
 			}
-			if ((opcode & 0b1110000) == 0b1100000) {
+			if ((opcode & 0b1110000u) == 0b1100000u) {
 				return ThumbInstructionType::POP;
 			}
 
@@ -1444,13 +1444,13 @@ namespace emulator {
 
 		ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction)
 		{
-			const ThumbInstruction opcode = (instruction >> 8) & 0b1111;
+			const ThumbInstruction opcode = (instruction >> 8) & 0b1111u;
 
-			if (opcode == 0b1110) {
+			if (opcode == 0b1110u) {
 				// Permanently undefined
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-			else if (opcode == 0b1111) {
+			else if (opcode == 0b1111u) {
 				// or SVC, supervisor call, previously called SWI
 				return ThumbInstructionType::SWI;
 			}
@@ -1463,14 +1463,14 @@ namespace emulator {
 		ThumbInstructionType constexpr decode_32(ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 11) & 0b11;
-			const ThumbInstruction op2 = (first_instruction >> 4) & 0b1111111;
+			const ThumbInstruction op1 = (first_instruction >> 11) & 0b11u;
+			const ThumbInstruction op2 = (first_instruction >> 4) & 0b1111111u;
 
-			if (op1 == 0b01) {
-				if ((op2 & 0b1100100) == 0b0000000) {
+			if (op1 == 0b01u) {
+				if ((op2 & 0b1100100u) == 0b0000000u) {
 					return decode_32_load_store_multiple(first_instruction);
 				}
-				if ((op2 & 0b1100100) == 0b0000100) {
+				if ((op2 & 0b1100100u) == 0b0000100u) {
 					// STREX Store Register Exclusive is v6T2
 					// LDREX Loard Register Exclusive is v6T2
 					// STRD Store Register Dual is v6T2
@@ -1485,74 +1485,101 @@ namespace emulator {
 					// LDREXD Loard Register Exclusive Doubleword is v7
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b1100000) == 0b0100000) {
+				if ((op2 & 0b1100000u) == 0b0100000u) {
 					return decode_32_data_processing_shifted_register(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1000000) == 0b1000000) {
+				if ((op2 & 0b1000000u) == 0b1000000u) {
 					// Coprocessor, Advanced SIMD, and Floating-point instructions
 					// These encodings are all available in ARMv6T2 and above.
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
 			}
-			else if (op1 == 0b10) {
-				const ThumbInstruction op = (second_instruction >> 15) & 0b1;
+			else if (op1 == 0b10u) {
+				const ThumbInstruction op = (second_instruction >> 15) & 0b1u;
 
-				if (op == 0b1) {
-					return decode_32_branches_and_misc_control(first_instruction,
-						second_instruction);
+				if (op == 0b1u) {
+
+					const ThumbInstruction op1_misc = (second_instruction >> 12) & 0b111u;
+					// const ThumbInstruction imm8 = second_instruction & 0b1111'1111u;
+					// const ThumbInstruction op = (first_instruction >> 4) & 0b111'1111u;
+					// const ThumbInstruction op2 = (second_instruction >> 8) & 0b1111u;
+
+					// op1_misc == 0b000u, op == 0b111111ux
+					// 1111110 - HVC Hypervisor Call is v7TE
+					// 1111111 - SMC/SMI Secure Monitor Call is Security Extensions
+
+					// op1_misc == 0b010u, op = 0b1111111u
+					// Permanently undefined
+
+					// op1_misc == 0b0ux0
+					// NOTE(ches) These should all be unimplemented, from what I can tell
+					// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/32-bit-Thumb-instruction-encoding/Branches-and-miscellaneous-control?lang=en
+					// MSR Move to Banked or Special Register
+					// B Conditional Branch - v6T2
+					// MSR (Banked Register) Move to Banked or Special register - v7VE
+					// BXJ Branch and Exchange Jazelle - v6T2
+					// ERET Exception Return - v6T2
+					// SUBS PC, LR Exception Return - v6T2
+					// MRS (Banked Register) Move from Banked or Special register - v7VE
+
+					if ((op1_misc & 0b101u) == 0b101u) {
+						return ThumbInstructionType::BL;
+					}
+
+					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b0100000) == 0b0000000) {
+				if ((op2 & 0b0100000u) == 0b0000000u) {
 					// Data-processing (modified immediate)
 					// These encodings are all available in ARMv6T2 and above.
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b0100000) == 0b0100000) {
+				if ((op2 & 0b0100000u) == 0b0100000u) {
 					// Data-processing (plain binary immediate)
 					// These encodings are all available in ARMv6T2 and above.
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
 			}
-			else if (op1 == 0b11) {
-				if ((op2 & 0b1110001) == 0b0000000) {
+			else if (op1 == 0b11u) {
+				if ((op2 & 0b1110001u) == 0b0000000u) {
 					return decode_32_load_single(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1100111) == 0b0000001) {
+				if ((op2 & 0b1100111u) == 0b0000001u) {
 					return decode_32_load_byte_memory_hints(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1100111) == 0b0000011) {
+				if ((op2 & 0b1100111u) == 0b0000011u) {
 					return decode_32_load_halfword_memory_hints(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1100111) == 0b0000101) {
+				if ((op2 & 0b1100111u) == 0b0000101u) {
 					return decode_32_load_word(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1100111) == 0b0000111) {
+				if ((op2 & 0b1100111u) == 0b0000111u) {
 					// explicitly undefined
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b1110001) == 0b0010000) {
+				if ((op2 & 0b1110001u) == 0b0010000u) {
 					// Advanced SIMD element or structure load/store instructions
 					// We don't have these
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b1110000) == 0b0100000) {
+				if ((op2 & 0b1110000u) == 0b0100000u) {
 					return decode_32_data_processing_register(first_instruction,
 						second_instruction);
 				}
-				if ((op2 & 0b1111000) == 0b0110000) {
+				if ((op2 & 0b1111000u) == 0b0110000u) {
 					return decode_32_multiply_multiply_accumulate_absolute_difference(
 						first_instruction, second_instruction);
 				}
-				if ((op2 & 0b1111000) == 0b0111000) {
+				if ((op2 & 0b1111000u) == 0b0111000u) {
 					// Long multiply, long multiply accumulate, and divide
 					// These are all v6T2 or v7-R
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				if ((op2 & 0b1000000) == 0b1000000) {
+				if ((op2 & 0b1000000u) == 0b1000000u) {
 					// Coprocessor, Advanced SIMD, and Floating-point instructions
 					// These encodings are all available in ARMv6T2 and above.
 					return ThumbInstructionType::UNIMPLEMENTED;
@@ -1569,28 +1596,28 @@ namespace emulator {
 		ThumbInstructionType constexpr decode_32_load_store_multiple(
 			ThumbInstruction first_instruction)
 		{
-			const ThumbInstruction op = (first_instruction >> 7) & 0b11;
-			const ThumbInstruction l = (first_instruction >> 4) & 0b1;
-			const ThumbInstruction wrn = (((first_instruction >> 5) & 0b1) << 4) 
-				| (first_instruction & 0b1111);
+			const ThumbInstruction op = (first_instruction >> 7) & 0b11u;
+			const ThumbInstruction l = (first_instruction >> 4) & 0b1u;
+			const ThumbInstruction wrn = (((first_instruction >> 5) & 0b1u) << 4) 
+				| (first_instruction & 0b1111u);
 
-			if (op == 0b01) {
-				if (l == 0b0) {
+			if (op == 0b01u) {
+				if (l == 0b0u) {
 					return ThumbInstructionType::STMIA;
 				}
-				else if (wrn == 0b11101) {
+				else if (wrn == 0b11101u) {
 					return ThumbInstructionType::POP;
 				}
 				else {
 					return ThumbInstructionType::LDMIA;
 				}
 			}
-			else if (op == 0b10) {
-				if (l == 0b1) {
+			else if (op == 0b10u) {
+				if (l == 0b1u) {
 					// I don't think we have LDMDB
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
-				else if (wrn == 0b11101) {
+				else if (wrn == 0b11101u) {
 					return ThumbInstructionType::PUSH;
 				}
 				else {
@@ -1599,7 +1626,7 @@ namespace emulator {
 				}
 			}
 			else {
-				// 0b00, 0b11
+				// 0b00u, 0b11u
 				// SRS Store Return State is ARMv6T2
 				// RFE Return From Exception is ARMv6T2
 				return ThumbInstructionType::UNIMPLEMENTED;
@@ -1611,46 +1638,46 @@ namespace emulator {
 			ThumbInstruction second_instruction)
 		{
 
-			const ThumbInstruction op = (first_instruction >> 5) & 0b1111;
-			const ThumbInstruction rn = first_instruction & 0b111;
-			const ThumbInstruction rds = (((second_instruction >> 8) & 0b1111) << 1)
-				| ((first_instruction >> 4) & 0b1);
+			const ThumbInstruction op = (first_instruction >> 5) & 0b1111u;
+			const ThumbInstruction rn = first_instruction & 0b111u;
+			const ThumbInstruction rds = (((second_instruction >> 8) & 0b1111u) << 1)
+				| ((first_instruction >> 4) & 0b1u);
 
-			if (op == 0b0000) {
-				if (rds == 0b11111) {
+			if (op == 0b0000u) {
+				if (rds == 0b11111u) {
 					return ThumbInstructionType::TST;
 				}
 				else {
 					return ThumbInstructionType::AND;
 				}
 			}
-			else if (op == 0b0001) {
+			else if (op == 0b0001u) {
 				return ThumbInstructionType::BIC;
 			}
-			else if (op == 0b0010) {
-				if (rn == 0b11111) {
+			else if (op == 0b0010u) {
+				if (rn == 0b11111u) {
 					const ThumbInstruction imm3imm2 = 
-						(((second_instruction >> 12) & 0b111) << 2)
-						| ((second_instruction >> 6) & 0b11);
-					const ThumbInstruction type = (second_instruction >> 4) & 0b11;
+						(((second_instruction >> 12) & 0b111u) << 2)
+						| ((second_instruction >> 6) & 0b11u);
+					const ThumbInstruction type = (second_instruction >> 4) & 0b11u;
 
-					if (type == 0b00) {
-						if (imm3imm2 == 0b00000) {
+					if (type == 0b00u) {
+						if (imm3imm2 == 0b00000u) {
 							return ThumbInstructionType::MOV;
 						}
 						else {
 							return ThumbInstructionType::LSL;
 						}
 					}
-					else if (type == 0b01) {
+					else if (type == 0b01u) {
 						return ThumbInstructionType::LSR;
 					}
-					else if (type == 0b10) {
+					else if (type == 0b10u) {
 						return ThumbInstructionType::ASR;
 					}
 					else {
-						// type == 0b11
-						if (imm3imm2 == 0b00000) {
+						// type == 0b11u
+						if (imm3imm2 == 0b00000u) {
 							//TODO(ches) figure out if we support this
 							// RRX Rotate Right with Extend
 							return ThumbInstructionType::UNIMPLEMENTED;
@@ -1664,8 +1691,8 @@ namespace emulator {
 					return ThumbInstructionType::ORR;
 				}
 			}
-			else if (op == 0b0011) {
-				if (rn == 0b11111) {
+			else if (op == 0b0011u) {
+				if (rn == 0b11111u) {
 					return ThumbInstructionType::MVN;
 				}
 				else {
@@ -1673,8 +1700,8 @@ namespace emulator {
 					return ThumbInstructionType::UNIMPLEMENTED;
 				}
 			}
-			else if (op == 0b0100) {
-				if (rds == 0b11111) {
+			else if (op == 0b0100u) {
+				if (rds == 0b11111u) {
 					//TODO(ches) figure out if we support this
 					// TEQ Test Equivalence
 					return ThumbInstructionType::UNIMPLEMENTED;
@@ -1683,68 +1710,34 @@ namespace emulator {
 					return ThumbInstructionType::EOR;
 				}
 			}
-			else if (op == 0b0110) {
+			else if (op == 0b0110u) {
 				// PKH Pakc Halfword is ARMv6T2
 				return ThumbInstructionType::UNIMPLEMENTED;
 			}
-			else if (op == 0b1000) {
-				if (rds == 0b11111) {
+			else if (op == 0b1000u) {
+				if (rds == 0b11111u) {
 					return ThumbInstructionType::CMN;
 				}
 				else {
 					return ThumbInstructionType::ADD;
 				}
 			}
-			else if (op == 0b1010) {
+			else if (op == 0b1010u) {
 				return ThumbInstructionType::ADC;
 			}
-			else if (op == 0b1011) {
+			else if (op == 0b1011u) {
 				return ThumbInstructionType::SBC;
 			}
-			else if (op == 0b1101) {
-				if (rds == 0b11111) {
+			else if (op == 0b1101u) {
+				if (rds == 0b11111u) {
 					return ThumbInstructionType::CMP;
 				}
 				else {
 					return ThumbInstructionType::SUB;
 				}
 			}
-			else if (op == 0b1110) {
+			else if (op == 0b1110u) {
 				return ThumbInstructionType::RSB;
-			}
-
-			return ThumbInstructionType::UNIMPLEMENTED;
-		}
-
-		ThumbInstructionType constexpr decode_32_branches_and_misc_control(
-			ThumbInstruction first_instruction, 
-			ThumbInstruction second_instruction)
-		{
-			const ThumbInstruction op1 = (second_instruction >> 12) & 0b111;
-			// const ThumbInstruction imm8 = second_instruction & 0b1111'1111;
-			// const ThumbInstruction op = (first_instruction >> 4) & 0b111'1111;
-			// const ThumbInstruction op2 = (second_instruction >> 8) & 0b1111;
-		
-			// op1 == 0b000, op == 0b111111x
-			// 1111110 - HVC Hypervisor Call is v7TE
-			// 1111111 - SMC/SMI Secure Monitor Call is Security Extensions
-
-			// op1 == 0b010, op = 0b1111111
-			// Permanently undefined
-		
-			// op1 == 0b0x0
-			// NOTE(ches) These should all be unimplemented, from what I can tell
-			// https://developer.arm.com/documentation/ddi0406/cb/Application-Level-Architecture/Thumb-Instruction-Set-Encoding/32-bit-Thumb-instruction-encoding/Branches-and-miscellaneous-control?lang=en
-			// MSR Move to Banked or Special Register
-			// B Conditional Branch - v6T2
-			// MSR (Banked Register) Move to Banked or Special register - v7VE
-			// BXJ Branch and Exchange Jazelle - v6T2
-			// ERET Exception Return - v6T2
-			// SUBS PC, LR Exception Return - v6T2
-			// MRS (Banked Register) Move from Banked or Special register - v7VE
-
-			if ((op1 & 0b101) == 0b101) {
-				return ThumbInstructionType::BL;
 			}
 
 			return ThumbInstructionType::UNIMPLEMENTED;
@@ -1754,40 +1747,40 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 5) & 0b111;
-			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+			const ThumbInstruction op1 = (first_instruction >> 5) & 0b111u;
+			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111u;
 
-			if (op1 == 0b000) {
-				if (((op2 & 0b100100) == 0b100100)
-					|| ((op2 & 0b111100) == 0b110000)
-					|| (op2 == 0b000000)) {
+			if (op1 == 0b000u) {
+				if (((op2 & 0b100100u) == 0b100100u)
+					|| ((op2 & 0b111100u) == 0b110000u)
+					|| (op2 == 0b000000u)) {
 					return ThumbInstructionType::STRB;
 				}
-				// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+				// op2 == 0b1110uxx, STRBT Store Register Byte Unprivileged
 			}
-			else if (op1 == 0b001) {
-				if (((op2 & 0b100100) == 0b100100)
-					|| ((op2 & 0b111100) == 0b11000)
-					|| (op2 == 0b000000)) {
+			else if (op1 == 0b001u) {
+				if (((op2 & 0b100100u) == 0b100100u)
+					|| ((op2 & 0b111100u) == 0b11000u)
+					|| (op2 == 0b000000u)) {
 					return ThumbInstructionType::STRH;
 				}
-				// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+				// op2 == 0b1110uxx, STRBT Store Register Byte Unprivileged
 			}
-			else if (op1 == 0b010) {
-				if (((op2 & 0b100100) == 0b100100)
-					|| ((op2 & 0b111100) == 0b110000)
-					|| (op2 == 0b000000)) {
+			else if (op1 == 0b010u) {
+				if (((op2 & 0b100100u) == 0b100100u)
+					|| ((op2 & 0b111100u) == 0b110000u)
+					|| (op2 == 0b000000u)) {
 					return ThumbInstructionType::STR;
 				}
-				// op2 == 0b1110xx, STRBT Store Register Byte Unprivileged
+				// op2 == 0b1110uxx, STRBT Store Register Byte Unprivileged
 			}
-			else if (op1 == 0b100) {
+			else if (op1 == 0b100u) {
 				return ThumbInstructionType::STRB;
 			}
-			else if (op1 == 0b101) {
+			else if (op1 == 0b101u) {
 				return ThumbInstructionType::STRH;
 			}
-			else if (op1 == 0b110) {
+			else if (op1 == 0b110u) {
 				return ThumbInstructionType::STR;
 			}
 
@@ -1798,63 +1791,63 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
-			const ThumbInstruction rn = first_instruction & 0b1111;
-			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
-			const ThumbInstruction rt = (second_instruction >> 12) & 0b1111;
+			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11u;
+			const ThumbInstruction rn = first_instruction & 0b1111u;
+			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111u;
+			const ThumbInstruction rt = (second_instruction >> 12) & 0b1111u;
 
-			if (op1 == 0b00 && op2 == 0b000000 && rn != 0b1111) {
-				if (rt != 0b1111) {
+			if (op1 == 0b00u && op2 == 0b000000u && rn != 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRB;
 				}
 				// PLD Preload Data is at least v5TE
 			}
-			else if ((op1 & 0b10) == 0b00 && rn == 0b1111) {
-				if (rt != 0b1111) {
+			else if ((op1 & 0b10u) == 0b00u && rn == 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRB;
 				}
 				// PLD Preload Data is at least v5TE
 			}
-			else if (op1 == 0b00) {
-				if ((op2 & 0b100100) == 0b100100 && rn != 0b1111) {
+			else if (op1 == 0b00u) {
+				if ((op2 & 0b100100u) == 0b100100u && rn != 0b1111u) {
 					return ThumbInstructionType::LDRB;
 				}
-				else if ((op2 & 0b111100) == 0b110000 && rn != 0b1111) {
+				else if ((op2 & 0b111100u) == 0b110000u && rn != 0b1111u) {
 					return ThumbInstructionType::LDRB;
 				}
-				// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 is PLD
-				// op2 == 0b1110xx, rn != 0b1111 is LDRBT, which I don't think we have
+				// op2 == 0b1100uxx, rn != 0b1111u, rt == 0b1111u is PLD
+				// op2 == 0b1110uxx, rn != 0b1111u is LDRBT, which I don't think we have
 			}
-			else if (op1 == 0b01 && rn != 0b1111) {
-				if (rt != 0b1111) {
+			else if (op1 == 0b01u && rn != 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRB;
 				}
 				// PLD Preload Data is at least v5TE
 			}
-			else if (op1 == 0b10 && op2 == 0b000000 && rn != 0b1111) {
-				if (rt != 0b1111) {
+			else if (op1 == 0b10u && op2 == 0b000000u && rn != 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRSB;
 				}
 				// else PLI Preload Instruction, v7
 			}
-			else if ((op1 & 0b10) == 0b10 && rn == 0b1111) {
-				if (rt != 0b1111) {
+			else if ((op1 & 0b10u) == 0b10u && rn == 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRSB;
 				}
 				// else PLI Preload Instruction, v7
 			}
-			else if (op1 == 0b10) {
-				if ((op2 & 0b100100) == 0b100100 && rn != 0b1111) {
+			else if (op1 == 0b10u) {
+				if ((op2 & 0b100100u) == 0b100100u && rn != 0b1111u) {
 					return ThumbInstructionType::LDRSB;
 				}
-				else if ((op2 & 0b111100) == 0b110000 && rn != 0b1111) {
+				else if ((op2 & 0b111100u) == 0b110000u && rn != 0b1111u) {
 					return ThumbInstructionType::LDRSB;
 				}
-				// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 is PLI
-				// op2 == 0b1110xx, rn != 0b1111 is LDRSBT, which I don't think we have
+				// op2 == 0b1100uxx, rn != 0b1111u, rt == 0b1111u is PLI
+				// op2 == 0b1110uxx, rn != 0b1111u is LDRSBT, which I don't think we have
 			}
-			else if (op1 == 0b11 && rn != 0b1111) {
-				if (rt != 0b1111) {
+			else if (op1 == 0b11u && rn != 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRSB;
 				}
 				// else PLI Preload Instruction, v7
@@ -1866,43 +1859,43 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
-			const ThumbInstruction rn = first_instruction & 0b1111;
-			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
-			const ThumbInstruction rt = (second_instruction >> 12) & 0b1111;
+			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11u;
+			const ThumbInstruction rn = first_instruction & 0b1111u;
+			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111u;
+			const ThumbInstruction rt = (second_instruction >> 12) & 0b1111u;
 
-			if ((op1 & 0b10) == 0b00 && rn == 0b1111) {
-				if (rt != 0b1111) {
+			if ((op1 & 0b10u) == 0b00u && rn == 0b1111u) {
+				if (rt != 0b1111u) {
 					return ThumbInstructionType::LDRH;
 				}
 				// PLD Preload Data is v5TE
 			}
-			else if ((op1 == 0b00 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
-				|| (op1 == 0b00 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt != 0b1111)
-				|| (op1 == 0b01 && rn != 0b1111 && rt != 0b1111)
+			else if ((op1 == 0b00u && (op2 & 0b100100u) == 0b100100u && rn != 0b1111u)
+				|| (op1 == 0b00u && (op2 & 0b111100u) == 0b110000u && rn != 0b1111u && rt != 0b1111u)
+				|| (op1 == 0b01u && rn != 0b1111u && rt != 0b1111u)
 				) {
 				return ThumbInstructionType::LDRH;
 			}
-			else if (op1 == 0b00 && op2 == 0b000000 && rn != 0b1111 && rt != 0b1111) {
-				// op2 == 0b1110xx, rn != 0b1111 - LDRHT Load Register Halfword Unprivileged is v6T2
-				// op2 == 0b000000, rn != 0b1111, rt == 0b1111 - PLD
-				// op2 == 0b1100xx, rn != 0b1111, rt == 0b1111 - PLD
+			else if (op1 == 0b00u && op2 == 0b000000u && rn != 0b1111u && rt != 0b1111u) {
+				// op2 == 0b1110uxx, rn != 0b1111u - LDRHT Load Register Halfword Unprivileged is v6T2
+				// op2 == 0b000000u, rn != 0b1111u, rt == 0b1111u - PLD
+				// op2 == 0b1100uxx, rn != 0b1111u, rt == 0b1111u - PLD
 				return ThumbInstructionType::LDRH;
 			}
-			// op1 == 0b01, rn != 0b1111, rt == 0b1111 - PLD
-			else if ((op1 == 0b10 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
-				|| (op1 == 0b10 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt != 0b1111)
-				|| (op1 == 0b11 && rn == 0b1111 && rt != 0b1111)
-				|| ((op1 & 0b10) == 0b10 && rn == 0b1111 && rt != 0b1111)
-				|| (op1 == 0b10 && op2 == 0b000000 && rn != 0b1111 && rt != 0b1111)
+			// op1 == 0b01u, rn != 0b1111u, rt == 0b1111u - PLD
+			else if ((op1 == 0b10u && (op2 & 0b100100u) == 0b100100u && rn != 0b1111u)
+				|| (op1 == 0b10u && (op2 & 0b111100u) == 0b110000u && rn != 0b1111u && rt != 0b1111u)
+				|| (op1 == 0b11u && rn == 0b1111u && rt != 0b1111u)
+				|| ((op1 & 0b10u) == 0b10u && rn == 0b1111u && rt != 0b1111u)
+				|| (op1 == 0b10u && op2 == 0b000000u && rn != 0b1111u && rt != 0b1111u)
 				) {
 				return ThumbInstructionType::LDRSH;
 			}
 			// LDRSHT is ambiguous in the spec regarding rt, but we don't have that anyway
-			else if ((op1 == 0b10 && op2 == 0b000000 && rn != 0b1111 && rt == 0b1111)
-				|| (op1 == 0b10 && (op2 & 0b111100) == 0b110000 && rn != 0b1111 && rt == 0b1111)
-				|| ((op1 & 0b10) == 0b10 && rn == 0b1111 && rt == 0b1111)
-				|| (op1 == 0b11 && rn != 0b1111 && rt == 0b1111)
+			else if ((op1 == 0b10u && op2 == 0b000000u && rn != 0b1111u && rt == 0b1111u)
+				|| (op1 == 0b10u && (op2 & 0b111100u) == 0b110000u && rn != 0b1111u && rt == 0b1111u)
+				|| ((op1 & 0b10u) == 0b10u && rn == 0b1111u && rt == 0b1111u)
+				|| (op1 == 0b11u && rn != 0b1111u && rt == 0b1111u)
 				) {
 				// Unallocated memory hint (treat as NOP)
 				return ThumbInstructionType::NOP;
@@ -1915,19 +1908,19 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11;
-			const ThumbInstruction rn = first_instruction & 0b1111;
-			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111;
+			const ThumbInstruction op1 = (first_instruction >> 7) & 0b11u;
+			const ThumbInstruction rn = first_instruction & 0b1111u;
+			const ThumbInstruction op2 = (second_instruction >> 6) & 0b111111u;
 
-			if ((op1 == 0b00 && op2 == 0b000000 && rn != 0b1111)
-			|| (op1 == 0b00 && (op2 & 0b100100) == 0b100100 && rn != 0b1111)
-			|| (op1 == 0b00 && (op2 & 0b111100) == 0b110000 && rn != 0b1111)
-			|| (op1 == 0b01 && rn != 0b1111)
-			|| ((op1 & 0b10) == 0b00 && rn == 0b1111)
+			if ((op1 == 0b00u && op2 == 0b000000u && rn != 0b1111u)
+			|| (op1 == 0b00u && (op2 & 0b100100u) == 0b100100u && rn != 0b1111u)
+			|| (op1 == 0b00u && (op2 & 0b111100u) == 0b110000u && rn != 0b1111u)
+			|| (op1 == 0b01u && rn != 0b1111u)
+			|| ((op1 & 0b10u) == 0b00u && rn == 0b1111u)
 			) {
 				return ThumbInstructionType::LDR;
 			}
-			// op1 == 0b00, op2 == 1110xx, rn != 0b1111 - LDRT Load Register Unprivileged
+			// op1 == 0b00u, op2 == 1110xx, rn != 0b1111u - LDRT Load Register Unprivileged
 		
 			return ThumbInstructionType::UNIMPLEMENTED;
 		}
@@ -1936,19 +1929,19 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 4) & 0b1111;
-			const ThumbInstruction op2 = (second_instruction >> 4) & 0b1111;
+			const ThumbInstruction op1 = (first_instruction >> 4) & 0b1111u;
+			const ThumbInstruction op2 = (second_instruction >> 4) & 0b1111u;
 
-			if ((op1 & 0b1110) == 0b0000 && op2 == 0b0000) {
+			if ((op1 & 0b1110u) == 0b0000u && op2 == 0b0000u) {
 				return ThumbInstructionType::LSL;
 			}
-			else if ((op1 & 0b1110) == 0b0010 && op2 == 0b0000) {
+			else if ((op1 & 0b1110u) == 0b0010u && op2 == 0b0000u) {
 				return ThumbInstructionType::LSR;
 			}
-			else if ((op1 & 0b1110) == 0b0100 && op2 == 0b0000) {
+			else if ((op1 & 0b1110u) == 0b0100u && op2 == 0b0000u) {
 				return ThumbInstructionType::ASR;
 			}
-			else if ((op1 & 0b1110) == 0b0110 && op2 == 0b0000) {
+			else if ((op1 & 0b1110u) == 0b0110u && op2 == 0b0000u) {
 				return ThumbInstructionType::ROR;
 			}
 			// Everything else is newer
@@ -1961,11 +1954,11 @@ namespace emulator {
 			ThumbInstruction first_instruction, 
 			ThumbInstruction second_instruction)
 		{
-			const ThumbInstruction op1 = (first_instruction >> 4) & 0b111;
-			const ThumbInstruction op2 = (second_instruction >> 4) & 0b11;
-			const ThumbInstruction ra = (second_instruction >> 12) & 0b1111;
+			const ThumbInstruction op1 = (first_instruction >> 4) & 0b111u;
+			const ThumbInstruction op2 = (second_instruction >> 4) & 0b11u;
+			const ThumbInstruction ra = (second_instruction >> 12) & 0b1111u;
 
-			if (op1 == 0b000 && op2 == 0b00 && ra == 0b1111) {
+			if (op1 == 0b000u && op2 == 0b00u && ra == 0b1111u) {
 				return ThumbInstructionType::MUL;
 			}
 

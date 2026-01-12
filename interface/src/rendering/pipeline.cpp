@@ -220,8 +220,8 @@ namespace render {
 
 	void create_pipeline()
 	{
-		ShaderStage vertex_stage = { ShaderType::vertex, "shaders/simple.vert.spv" };
-		ShaderStage fragment_stage = { ShaderType::fragment, "shaders/simple.frag.spv" };
+		ShaderStage vertex_stage = ShaderStage(ShaderType::vertex, "shaders/simple.vert.spv");
+		ShaderStage fragment_stage = ShaderStage(ShaderType::fragment, "shaders/simple.frag.spv");
 
 		auto shader_stages = std::initializer_list<ShaderStage>{
 			vertex_stage, fragment_stage
