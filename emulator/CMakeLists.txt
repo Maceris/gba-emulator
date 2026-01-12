@@ -29,6 +29,7 @@ SET(SOURCE_FILES
   ${EMULATOR_SOURCE_DIR}/cpu/arm7tdmi.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/cpu.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/sm83.cpp
+  ${EMULATOR_SOURCE_DIR}/memory/memory_types.cpp
 )
 
 SET(TEST_FILES

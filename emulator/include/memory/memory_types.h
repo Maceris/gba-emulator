@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <stdexcept>
 
 namespace emulator {
 
@@ -28,25 +27,14 @@ namespace emulator {
 		Address32 min;
 		Address32 max;
 
-		constexpr AddressRange(Address32 min, Address32 max)
-			: min{ min }
-			, max{ max }
-		{
-			if (max < min)
-			{
-				throw std::invalid_argument("Max address is less than min");
-			}
-		}
-		constexpr AddressRange(const AddressRange&) = default;
-		constexpr AddressRange& operator=(const AddressRange&) = default;
-		constexpr AddressRange(AddressRange&&) = default;
-		constexpr AddressRange& operator=(AddressRange&&) = default;
-		constexpr ~AddressRange() = default;
+		constexpr AddressRange(Address32 min, Address32 max);
+		constexpr AddressRange(const AddressRange&);
+		constexpr AddressRange& operator=(const AddressRange&);
+		constexpr AddressRange(AddressRange&&);
+		constexpr AddressRange& operator=(AddressRange&&);
+		constexpr ~AddressRange();
 
-		constexpr bool contains(const Address32& address) const
-		{
-			return address >= min && address <= max;
-		}
+		constexpr bool contains(const Address32& address) const;
 	};
 
 	struct MemoryAccessInfo
