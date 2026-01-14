@@ -4,7 +4,54 @@ namespace emulator {
 
 #pragma region ARM7TDMI ARM Instructions
 	void ARM7TDMI::arm_adc(ArmInstruction instruction)
-	{}
+	{
+		const ArmInstruction cond = (instruction >> 28) & 0b1111u;
+		// Whether we should update the flags
+		const ArmInstruction s = (instruction >> 20) & 0b1u;
+		// First operand register, PC can be used
+		const ArmInstruction rn = (instruction >> 16) & 0b1111u;
+		// Destination register
+		const ArmInstruction rd = (instruction >> 12) & 0b1111u;
+
+		const bool is_immediate = ((instruction >> 25) & 0b1u) == 0b1u;
+		const bool is_register_shifted = ((instruction >> 4) & 0b1u) == 0b1u;
+
+		// TODO(ches) handle Rd being the PC, might be a branch or SUBS
+
+		// TODO(ches) finish the decoding and processing
+		if (is_immediate) {
+			// ADC (immediate)
+			const ArmInstruction imm12 = instruction & 0b1111'1111'1111u;
+
+		}
+		else if (is_register_shifted) {
+			// ADC (register-shifted register)
+			const ArmInstruction rs = (instruction >> 7) & 0b1111u;
+			const ArmInstruction rm = instruction & 0b1111u;
+
+		}
+		else {
+			// ADC (register)
+			const ArmInstruction imm5 = (instruction >> 7) & 0b1'1111u;
+			const ArmInstruction type = (instruction >> 5) & 0b11u;
+			const ArmInstruction rm = instruction & 0b1111u;
+
+			if (type == 0b00u) {
+				// LSL
+			}
+			else if (type == 0b01u) {
+				// LSR
+			}
+			else if (type == 0b10u) {
+				// ASR
+			}
+			else /* if (type == 0b11u) */ {
+				// ROR
+			}
+
+		}
+
+	}
 
 	void ARM7TDMI::arm_add(ArmInstruction instruction)
 	{}
