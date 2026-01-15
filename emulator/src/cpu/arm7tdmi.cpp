@@ -1,6 +1,32 @@
 #include "cpu/arm7tdmi.h"
 
+#include "debugging/logger.h"
+
 namespace emulator {
+
+	ARMCond cond_to_enum(ArmInstruction cond) {
+		LOG_ASSERT(cond >= 0 && cond <= 15);
+
+		// 0000 = EQ
+		// 0001 = NE
+		// 0010 = CS
+		// 0011 = CC
+		// 0100 = MI
+		// 0101 = PL
+		// 0110 = VS
+		// 0111 = VC
+		// 1000 = HI
+		// 1001 = LS
+		// 1010 = GE
+		// 1011 = LT
+		// 1100 = GT
+		// 1101 = LE
+		// 1110 = AL
+		if (cond == 0b1111u) {
+			return ARMCond::AL;
+		}
+		return static_cast<ARMCond>(cond);
+	}
 
 #pragma region ARM7TDMI ARM Instructions
 	void ARM7TDMI::arm_adc(ArmInstruction instruction)

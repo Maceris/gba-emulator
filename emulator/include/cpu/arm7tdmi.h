@@ -282,6 +282,82 @@ namespace emulator {
 		UNIMPLEMENTED
 	};
 
+	/// <summary>
+	/// Condition fields, named the same as the suffix used in instructions.
+	/// These also happen to be in order, matching their cond value.
+	/// </summary>
+	enum class ARMCond : ArmInstruction {
+		/// <summary>
+		/// Equal.
+		/// </summary>
+		EQ,
+		/// <summary>
+		/// Not equal.
+		/// </summary>
+		NE,
+		/// <summary>
+		/// Unsigned higher, or same.
+		/// </summary>
+		CS,
+		/// <summary>
+		/// Unsigned lower.
+		/// </summary>
+		CC,
+		/// <summary>
+		/// Negative.
+		/// </summary>
+		MI,
+		/// <summary>
+		/// Positive, or zero.
+		/// </summary>
+		PL,
+		/// <summary>
+		/// Overflow
+		/// </summary>
+		VS,
+		/// <summary>
+		/// No overflow.
+		/// </summary>
+		VC,
+		/// <summary>
+		/// Unsigned higher.
+		/// </summary>
+		HI,
+		/// <summary>
+		/// Unsigned lower, or same.
+		/// </summary>
+		LS,
+		/// <summary>
+		/// Greater, or equal.
+		/// </summary>
+		GE,
+		/// <summary>
+		/// Less than.
+		/// </summary>
+		LT,
+		/// <summary>
+		/// Greater than.
+		/// </summary>
+		GT,
+		/// <summary>
+		/// Less than, or equal.
+		/// </summary>
+		LE,
+		/// <summary>
+		/// Always.
+		/// </summary>
+		AL,
+	};
+
+	/// <summary>
+	/// Converts the 4-bit cond code to the appropriate conditional code.
+	/// 0b1111u is only present for instructions that execute unconditionally,
+	/// so we will return AL for that as well as the legitimate AL (0b1110u).
+	/// </summary>
+	/// <param name="cond">The 4 bits of the cond code.</param>
+	/// <returns>The appropriate conditional code.</returns>
+	ARMCond cond_to_enum(ArmInstruction cond);
+
 	enum class ThumbInstructionType
 	{
 		/// <summary>
