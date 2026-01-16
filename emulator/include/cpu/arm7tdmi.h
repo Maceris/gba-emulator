@@ -636,6 +636,37 @@ namespace emulator {
 		ThumbInstructionType constexpr decode_32_multiply_multiply_accumulate_absolute_difference(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
 	}
 
+	enum class ArmMode {
+		/// <summary>
+		/// User.
+		/// </summary>
+		USR,
+		/// <summary>
+		/// Fast Interrupt.
+		/// </summary>
+		FIQ,
+		/// <summary>
+		/// Interrupt.
+		/// </summary>
+		IRQ,
+		/// <summary>
+		/// Supervisor.
+		/// </summary>
+		SUP,
+		/// <summary>
+		/// Abort.
+		/// </summary>
+		ABT,
+		/// <summary>
+		/// Undefined.
+		/// </summary>
+		UND,
+		/// <summary>
+		/// System.
+		/// </summary>
+		SYS,
+	};
+
 	/// <summary>
 	/// A 16.78 MHz ARM7TDMI RISC processor, featuring 16-bit Thumb, JTAG Debug,
 	/// fast multiplier, and enhanced ICE.
@@ -722,7 +753,22 @@ namespace emulator {
 		/// Current Program Status Register.
 		/// Stores current condition codes (flags) and CPU control bits. 
 		/// When exceptions are raised, the old CPSR is saved in the SPSR of the 
-		/// respective exceptoin mode.
+		/// respective exception mode.
+		/// <para/>
+		/// 
+		/// |--------------------------------------------|<para/>
+		/// |31|30|29|28|27 --- 8| 7| 6| 5| 4| 3| 2| 1| 0|<para/>
+		/// |--+--+--+--+--------+--+--+--+--+--+--+--+--|<para/>
+		/// | N| Z| C| V|Reserved| I| F| T|M4|M3|M2|M1|M0|<para/>
+		/// |--------------------------------------------|<para/>
+		/// N = Negative or less than
+		/// Z = Zero
+		/// C = Carry or borrow or extend
+		/// V = Overflow
+		/// I - IRQ disable
+		/// F = FIQ disable
+		/// T = State bit
+		/// M4-M0 = Mode bits
 		/// </summary>
 		Register CPSR;
 
@@ -1460,6 +1506,26 @@ namespace emulator {
 		ARMInstructionType decode_arm(ArmInstruction instruction);
 		ThumbInstructionType decode_thumb(ThumbInstruction instruction, 
 			ThumbInstruction next_instruction);
+#pragma endregion
+
+#pragma region Flag functions
+		void set_flag_N(bool flag);
+		void set_flag_Z(bool flag);
+		void set_flag_C(bool flag);
+		void set_flag_V(bool flag);
+		void set_flag_I(bool flag);
+		void set_flag_F(bool flag);
+		void set_flag_T(bool flag);
+		void set_flag_Mode(ArmMode mode);
+
+		bool get_flag_N() const;
+		bool get_flag_Z() const;
+		bool get_flag_C() const;
+		bool get_flag_V() const;
+		bool get_flag_I() const;
+		bool get_flag_F() const;
+		bool get_flag_T() const;
+		ArmMode get_flag_Mode() const;
 #pragma endregion
 
 	};

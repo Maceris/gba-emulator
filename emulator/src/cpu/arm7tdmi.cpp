@@ -1,5 +1,6 @@
 #include "cpu/arm7tdmi.h"
 
+#include "cpu/cpu_constants.h"
 #include "debugging/logger.h"
 
 namespace emulator {
@@ -2062,4 +2063,153 @@ namespace emulator {
 		}
 	
 	}
+
+	void ARM7TDMI::set_flag_N(bool flag) {
+		if (flag) {
+			CPSR |= SIGN_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~SIGN_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_Z(bool flag) {
+		if (flag) {
+			CPSR |= ZERO_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~ZERO_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_C(bool flag) {
+		if (flag) {
+			CPSR |= CARRY_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~CARRY_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_V(bool flag) {
+		if (flag) {
+			CPSR |= OVERFLOW_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~OVERFLOW_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_I(bool flag) {
+		if (flag) {
+			CPSR |= IRQ_DISABLE_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~IRQ_DISABLE_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_F(bool flag) {
+		if (flag) {
+			CPSR |= FIQ_DISABLE_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~FIQ_DISABLE_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_T(bool flag) {
+		if (flag) {
+			CPSR |= STATE_FLAG_BITS;
+		}
+		else {
+			CPSR &= ~STATE_FLAG_BITS;
+		}
+	}
+
+	void ARM7TDMI::set_flag_Mode(ArmMode mode) {
+		Word result = 0;
+		switch (mode) {
+		case ArmMode::USR:
+			result = MODE_USER;
+			break;
+		case ArmMode::FIQ:
+			result = MODE_FIQ;
+			break;
+		case ArmMode::IRQ:
+			result = MODE_IRQ;
+			break;
+		case ArmMode::SUP:
+			result = MODE_SUPERVISOR;
+			break;
+		case ArmMode::ABT:
+			result = MODE_ABORT;
+			break;
+		case ArmMode::UND:
+			result = MODE_UNDEFINED;
+			break;
+		case ArmMode::SYS:
+			result = MODE_SYSTEM;
+			break;
+		default:
+			// Illegal values put the processor into an unrecoverable state
+			LOG_FATAL("Invalid processor mode");
+		}
+
+		CPSR &= ~MODE_FLAG_BITS;
+		CPSR |= result;
+	}
+
+
+	bool ARM7TDMI::get_flag_N() const {
+		return (CPSR & SIGN_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_Z() const {
+		return (CPSR & ZERO_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_C() const {
+		return (CPSR & CARRY_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_V() const {
+		return (CPSR & OVERFLOW_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_I() const {
+		return (CPSR & IRQ_DISABLE_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_F() const {
+		return (CPSR & FIQ_DISABLE_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_T() const {
+		return (CPSR & STATE_FLAG_BITS) != 0;
+	}
+
+	ArmMode ARM7TDMI::get_flag_Mode() const {
+		const Word mode_bits = CPSR & MODE_FLAG_BITS;
+
+		switch (mode_bits) {
+			case MODE_USER:
+				return ArmMode::USR;
+			case MODE_FIQ:
+				return ArmMode::FIQ;
+			case MODE_IRQ:
+				return ArmMode::IRQ;
+			case MODE_SUPERVISOR:
+				return ArmMode::SUP;
+			case MODE_ABORT:
+				return ArmMode::ABT;
+			case MODE_UNDEFINED:
+				return ArmMode::UND;
+			case MODE_SYSTEM:
+				return ArmMode::SYS;
+			default:
+				LOG_FATAL("Invalid processor mode");
+		}
+	}
+
 }
