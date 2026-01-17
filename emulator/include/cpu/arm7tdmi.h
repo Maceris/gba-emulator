@@ -652,7 +652,7 @@ namespace emulator {
 		/// <summary>
 		/// Supervisor.
 		/// </summary>
-		SUP,
+		SVC,
 		/// <summary>
 		/// Abort.
 		/// </summary>
@@ -1508,6 +1508,7 @@ namespace emulator {
 			ThumbInstruction next_instruction);
 #pragma endregion
 
+		//TODO(ches) write docs for these
 #pragma region Flag functions
 		void set_flag_N(bool flag);
 		void set_flag_Z(bool flag);
@@ -1516,7 +1517,7 @@ namespace emulator {
 		void set_flag_I(bool flag);
 		void set_flag_F(bool flag);
 		void set_flag_T(bool flag);
-		void set_flag_Mode(ArmMode mode);
+		void set_flag_mode(ArmMode mode);
 
 		bool get_flag_N() const;
 		bool get_flag_Z() const;
@@ -1525,8 +1526,24 @@ namespace emulator {
 		bool get_flag_I() const;
 		bool get_flag_F() const;
 		bool get_flag_T() const;
-		ArmMode get_flag_Mode() const;
+		ArmMode get_flag_mode() const;
 #pragma endregion
+
+		/// <summary>
+		/// Read a numbered register (R0-R15), accounting for the current
+		/// processor mode.
+		/// </summary>
+		/// <param name="register_id">The number of the register.</param>
+		/// <returns>The register value.</returns>
+		Word read_register(Word register_id);
+
+		/// <summary>
+		/// Write to a numbered register (R0-R15), accounting for the current
+		/// processor mode.
+		/// </summary>
+		/// <param name="register_id">The number of the register.</param>
+		/// <param name="value">The value to write to the register.</param>
+		void write_register(Word register_id, Word value);
 
 	};
 

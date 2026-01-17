@@ -6,7 +6,7 @@
 namespace emulator {
 
 	ARMCond cond_to_enum(ArmInstruction cond) {
-		LOG_ASSERT(cond >= 0 && cond <= 15);
+		LOG_ASSERT(cond <= 15);
 
 		// 0000 = EQ
 		// 0001 = NE
@@ -33,13 +33,13 @@ namespace emulator {
 	void ARM7TDMI::arm_adc(ArmInstruction instruction)
 	{
 		const ArmInstruction cond = (instruction >> 28) & 0b1111u;
-		// Whether we should update the flags
-		const ArmInstruction s = (instruction >> 20) & 0b1u;
 		// First operand register, PC can be used
 		const ArmInstruction rn = (instruction >> 16) & 0b1111u;
 		// Destination register
 		const ArmInstruction rd = (instruction >> 12) & 0b1111u;
 
+		// S, Whether we should update the flags
+		const bool update_flags = ((instruction >> 20) & 0b1u) == 0b1u;
 		const bool is_immediate = ((instruction >> 25) & 0b1u) == 0b1u;
 		const bool is_register_shifted = ((instruction >> 4) & 0b1u) == 0b1u;
 
@@ -2127,7 +2127,7 @@ namespace emulator {
 		}
 	}
 
-	void ARM7TDMI::set_flag_Mode(ArmMode mode) {
+	void ARM7TDMI::set_flag_mode(ArmMode mode) {
 		Word result = 0;
 		switch (mode) {
 		case ArmMode::USR:
@@ -2139,7 +2139,7 @@ namespace emulator {
 		case ArmMode::IRQ:
 			result = MODE_IRQ;
 			break;
-		case ArmMode::SUP:
+		case ArmMode::SVC:
 			result = MODE_SUPERVISOR;
 			break;
 		case ArmMode::ABT:
@@ -2189,7 +2189,7 @@ namespace emulator {
 		return (CPSR & STATE_FLAG_BITS) != 0;
 	}
 
-	ArmMode ARM7TDMI::get_flag_Mode() const {
+	ArmMode ARM7TDMI::get_flag_mode() const {
 		const Word mode_bits = CPSR & MODE_FLAG_BITS;
 
 		switch (mode_bits) {
@@ -2200,7 +2200,7 @@ namespace emulator {
 			case MODE_IRQ:
 				return ArmMode::IRQ;
 			case MODE_SUPERVISOR:
-				return ArmMode::SUP;
+				return ArmMode::SVC;
 			case MODE_ABORT:
 				return ArmMode::ABT;
 			case MODE_UNDEFINED:
@@ -2211,5 +2211,215 @@ namespace emulator {
 				LOG_FATAL("Invalid processor mode");
 		}
 	}
+
+	Word ARM7TDMI::read_register(Word register_id) {
+		const ArmMode mode = get_flag_mode();
+		
+		switch (register_id) {
+		//These share registers for every mode
+		case 0: return R0;
+		case 1: return R1;
+		case 2: return R2;
+		case 3: return R3;
+		case 4: return R4;
+		case 5: return R5;
+		case 6: return R6;
+		case 7: return R7;
+		case 15: return R15;
+
+		// These are partially banked
+		case 8:
+			if (mode != ArmMode::FIQ) {
+				return R8;
+			}
+			else [[unlikely]] {
+				return R8_fiq;
+			}
+		case 9:
+			if (mode != ArmMode::FIQ) {
+				return R9;
+			}
+			else [[unlikely]] {
+				return R9_fiq;
+			}
+		case 10:
+			if (mode != ArmMode::FIQ) {
+				return R10;
+			}
+			else [[unlikely]] {
+				return R10_fiq;
+			}
+		case 11:
+			if (mode != ArmMode::FIQ) {
+				return R11;
+			}
+			else [[unlikely]] {
+				return R11_fiq;
+			}
+		case 12:
+			if (mode != ArmMode::FIQ) {
+				return R12;
+			}
+			else [[unlikely]] {
+				return R12_fiq;
+			}
+
+		//These are banked
+		case 13:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: return R13;
+			case ArmMode::FIQ: return R13_fiq;
+			case ArmMode::IRQ: return R13_irq;
+			case ArmMode::SVC: return R13_svc;
+			case ArmMode::ABT: return R13_abt;
+			case ArmMode::UND: return R13_und;
+			}
+			break;
+		case 14:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: return R14;
+			case ArmMode::FIQ: return R14_fiq;
+			case ArmMode::IRQ: return R14_irq;
+			case ArmMode::SVC: return R14_svc;
+			case ArmMode::ABT: return R14_abt;
+			case ArmMode::UND: return R14_und;
+			}
+			break;
+		default:
+			LOG_FATAL("Unknown register ID");
+		}
+		LOG_FATAL("Failed to find a register");
+	}
+
+	void ARM7TDMI::write_register(Word register_id, Word value) {
+		const ArmMode mode = get_flag_mode();
+
+		switch (register_id) {
+		//These share registers for every mode
+		case 0: 
+			R0 = value;
+			break;
+		case 1: 
+			R1 = value;
+			break;
+		case 2: 
+			R2 = value;
+			break;
+		case 3: 
+			R3 = value;
+			break;
+		case 4: 
+			R4 = value;
+			break;
+		case 5: 
+			R5 = value;
+			break;
+		case 6: 
+			R6 = value;
+			break;
+		case 7: 
+			R7 = value;
+			break;
+		case 15: 
+			R15 = value;
+			break;
+
+		// These are partially banked
+		case 8:
+			if (mode != ArmMode::FIQ) {
+				R8 = value;
+			}
+			else [[unlikely]] {
+				R8_fiq = value;
+			}
+			break;
+		case 9:
+			if (mode != ArmMode::FIQ) {
+				R9 = value;
+			}
+			else [[unlikely]] {
+				R9_fiq = value;
+			}
+			break;
+		case 10:
+			if (mode != ArmMode::FIQ) {
+				R10 = value;
+			}
+			else [[unlikely]] {
+				R10_fiq = value;
+			}
+			break;
+		case 11:
+			if (mode != ArmMode::FIQ) {
+				R11 = value;
+			}
+			else [[unlikely]] {
+				R11_fiq = value;
+			}
+			break;
+		case 12:
+			if (mode != ArmMode::FIQ) {
+				R12 = value;
+			}
+			else [[unlikely]] {
+				R12_fiq = value;
+			}
+			break;
+
+		//These are banked
+		case 13:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: 
+				R13 = value;
+				break;
+			case ArmMode::FIQ: 
+				R13_fiq = value;
+				break;
+			case ArmMode::IRQ: 
+				R13_irq = value;
+				break;
+			case ArmMode::SVC: 
+				R13_svc = value;
+				break;
+			case ArmMode::ABT: 
+				R13_abt = value;
+				break;
+			case ArmMode::UND: 
+				R13_und = value;
+				break;
+			}
+			break;
+		case 14:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: 
+				R14 = value;
+				break;
+			case ArmMode::FIQ: 
+				R14_fiq = value;
+				break;
+			case ArmMode::IRQ: 
+				R14_irq = value;
+				break;
+			case ArmMode::SVC: 
+				R14_svc = value;
+				break;
+			case ArmMode::ABT: 
+				R14_abt = value;
+				break;
+			case ArmMode::UND: 
+				R14_und = value;
+				break;
+			}
+			break;
+		default:
+			LOG_FATAL("Unknown register ID");
+			break;
+		}
+	}
+
 
 }
