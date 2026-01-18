@@ -18,7 +18,7 @@ namespace emulator {
 
 	/// <summary>
 	/// 0=Borrow/No Carry,
-	/// 1=Carry/No Borrow/extend
+	/// 1=Carry/No Borrow
 	/// </summary>
 	constexpr Word CARRY_FLAG_BITS = 0b0010'0000'0000'0000'0000'0000'0000'0000;
 

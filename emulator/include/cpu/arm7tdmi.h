@@ -1508,24 +1508,116 @@ namespace emulator {
 			ThumbInstruction next_instruction);
 #pragma endregion
 
-		//TODO(ches) write docs for these
 #pragma region Flag functions
+		/// <summary>
+		/// Set the CPSR condition code flag for sign. false = not signed,
+		/// true = signed (negative or less than).
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_N(bool flag);
+
+		/// <summary>
+		/// Set the CPSR condition code flag for zero. false = not zero, 
+		/// true = zero.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_Z(bool flag);
+
+		/// <summary>
+		/// Set the CPSR condition code flag for carry or borrow or extend.
+		/// false = Borrow/No Carry, true = Carry/No Borrow.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_C(bool flag);
+
+		/// <summary>
+		/// Set the CPSR condition code flag for overflow. false = no overflow,
+		/// true = overflow.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_V(bool flag);
+
+		/// <summary>
+		/// Set the CPSR control bit for IRQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_I(bool flag);
+
+		/// <summary>
+		/// Set the CPSR control bit for FIQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_F(bool flag);
+
+		/// <summary>
+		/// Set the CPSR control bit for state.
+		/// false = ARM, true = THUMB.
+		/// Should not be changed manually, only by the BX instruction.
+		/// </summary>
+		/// <param name="flag">The value to set.</param>
 		void set_flag_T(bool flag);
+
+		/// <summary>
+		/// Set the CPSR mode bits.
+		/// </summary>
+		/// <param name="mode">The ARM mode we want to set bits for.</param>
 		void set_flag_mode(ArmMode mode);
 
+		/// <summary>
+		/// Fetch the CPSR condition code flag for sign. false = not signed,
+		/// true = signed (negative or less than).
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_N() const;
+		
+		/// <summary>
+		/// Fetch the CPSR condition code flag for zero. false = not zero, 
+		/// true = zero.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_Z() const;
+
+		/// <summary>
+		/// Fetch the CPSR condition code flag for carry or borrow or extend.
+		/// false = Borrow/No Carry, true = Carry/No Borrow.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_C() const;
+
+		/// <summary>
+		/// Fetch the CPSR condition code flag for overflow.
+		/// false = no overflow, true = overflow.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_V() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for IRQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_I() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for FIQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_F() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for state.
+		/// false = ARM, true = THUMB.
+		/// </summary>
+		/// <returns>The flag value.</returns>
 		bool get_flag_T() const;
+
+		/// <summary>
+		/// Fetch the ARM mode associated with the current mode bits.
+		/// </summary>
+		/// <returns>The current ARM mode.</returns>
 		ArmMode get_flag_mode() const;
 #pragma endregion
 
