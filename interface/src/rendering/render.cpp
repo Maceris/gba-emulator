@@ -3,6 +3,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include "GLFW/glfw3.h"
 
+#include <format>
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
@@ -15,11 +17,177 @@
 #include "rendering/render_state.h"
 #include "rendering/window.h"
 
-namespace render {
+template <>
+struct std::formatter<VkResult, char> : std::formatter<int> {
 
+	constexpr auto parse(std::format_parse_context& ctx) {
+		return std::formatter<int>::parse(ctx);
+	}
+
+	auto format(VkResult result, std::format_context& ctx) const {
+		auto out = ctx.out();
+
+		switch (result) {
+			case VK_SUCCESS:
+				std::format_to(out, "VK_SUCCESS");
+				return out;
+			case VK_NOT_READY:
+				std::format_to(out, "VK_NOT_READY");
+				return out;
+			case VK_TIMEOUT:
+				std::format_to(out, "VK_TIMEOUT");
+				return out;
+			case VK_EVENT_SET:
+				std::format_to(out, "VK_EVENT_SET");
+				return out;
+			case VK_EVENT_RESET:
+				std::format_to(out, "VK_EVENT_RESET");
+				return out;
+			case VK_INCOMPLETE:
+				std::format_to(out, "VK_INCOMPLETE");
+				return out;
+			case VK_ERROR_OUT_OF_HOST_MEMORY:
+				std::format_to(out, "VK_ERROR_OUT_OF_HOST_MEMORY");
+				return out;
+			case VK_ERROR_OUT_OF_DEVICE_MEMORY:
+				std::format_to(out, "VK_ERROR_OUT_OF_DEVICE_MEMORY");
+				return out;
+			case VK_ERROR_INITIALIZATION_FAILED:
+				std::format_to(out, "VK_ERROR_INITIALIZATION_FAILED");
+				return out;
+			case VK_ERROR_DEVICE_LOST:
+				std::format_to(out, "VK_ERROR_DEVICE_LOST");
+				return out;
+			case VK_ERROR_MEMORY_MAP_FAILED:
+				std::format_to(out, "VK_ERROR_MEMORY_MAP_FAILED");
+				return out;
+			case VK_ERROR_LAYER_NOT_PRESENT:
+				std::format_to(out, "VK_ERROR_LAYER_NOT_PRESENT");
+				return out;
+			case VK_ERROR_EXTENSION_NOT_PRESENT:
+				std::format_to(out, "VK_ERROR_EXTENSION_NOT_PRESENT");
+				return out;
+			case VK_ERROR_FEATURE_NOT_PRESENT:
+				std::format_to(out, "VK_ERROR_FEATURE_NOT_PRESENT");
+				return out;
+			case VK_ERROR_INCOMPATIBLE_DRIVER:
+				std::format_to(out, "VK_ERROR_INCOMPATIBLE_DRIVER");
+				return out;
+			case VK_ERROR_TOO_MANY_OBJECTS:
+				std::format_to(out, "VK_ERROR_TOO_MANY_OBJECTS");
+				return out;
+			case VK_ERROR_FORMAT_NOT_SUPPORTED:
+				std::format_to(out, "VK_ERROR_FORMAT_NOT_SUPPORTED");
+				return out;
+			case VK_ERROR_FRAGMENTED_POOL:
+				std::format_to(out, "VK_ERROR_FRAGMENTED_POOL");
+				return out;
+			case VK_ERROR_UNKNOWN:
+				std::format_to(out, "VK_ERROR_UNKNOWN");
+				return out;
+			case VK_ERROR_OUT_OF_POOL_MEMORY:
+				std::format_to(out, "VK_ERROR_OUT_OF_POOL_MEMORY");
+				return out;
+			case VK_ERROR_INVALID_EXTERNAL_HANDLE:
+				std::format_to(out, "VK_ERROR_INVALID_EXTERNAL_HANDLE");
+				return out;
+			case VK_ERROR_FRAGMENTATION:
+				std::format_to(out, "VK_ERROR_FRAGMENTATION");
+				return out;
+			case VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS:
+				std::format_to(out, "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS");
+				return out;
+			case VK_PIPELINE_COMPILE_REQUIRED:
+				std::format_to(out, "VK_PIPELINE_COMPILE_REQUIRED");
+				return out;
+			case VK_ERROR_SURFACE_LOST_KHR:
+				std::format_to(out, "VK_ERROR_SURFACE_LOST_KHR");
+				return out;
+			case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
+				std::format_to(out, "VK_ERROR_NATIVE_WINDOW_IN_USE_KHR");
+				return out;
+			case VK_SUBOPTIMAL_KHR:
+				std::format_to(out, "VK_SUBOPTIMAL_KHR");
+				return out;
+			case VK_ERROR_OUT_OF_DATE_KHR:
+				std::format_to(out, "VK_ERROR_OUT_OF_DATE_KHR");
+				return out;
+			case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
+				std::format_to(out, "VK_ERROR_INCOMPATIBLE_DISPLAY_KHR");
+				return out;
+			case VK_ERROR_VALIDATION_FAILED_EXT:
+				std::format_to(out, "VK_ERROR_VALIDATION_FAILED_EXT");
+				return out;
+			case VK_ERROR_INVALID_SHADER_NV:
+				std::format_to(out, "VK_ERROR_INVALID_SHADER_NV");
+				return out;
+			case VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR:
+				std::format_to(out, "VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR");
+				return out;
+			case VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT:
+				std::format_to(out, "VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT");
+				return out;
+			case VK_ERROR_NOT_PERMITTED_KHR:
+				std::format_to(out, "VK_ERROR_NOT_PERMITTED_KHR");
+				return out;
+			case VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT:
+				std::format_to(out, "VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT");
+				return out;
+			case VK_THREAD_IDLE_KHR:
+				std::format_to(out, "VK_THREAD_IDLE_KHR");
+				return out;
+			case VK_THREAD_DONE_KHR:
+				std::format_to(out, "VK_THREAD_DONE_KHR");
+				return out;
+			case VK_OPERATION_DEFERRED_KHR:
+				std::format_to(out, "VK_OPERATION_DEFERRED_KHR");
+				return out;
+			case VK_OPERATION_NOT_DEFERRED_KHR:
+				std::format_to(out, "VK_OPERATION_NOT_DEFERRED_KHR");
+				return out;
+#ifdef VK_ENABLE_BETA_EXTENSIONS
+			case VK_ERROR_INVALID_VIDEO_STD_PARAMETERS_KHR:
+				std::format_to(out, "VK_ERROR_INVALID_VIDEO_STD_PARAMETERS_KHR");
+				return out;
+#endif
+			case VK_ERROR_COMPRESSION_EXHAUSTED_EXT:
+				std::format_to(out, "VK_ERROR_COMPRESSION_EXHAUSTED_EXT");
+				return out;
+			case VK_ERROR_INCOMPATIBLE_SHADER_BINARY_EXT:
+				std::format_to(out, "VK_ERROR_INCOMPATIBLE_SHADER_BINARY_EXT");
+				return out;
+			case VK_RESULT_MAX_ENUM:
+				std::format_to(out, "VK_RESULT_MAX_ENUM");
+				return out;
+			default:
+				return std::formatter<int>::format(static_cast<int>(result), ctx);
+		}
+	}
+};
+
+namespace render {
+	
 	void imgui_result_callback(VkResult err)
 	{
-		LOG_ERROR("Issue with ImGui, error code " + err);
+		if (err != VK_SUCCESS) {
+			LOG_ERROR(std::vformat("Issue with ImGui, error code {}", 
+				std::make_format_args(err)));
+		}
 	}
 
 	void draw_frame()
