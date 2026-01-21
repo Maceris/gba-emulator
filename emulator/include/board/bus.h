@@ -2,10 +2,13 @@
 
 #include <cstdint>
 
+#include "board/wire.h"
+
 namespace emulator {
 
 	struct ARM7TDMI_Bus
 	{
+		//TODO(ches) do we need this? Shouldn't they plug into the board?
 
 #pragma region Clock signals
 		/// <summary>
@@ -13,7 +16,7 @@ namespace emulator {
 		/// operations, can be reduced where required for slow peripherals or memory.
 		/// Also, nWAIT can be used to achieve the same effect.
 		/// </summary>
-		bool MCLK;
+		Wire1 MCLK;
 
 		/// <summary>
 		/// Allows stretching a bus cycle longer, separate from clock cycles. Must
@@ -23,7 +26,7 @@ namespace emulator {
 		/// When nWAIT is low, the bus cycle is extended by stretching the low phase
 		/// of the internal clock.
 		/// </summary>
-		bool nWAIT;
+		Wire1 nWAIT;
 
 		/// <summary>
 		/// Not reset.
@@ -31,14 +34,14 @@ namespace emulator {
 		/// Used to reset the core, must be held at 0 for a minimum of 2 MCLK cycles to 
 		/// fully reset.
 		/// </summary>
-		bool nRESET;
+		Wire1 nRESET;
 #pragma endregion
 
 #pragma region Address signals
 		/// <summary>
 		/// 32-bit address bus.
 		/// </summary>
-		uint32_t A32;
+		Wire32 A32;
 
 		/// <summary>
 		/// Not read, write.
@@ -47,7 +50,7 @@ namespace emulator {
 		/// 0 - read cycle
 		/// 1 - write cycle
 		/// </summary>
-		bool nRW;
+		Wire1 nRW;
 
 		/// <summary>
 		/// Encodes the size of a transfer.
@@ -57,7 +60,7 @@ namespace emulator {
 		/// 10 - Word, significant address bits are A[31:2]
 		/// 11 - Reserved
 		/// </summary>
-		uint8_t MAS2;
+		Wire2 MAS2;
 
 		/// <summary>
 		/// Not op-code fetch.
@@ -68,7 +71,7 @@ namespace emulator {
 		/// 0 - Opcode
 		/// 1 - Data
 		/// </summary>
-		bool nOPC;
+		Wire1 nOPC;
 
 		/// <summary>
 		/// Specifies info about a transfer. Can be used by an MMU to determine if
@@ -78,13 +81,13 @@ namespace emulator {
 		/// 0 - User
 		/// 1 - Privileged
 		/// </summary>
-		bool nTRANS;
+		Wire1 nTRANS;
 
 		/// <summary>
 		/// Indicates an atomic operation is being performed on the bus. Normally low,
 		/// but high when SWP or SWPB is happening.
 		/// </summary>
-		bool LOCK;
+		Wire1 LOCK;
 
 		/// <summary>
 		/// Indicates the operating state.
@@ -92,23 +95,23 @@ namespace emulator {
 		/// 0 - ARM
 		/// 1 - Thumb
 		/// </summary>
-		bool TBIT;
+		Wire1 TBIT;
 #pragma endregion
 
 #pragma region Memory request signals
 
 		/// <summary>
-		/// Not memory request, 0 when the processor needs memory access during the 
-		/// following cycle.
+		/// Not memory request, 0 when the processor needs memory access during
+		/// the following cycle.
 		/// </summary>
-		bool nMREQ;
+		Wire1 nMREQ;
 
 		/// <summary>
 		/// Sequential address. 1 when the address of the next memory cycle is 
 		/// closely related to the last one. In ARM this means the same word or
 		/// next, and in THUMB this means the same halfword or next.
 		/// </summary>
-		bool SEQ;
+		Wire1 SEQ;
 #pragma endregion
 
 #pragma region Data timed signals
@@ -116,17 +119,17 @@ namespace emulator {
 		/// <summary>
 		/// Bidirectional data bus.
 		/// </summary>
-		uint32_t D32;
+		Wire32 D32;
 
 		/// <summary>
 		/// Unidirecitonal data input bus.
 		/// </summary>
-		uint32_t DIN32;
+		Wire32 DIN32;
 
 		/// <summary>
 		/// Unidirectional data output bus.
 		/// </summary>
-		uint32_t DOUT32;
+		Wire32 DOUT32;
 
 		/// <summary>
 		/// Indicates a memory transaction failed to complete successfully. If
@@ -134,7 +137,9 @@ namespace emulator {
 		/// asserted on an opcode fetch, the abort is tracked down the pipeline and
 		/// if the instruction is executed then the Prefetch Abort trap is taken.
 		/// </summary>
-		bool ABORT;
+		Wire1 ABORT;
+
+		//TODO(ches) is this literally 4 wires wide? Where did I even find this?
 
 		/// <summary>
 		/// Byte latch enables.
