@@ -9,17 +9,17 @@ namespace emulator {
 	using Wire16 = uint16_t;
 	using Wire32 = uint32_t;
 
-	void set_bit(Wire1* wire, bool on);
-	void set_bit(Wire2* wire, int bit, bool on);
-	void set_bit(Wire8* wire, int bit, bool on);
-	void set_bit(Wire16* wire, int bit, bool on);
-	void set_bit(Wire32* wire, int bit, bool on);
+	void set_bit_wire1(Wire1* wire, bool on);
+	void set_bit_wire2(Wire2* wire, int bit, bool on);
+	void set_bit_wire8(Wire8* wire, int bit, bool on);
+	void set_bit_wire16(Wire16* wire, int bit, bool on);
+	void set_bit_wire32(Wire32* wire, int bit, bool on);
 
-	bool get_bit(Wire1* wire);
-	bool get_bit(Wire2* wire, int bit);
-	bool get_bit(Wire8* wire, int bit);
-	bool get_bit(Wire16* wire, int bit);
-	bool get_bit(Wire32* wire, int bit);
+	bool get_bit_wire1(Wire1* wire);
+	bool get_bit_wire2(Wire2* wire, int bit);
+	bool get_bit_wire8(Wire8* wire, int bit);
+	bool get_bit_wire16(Wire16* wire, int bit);
+	bool get_bit_wire32(Wire32* wire, int bit);
 
 // Annotation used to indicate signal coming into a component, does nothing.
 #define WIRE_INCOMING
