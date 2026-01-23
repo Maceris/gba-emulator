@@ -8,8 +8,6 @@ namespace emulator {
 
 	struct ARM7TDMI_Bus
 	{
-		//TODO(ches) do we need this? Shouldn't they plug into the board?
-
 #pragma region Clock signals
 		/// <summary>
 		/// Memory clock input. Clock used for all memory accesses and processor 
