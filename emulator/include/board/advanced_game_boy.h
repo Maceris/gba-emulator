@@ -70,7 +70,8 @@ namespace emulator {
 		//          the game cartridge.
 		// 35 /RD - Read signal pin, used for data transfer.
 		// 36 /WR - Write signal pin, used to signal write operations.
-		// 37 PHI - 
+		// 37 PHI - Physical clock signal, selectable none, 4.19MHz, 8.38MHz,
+		//          or 16.78MHz.
 		// 38 VDD35 - Voltage Drain Drain 3/5, either +3.3V or +5V depending
 		//            on the cartridge switch.
 		//            When a GBA game is inserted (switch not actuated), 
@@ -78,50 +79,50 @@ namespace emulator {
 		//            If a GB/GBC game (switch actuated) is inserted, VDD35 is 
 		//            connected to VDD5 (not in AGB pinout) and IN35 is +3.3V.
 		// 39 GND - Ground.
-		// 40 SC - 
-		// 41 SD - 
-		// 42 SI - 
-		// 43 SO - 
+		// 40 SC - Serial Clock.
+		// 41 SD - Serial Double.
+		// 42 SI - Serial In.
+		// 43 SO - Serial Out.
 		// 44 VDD2 - Voltage Drain Drain 2, +2.5V power line. For SRAM.
-		// 45 WA0 - 
-		// 46 WA1 - 
-		// 47 WA2 - 
-		// 48 WA3 - 
-		// 49 WA4 - 
-		// 50 WA5 - 
-		// 51 WA6 - 
-		// 52 WA7 - 
-		// 53 /WLB - 
-		// 54 /WUB - 
-		// 55 /WWE - 
-		// 56 WA8 - 
-		// 57 WA9 - 
-		// 58 WA10 - 
-		// 59 WA11 - 
-		// 60 WA12 - 
-		// 61 WA13 - 
-		// 62 WA14 - 
-		// 63 WA15 - 
+		// 45 WA0 - WRAM Address line 0, used in GBA mode only.
+		// 46 WA1 - WRAM Address line 1, used in GBA mode only.
+		// 47 WA2 - WRAM Address line 2, used in GBA mode only.
+		// 48 WA3 - WRAM Address line 3, used in GBA mode only.
+		// 49 WA4 - WRAM Address line 4, used in GBA mode only.
+		// 50 WA5 - WRAM Address line 5, used in GBA mode only.
+		// 51 WA6 - WRAM Address line 6, used in GBA mode only.
+		// 52 WA7 - WRAM Address line 7, used in GBA mode only.
+		// 53 /WLB - WRAM Lower Byte control signal.
+		// 54 /WUB - WRAM Upper Byte control signal.
+		// 55 /WWE - WRAM Write enable signal.
+		// 56 WA8 -  WRAM Address line 8, used in GBA mode only.
+		// 57 WA9 -  WRAM Address line 9, used in GBA mode only.
+		// 58 WA10 - WRAM Address line 10, used in GBA mode only.
+		// 59 WA11 - WRAM Address line 11, used in GBA mode only.
+		// 60 WA12 - WRAM Address line 12, used in GBA mode only.
+		// 61 WA13 - WRAM Address line 13, used in GBA mode only.
+		// 62 WA14 - WRAM Address line 14, used in GBA mode only.
+		// 63 WA15 - WRAM Address line 15, used in GBA mode only.
 		// 64 GND - Ground.
 		// 65 VDD2 - Voltage Drain Drain 2, +2.5V power line. For SRAM.
-		// 66 WD5 - 
-		// 67 WD13 - 
-		// 68 WD6 - 
-		// 69 WD14 - 
-		// 70 WD7 - 
-		// 71 WD15 - 
-		// 72 WD8 - 
-		// 73 WD16 - 
-		// 74 WA16 - 
-		// 75 WD12 - 
-		// 76 WD4 - 
-		// 77 WD11 - 
-		// 78 WD3 - 
-		// 79 WD10 - 
-		// 80 WD2 - 
-		// 81 WD9 - 
-		// 82 WD1 - 
-		// 83 /WOE - 
+		// 66 WD5 -  WRAM Data line 5, used in GBA mode only.
+		// 67 WD13 - WRAM Data line 13, used in GBA mode only.
+		// 68 WD6 -  WRAM Data line 6, used in GBA mode only.
+		// 69 WD14 - WRAM Data line 14, used in GBA mode only.
+		// 70 WD7 -  WRAM Data line 7, used in GBA mode only.
+		// 71 WD15 - WRAM Data line 15, used in GBA mode only.
+		// 72 WD8 -  WRAM Data line 8, used in GBA mode only.
+		// 73 WD16 - WRAM Data line 16, used in GBA mode only.
+		// 74 WA16 - WRAM Address line 16, used in GBA mode only.
+		// 75 WD12 - WRAM Data line 12, used in GBA mode only.
+		// 76 WD4 -  WRAM Data line 4, used in GBA mode only.
+		// 77 WD11 - WRAM Data line 11, used in GBA mode only.
+		// 78 WD3 -  WRAM Data line 3, used in GBA mode only.
+		// 79 WD10 - WRAM Data line 10, used in GBA mode only.
+		// 80 WD2 -  WRAM Data line 2, used in GBA mode only.
+		// 81 WD9 -  WRAM Data line 9, used in GBA mode only.
+		// 82 WD1 -  WRAM Data line 1, used in GBA mode only.
+		// 83 /WOE - WRAM Output Enable signal.
 		// 84 DCK - 
 		// 85 LP - 
 		// 86 PS - 
