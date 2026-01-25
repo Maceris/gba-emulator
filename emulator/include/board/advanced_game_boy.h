@@ -123,24 +123,25 @@ namespace emulator {
 		// 81 WD9 -  WRAM Data line 9, used in GBA mode only.
 		// 82 WD1 -  WRAM Data line 1, used in GBA mode only.
 		// 83 /WOE - WRAM Output Enable signal.
-		// 84 DCK - 
-		// 85 LP - 
-		// 86 PS - 
-		// 87 LDR5 - 
-		// 88 LDR4 - 
-		// 89 LDR3 - 
-		// 90 LDR2 - 
-		// 91 LDR1 - 
-		// 92 LDG5 - 
-		// 93 LDG4 - 
-		// 94 LDG3 - 
-		// 95 LDG2 - 
-		// 96 LDG1 - 
-		// 97 LDB5 - 
-		// 98 LDB4 - 
-		// 99 LDB3 - 
-		// 100 LDB2 - 
-		// 101 LDB1 - 
+		// 84 DCK - Display/dot clock, for pixels.
+		// 85 LP - Line pulse signal, high edge indicates the LY register 
+		//         (current scanline) has incremented.
+		// 86 PS - Power save signal, related to LCD.
+		// 87 LDR5 - Red data signal bit 5.
+		// 88 LDR4 - Red data signal bit 4.
+		// 89 LDR3 - Red data signal bit 3.
+		// 90 LDR2 - Red data signal bit 2.
+		// 91 LDR1 - Red data signal bit 1.
+		// 92 LDG5 - Green data signal bit 5.
+		// 93 LDG4 - Green data signal bit 4.
+		// 94 LDG3 - Green data signal bit 3.
+		// 95 LDG2 - Green data signal bit 2.
+		// 96 LDG1 - Green data signal bit 1.
+		// 97 LDB5 - Blue data signal bit 5.
+		// 98 LDB4 - Blue data signal bit 4.
+		// 99 LDB3 - Blue data signal bit 3.
+		// 100 LDB2 - Blue data signal bit 2.
+		// 101 LDB1 - Blue data signal bit 1.
 		// 102 GND - Ground.
 		// 103 VDD3 - Voltage Drain Drain 3, +3.3V power line. For main CPU
 		//            power and GBA games.
