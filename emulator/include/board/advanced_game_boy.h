@@ -123,10 +123,10 @@ namespace emulator {
 		// 81 WD9 -  WRAM Data line 9, used in GBA mode only.
 		// 82 WD1 -  WRAM Data line 1, used in GBA mode only.
 		// 83 /WOE - WRAM Output Enable signal.
-		// 84 DCK - Display/dot clock, for pixels.
+		// 84 DCK - Display/dot clock, for pixels. Active on negative edge.
 		// 85 LP - Line pulse signal, high edge indicates the LY register 
-		//         (current scanline) has incremented.
-		// 86 PS - Power save signal, related to LCD.
+		//         (current scanline) has incremented. Active on positive edge.
+		// 86 PS - Power save signal, related to LCD. Active on positive edge.
 		// 87 LDR5 - Red data signal bit 5.
 		// 88 LDR4 - Red data signal bit 4.
 		// 89 LDR3 - Red data signal bit 3.
@@ -145,28 +145,38 @@ namespace emulator {
 		// 102 GND - Ground.
 		// 103 VDD3 - Voltage Drain Drain 3, +3.3V power line. For main CPU
 		//            power and GBA games.
-		// 104 SPL - 
-		// 105 CLS - 
-		// 106 SPS - 
-		// 107 MOD - 
-		// 108 REVC - 
+		// 104 SPL - Sample Pulse signal, signals the first pixel of the frame,
+		//           basically HSYNC. Active on positive edge.
+		// 105 CLS - Clock signal of gate driver (for LCD).
+		// 106 SPS - Start signal for the gate driver, signals LCD to refresh, 
+		//           basically VSYNC, at 59.737Hz. Active on negative edge.
+		// 107 MOD - Control signal of gate driver.
+		// 108 REVC - "Alternative HSync", toggles state on every line, also
+		//            different every time SPS pulses.
 		// 109 GNDed - Ground.
 		// 110 GNDed - Ground.
 		// 111 GNDed - Ground.
 		// 112 GNDed - Ground.
-		// 113 CK1 - 
-		// 114 CK2 - 
+		// 113 CK1 - Clock 1, also connected to Test Point 32 (TP32).
+		// 114 CK2 - Clock 2, appears to actually be unconnected.
 		// 115 VDD2 - Voltage Drain Drain 2, +2.5V power line. For SRAM.
 		// 116 GND - Ground.
 		// 117 VDD2 - Voltage Drain Drain 2, +2.5V power line. For SRAM.
-		// 118 VCNT5 - 
+		// 118 VCNT5 - Possibly a low voltage shutdown trigger.
 		// 119 TP9 - Test point 9, connected to the L button.
 		// 120 TP6 - Test point 6, connected to the up D-pad.
 		// 121 TP5 - Test point 5, connected to the left D-pad.
 		// 122 TP7 - Test point 7, connnected to the down D-pad.
 		// 123 TP4 - Test point 4, connected to the right D-pad.
-		// 124 /FIQ - 
-		// 125 /RESET - 
+		// 124 /FIQ - Fast Interrupt signal. By default, FIQ is shorted to 
+		//            VDD35 and would need to have CL1 connection physically
+		//            scratched off to correct. The GBA BIOS rejects FIQs
+		//            with normal ROM cartridge headers, or when no cartridge
+		//            is inserted. with FIQ-compatible ROM headers, fast
+		//            interrupts can be requested by pulling FIQ to ground.
+		// 125 /RESET - Reset signal. Resets the GBA if the signal is pulled
+		//              to ground for at least a few microseconds. It is not
+		//              shorted to VDD35, unlike FIQ, and can directly be used.
 		// 126 TP2 - Test point 2, connected to the select button.
 		// 127 TP3 - Test point 3, connected to the start button.
 		// 128 GND - Ground.
