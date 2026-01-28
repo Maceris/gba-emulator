@@ -1,18 +1,26 @@
 #include "gui/gui.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+
 #include <format>
 
 #include "brain/brain.h"
 #include "rendering/render_state.h"
+#include "gui/disassembler.h"
 #include "gui/key_binding.h"
 #include "gui/settings.h"
 
 namespace gui {
+	constexpr ImVec4 RED = ImVec4(1.0f, 0.1f, 0.1f, 1.0f);
 	const std::string TEXT_SAVE_TIME_MISSING = "----/--/-- --:--:--";
 	constexpr bool SELECTED = true;
 	constexpr bool NOT_SELECTED = false;
 	constexpr bool ENABLED = true;
 	constexpr bool DISABLED = false;
+
+	GuiState g_gui_state = GuiState();
 
 	void draw_ui()
 	{
@@ -21,6 +29,10 @@ namespace gui {
 		ImGui::NewFrame();
 
 		draw_main_menu_bar();
+
+		if (g_gui_state.show_window_disassembler) {
+			draw_window_disassembler();
+		}
 
 		ImGui::ShowDemoWindow();
 
@@ -730,7 +742,7 @@ namespace gui {
 
 			if (ImGui::BeginMenu("Tools"))
 			{
-				if (ImGui::MenuItem("Disassemble...", get_binding_text(Command::ToolsDisassemble), NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("Disassemble...", get_binding_text(Command::ToolsDisassemble), g_gui_state.show_window_disassembler, ENABLED))
 				{
 					brain::g_brain_data->command_queue.add(Command::ToolsDisassemble);
 				}

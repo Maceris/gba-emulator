@@ -620,7 +620,8 @@ namespace brain {
 	}
 
 	void process_command_ToolsDisassemble() {
-		//TODO(ches) implement this
+		gui::g_gui_state.show_window_disassembler = 
+			!gui::g_gui_state.show_window_disassembler;
 	}
 
 	void process_command_ToolsIO() {
