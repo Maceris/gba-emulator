@@ -44,6 +44,8 @@ void gba::initialize() {
 	Logger::init();
 	Logger::set_display_flags("Debug", FLAG_WRITE_TO_DEBUGGER);
 
+	gui::initialize_gui();
+
 	if (!gui::load_settings()) {
 		gui::set_default_settings();
 		gui::save_settings();

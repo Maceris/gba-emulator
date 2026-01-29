@@ -15,4 +15,6 @@ namespace gui {
 	void draw_ui();
 
 	void draw_main_menu_bar();
+
+	void initialize_gui();
 }

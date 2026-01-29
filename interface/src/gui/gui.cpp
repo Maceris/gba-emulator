@@ -876,4 +876,8 @@ namespace gui {
 			ImGui::EndMainMenuBar();
 		}
 	}
+
+	void initialize_gui() {
+		initialize_disassembler();
+	}
 }
