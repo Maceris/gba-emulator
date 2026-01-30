@@ -7,6 +7,7 @@ SET(HEADER_FILES
   ${EMULATOR_HEADER_DIR}/audio/apu.h
   ${EMULATOR_HEADER_DIR}/board/advanced_game_boy.h
   ${EMULATOR_HEADER_DIR}/board/bus.h
+  ${EMULATOR_HEADER_DIR}/board/gba.h
   ${EMULATOR_HEADER_DIR}/board/wire.h
   ${EMULATOR_HEADER_DIR}/cartridge/advance_game_pak.h
   ${EMULATOR_HEADER_DIR}/cartridge/color_game_pak.h
@@ -25,6 +26,7 @@ SET(THIRD_PARTY_HEADERS
 )
 
 SET(SOURCE_FILES
+  ${EMULATOR_SOURCE_DIR}/board/gba.cpp
   ${EMULATOR_SOURCE_DIR}/board/wire.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/arm7tdmi.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/cpu.cpp
