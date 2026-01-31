@@ -446,6 +446,9 @@ namespace emulator {
 
 #pragma endregion
 
+	ARM7TDMI::ARM7TDMI() = default;
+	ARM7TDMI::~ARM7TDMI() = default;
+
 	void ARM7TDMI::fetch()
 	{}
 

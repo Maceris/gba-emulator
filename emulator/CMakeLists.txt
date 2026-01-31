@@ -26,8 +26,13 @@ SET(THIRD_PARTY_HEADERS
 )
 
 SET(SOURCE_FILES
+  ${EMULATOR_SOURCE_DIR}/board/advanced_game_boy.cpp
+  ${EMULATOR_SOURCE_DIR}/board/bus.cpp
   ${EMULATOR_SOURCE_DIR}/board/gba.cpp
   ${EMULATOR_SOURCE_DIR}/board/wire.cpp
+  ${EMULATOR_SOURCE_DIR}/cartridge/advance_game_pak.cpp
+  ${EMULATOR_SOURCE_DIR}/cartridge/color_game_pak.cpp
+  ${EMULATOR_SOURCE_DIR}/cartridge/game_pak.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/arm7tdmi.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/cpu.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/sm83.cpp

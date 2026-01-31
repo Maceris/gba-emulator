@@ -13,6 +13,13 @@ namespace emulator {
 	/// </summary>
 	struct SM83
 	{
+		SM83();
+		SM83(const SM83&) = delete;
+		SM83(SM83&&) = delete;
+		SM83& operator=(const SM83&) = delete;
+		SM83& operator=(SM83&&) = delete;
+		~SM83();
+
 		void sm83_adc();
 		void sm83_add();
 		void sm83_and();

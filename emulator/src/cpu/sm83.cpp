@@ -2,6 +2,9 @@
 
 namespace emulator {
 
+	SM83::SM83() = default;
+	SM83::~SM83() = default;
+
 #pragma region SM83 Instructions
 	void SM83::sm83_adc()
 	{}

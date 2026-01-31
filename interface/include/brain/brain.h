@@ -1,6 +1,7 @@
 #pragma once
 
-#include "command_queue.h"
+#include "brain/command_queue.h"
+#include "board/gba.h"
 
 namespace brain {
 
@@ -13,6 +14,7 @@ namespace brain {
 		BrainData& operator=(BrainData&&) = delete;
 		
 		CommandQueue command_queue;
+		emulator::GBA gba;
 	};
 
 	extern BrainData* g_brain_data;

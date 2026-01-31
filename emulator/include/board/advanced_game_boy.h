@@ -26,6 +26,13 @@ namespace emulator {
 		// 8/32-bit line to  6-pin serial subconnector
 		// 16 bit line to game pak / shape detector switch
 
+		AdvancedGameBoy();
+		AdvancedGameBoy(const AdvancedGameBoy&) = delete;
+		AdvancedGameBoy(AdvancedGameBoy&&) = delete;
+		AdvancedGameBoy& operator=(const AdvancedGameBoy&) = delete;
+		AdvancedGameBoy& operator=(AdvancedGameBoy&&) = delete;
+		~AdvancedGameBoy();
+
 		//TODO(ches) draw a distinction between 32-pin and 40 pin boards
 
 		//TODO(ches) figure out what pins we actually care about

@@ -1497,6 +1497,13 @@ namespace emulator {
 
 #pragma endregion
 
+		ARM7TDMI();
+		ARM7TDMI(const ARM7TDMI&) = delete;
+		ARM7TDMI(ARM7TDMI&&) = delete;
+		ARM7TDMI& operator=(const ARM7TDMI&) = delete;
+		ARM7TDMI& operator=(ARM7TDMI&&) = delete;
+		~ARM7TDMI();
+
 		void fetch();
 		void decode();
 		void execute();

@@ -8,6 +8,13 @@ namespace emulator {
 
 	struct ARM7TDMI_Bus
 	{
+		ARM7TDMI_Bus();
+		ARM7TDMI_Bus(const ARM7TDMI_Bus&) = delete;
+		ARM7TDMI_Bus(ARM7TDMI_Bus&&) = delete;
+		ARM7TDMI_Bus& operator=(const ARM7TDMI_Bus&) = delete;
+		ARM7TDMI_Bus& operator=(ARM7TDMI_Bus&&) = delete;
+		~ARM7TDMI_Bus();
+
 #pragma region Clock signals
 		/// <summary>
 		/// Memory clock input. Clock used for all memory accesses and processor 
