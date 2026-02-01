@@ -1508,6 +1508,83 @@ namespace emulator {
 		void decode();
 		void execute();
 
+#pragma region Get register functions
+		/// <summary>
+		/// Fetch the CPSR condition code flag for sign. false = not signed,
+		/// true = signed (negative or less than).
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_N() const;
+
+		/// <summary>
+		/// Fetch the CPSR condition code flag for zero. false = not zero, 
+		/// true = zero.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_Z() const;
+
+		/// <summary>
+		/// Fetch the CPSR condition code flag for carry or borrow or extend.
+		/// false = Borrow/No Carry, true = Carry/No Borrow.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_C() const;
+
+		/// <summary>
+		/// Fetch the CPSR condition code flag for overflow.
+		/// false = no overflow, true = overflow.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_V() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for IRQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_I() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for FIQ disable.
+		/// false = enable, true = disable.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_F() const;
+
+		/// <summary>
+		/// Fetch the CPSR control bit for state.
+		/// false = ARM, true = THUMB.
+		/// </summary>
+		/// <returns>The flag value.</returns>
+		bool get_flag_T() const;
+
+		/// <summary>
+		/// Fetch the ARM mode associated with the current mode bits.
+		/// </summary>
+		/// <returns>The current ARM mode.</returns>
+		ArmMode get_flag_mode() const;
+
+		/// <summary>
+		/// Read a numbered register (R0-R15), accounting for the current
+		/// processor mode.
+		/// </summary>
+		/// <param name="register_id">The number of the register.</param>
+		/// <returns>The register value.</returns>
+		Word read_register(Word register_id) const;
+
+		/// <summary>
+		/// Read the CPSR register.
+		/// </summary>
+		Word read_CPSR() const;
+
+		/// <summary>
+		/// Read the banked SPSR register, for the current mode. Must be in
+		/// a mode that actually has that register.
+		/// </summary>
+		/// <returns>The register value.</returns>
+		Word read_SPSR() const;
+#pragma endregion
+
 	private:
 #pragma region ARM Decoding
 		ARMInstructionType decode_arm(ArmInstruction instruction);
@@ -1515,7 +1592,7 @@ namespace emulator {
 			ThumbInstruction next_instruction);
 #pragma endregion
 
-#pragma region Flag functions
+#pragma region Set register functions
 		/// <summary>
 		/// Set the CPSR condition code flag for sign. false = not signed,
 		/// true = signed (negative or less than).
@@ -1573,76 +1650,15 @@ namespace emulator {
 		void set_flag_mode(ArmMode mode);
 
 		/// <summary>
-		/// Fetch the CPSR condition code flag for sign. false = not signed,
-		/// true = signed (negative or less than).
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_N() const;
-		
-		/// <summary>
-		/// Fetch the CPSR condition code flag for zero. false = not zero, 
-		/// true = zero.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_Z() const;
-
-		/// <summary>
-		/// Fetch the CPSR condition code flag for carry or borrow or extend.
-		/// false = Borrow/No Carry, true = Carry/No Borrow.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_C() const;
-
-		/// <summary>
-		/// Fetch the CPSR condition code flag for overflow.
-		/// false = no overflow, true = overflow.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_V() const;
-
-		/// <summary>
-		/// Fetch the CPSR control bit for IRQ disable.
-		/// false = enable, true = disable.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_I() const;
-
-		/// <summary>
-		/// Fetch the CPSR control bit for FIQ disable.
-		/// false = enable, true = disable.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_F() const;
-
-		/// <summary>
-		/// Fetch the CPSR control bit for state.
-		/// false = ARM, true = THUMB.
-		/// </summary>
-		/// <returns>The flag value.</returns>
-		bool get_flag_T() const;
-
-		/// <summary>
-		/// Fetch the ARM mode associated with the current mode bits.
-		/// </summary>
-		/// <returns>The current ARM mode.</returns>
-		ArmMode get_flag_mode() const;
-#pragma endregion
-
-		/// <summary>
-		/// Read a numbered register (R0-R15), accounting for the current
-		/// processor mode.
-		/// </summary>
-		/// <param name="register_id">The number of the register.</param>
-		/// <returns>The register value.</returns>
-		Word read_register(Word register_id);
-
-		/// <summary>
 		/// Write to a numbered register (R0-R15), accounting for the current
 		/// processor mode.
 		/// </summary>
 		/// <param name="register_id">The number of the register.</param>
 		/// <param name="value">The value to write to the register.</param>
 		void write_register(Word register_id, Word value);
+#pragma endregion
+
+		void reset();
 
 	};
 

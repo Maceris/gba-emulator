@@ -446,7 +446,89 @@ namespace emulator {
 
 #pragma endregion
 
-	ARM7TDMI::ARM7TDMI() = default;
+	ARM7TDMI::ARM7TDMI()
+		: R0{ 0 }
+		, R1{ 0 }
+		, R2{ 0 }
+		, R3{ 0 }
+		, R4{ 0 }
+		, R5{ 0 }
+		, R6{ 0 }
+		, R7{ 0 }
+		, R8{ 0 }
+		, R9{ 0 }
+		, R10{ 0 }
+		, R11{ 0 }
+		, R12{ 0 }
+		, R13{ 0 }
+		, R14{ 0 }
+		, R15{ 0 }
+		, CPSR{ 0 }
+		, R8_fiq{ 0 }
+		, R9_fiq{ 0 }
+		, R10_fiq{ 0 }
+		, R11_fiq{ 0 }
+		, R12_fiq{ 0 }
+		, R13_fiq{ 0 }
+		, R14_fiq{ 0 }
+		, SPSR_fiq{ 0 }
+		, R13_svc{ 0 }
+		, R14_svc{ 0 }
+		, SPSR_svc{ 0 }
+		, R13_abt{ 0 }
+		, R14_abt{ 0 }
+		, SPSR_abt{ 0 }
+		, R13_irq{ 0 }
+		, R14_irq{ 0 }
+		, SPSR_irq{ 0 }
+		, R13_und{ 0 }
+		, R14_und{ 0 }
+		, SPSR_und{ 0 }
+		, CLK{ 0 }
+		, CLKEN{ 0 }
+		, nIRQ{ 0 }
+		, nFIQ{ 0 }
+		, nRESET{ 0 }
+		, CFGBIGEND{ 0 }
+		, DMORE{ 0 }
+		, LOCK{ 0 }
+		, DBGINSTRVALID{ 0 }
+		, DBGRQ{ 0 }
+		, DBGBREAK{ 0 }
+		, DBGACK{ 0 }
+		, DBGnEXEC{ 0 }
+		, DBGEXT0{ 0 }
+		, DBGEXT1{ 0 }
+		, DBGGEN{ 0 }
+		, DBGRNG0{ 0 }
+		, DBGRNG1{ 0 }
+		, DBGCOMMRX{ 0 }
+		, DBGCOMMTX{ 0 }
+		, DBGTCKEN{ 0 }
+		, DBGTMS{ 0 }
+		, DBGTDI{ 0 }
+		, DBGnTRST{ 0 }
+		, DBGTDO{ 0 }
+		, DBGnTDOEN{ 0 }
+		, ABORT{ 0 }
+		, WRITE{ 0 }
+		, ADDR{ 0 }
+		, WDATA{ 0 }
+		, RDATA{ 0 }
+		, SIZE{ 0 }
+		, PROT{ 0 }
+		, TRANS{ 0 }
+		, CPnTRANS{ 0 }
+		, CPnOPC{ 0 }
+		, CPnMREQ{ 0 }
+		, CPSEQ{ 0 }
+		, CPTBIT{ 0 }
+		, CPnl{ 0 }
+		, CPA{ 0 }
+		, CPB{ 0 }
+	{
+		reset();
+	}
 	ARM7TDMI::~ARM7TDMI() = default;
 
 	void ARM7TDMI::fetch()
@@ -457,6 +539,168 @@ namespace emulator {
 
 	void ARM7TDMI::execute()
 	{}
+
+#pragma region Get register functions
+	bool ARM7TDMI::get_flag_N() const {
+		return (CPSR & SIGN_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_Z() const {
+		return (CPSR & ZERO_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_C() const {
+		return (CPSR & CARRY_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_V() const {
+		return (CPSR & OVERFLOW_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_I() const {
+		return (CPSR & IRQ_DISABLE_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_F() const {
+		return (CPSR & FIQ_DISABLE_FLAG_BITS) != 0;
+	}
+
+	bool ARM7TDMI::get_flag_T() const {
+		return (CPSR & STATE_FLAG_BITS) != 0;
+	}
+
+	ArmMode ARM7TDMI::get_flag_mode() const {
+		const Word mode_bits = CPSR & MODE_FLAG_BITS;
+
+		switch (mode_bits) {
+		case MODE_USER:
+			return ArmMode::USR;
+		case MODE_FIQ:
+			return ArmMode::FIQ;
+		case MODE_IRQ:
+			return ArmMode::IRQ;
+		case MODE_SUPERVISOR:
+			return ArmMode::SVC;
+		case MODE_ABORT:
+			return ArmMode::ABT;
+		case MODE_UNDEFINED:
+			return ArmMode::UND;
+		case MODE_SYSTEM:
+			return ArmMode::SYS;
+		default:
+			LOG_FATAL("Invalid processor mode");
+		}
+	}
+
+	Word ARM7TDMI::read_register(Word register_id) const {
+		const ArmMode mode = get_flag_mode();
+
+		switch (register_id) {
+			//These share registers for every mode
+		case 0: return R0;
+		case 1: return R1;
+		case 2: return R2;
+		case 3: return R3;
+		case 4: return R4;
+		case 5: return R5;
+		case 6: return R6;
+		case 7: return R7;
+		case 15: return R15;
+
+			// These are partially banked
+		case 8:
+			if (mode != ArmMode::FIQ) {
+				return R8;
+			}
+			else [[unlikely]] {
+				return R8_fiq;
+			}
+		case 9:
+			if (mode != ArmMode::FIQ) {
+				return R9;
+			}
+			else [[unlikely]] {
+				return R9_fiq;
+			}
+		case 10:
+			if (mode != ArmMode::FIQ) {
+				return R10;
+			}
+			else [[unlikely]] {
+				return R10_fiq;
+			}
+		case 11:
+			if (mode != ArmMode::FIQ) {
+				return R11;
+			}
+			else [[unlikely]] {
+				return R11_fiq;
+			}
+		case 12:
+			if (mode != ArmMode::FIQ) {
+				return R12;
+			}
+			else [[unlikely]] {
+				return R12_fiq;
+			}
+
+			//These are banked
+		case 13:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: return R13;
+			case ArmMode::FIQ: return R13_fiq;
+			case ArmMode::IRQ: return R13_irq;
+			case ArmMode::SVC: return R13_svc;
+			case ArmMode::ABT: return R13_abt;
+			case ArmMode::UND: return R13_und;
+			}
+			break;
+		case 14:
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR: return R14;
+			case ArmMode::FIQ: return R14_fiq;
+			case ArmMode::IRQ: return R14_irq;
+			case ArmMode::SVC: return R14_svc;
+			case ArmMode::ABT: return R14_abt;
+			case ArmMode::UND: return R14_und;
+			}
+			break;
+		default:
+			LOG_FATAL("Unknown register ID");
+		}
+		LOG_FATAL("Failed to find a register");
+	}
+
+	Word ARM7TDMI::read_CPSR() const {
+		return CPSR;
+	}
+
+	Word ARM7TDMI::read_SPSR() const {
+		const ArmMode mode = get_flag_mode();
+
+		switch (mode) {
+			switch (mode) {
+			case ArmMode::SYS:
+			case ArmMode::USR:
+				LOG_FATAL("System and User Modes don't ahve SPSR.");
+				break;
+			case ArmMode::FIQ:
+				return SPSR_fiq;
+			case ArmMode::IRQ:
+				return SPSR_irq;
+			case ArmMode::SVC:
+				return SPSR_svc;
+			case ArmMode::ABT:
+				return SPSR_abt;
+			case ArmMode::UND:
+				return SPSR_und;
+			}
+		}
+	}
+
+#pragma endregion
 
 #pragma region ARM Decoding
 
@@ -2163,139 +2407,6 @@ namespace emulator {
 		CPSR |= result;
 	}
 
-
-	bool ARM7TDMI::get_flag_N() const {
-		return (CPSR & SIGN_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_Z() const {
-		return (CPSR & ZERO_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_C() const {
-		return (CPSR & CARRY_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_V() const {
-		return (CPSR & OVERFLOW_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_I() const {
-		return (CPSR & IRQ_DISABLE_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_F() const {
-		return (CPSR & FIQ_DISABLE_FLAG_BITS) != 0;
-	}
-
-	bool ARM7TDMI::get_flag_T() const {
-		return (CPSR & STATE_FLAG_BITS) != 0;
-	}
-
-	ArmMode ARM7TDMI::get_flag_mode() const {
-		const Word mode_bits = CPSR & MODE_FLAG_BITS;
-
-		switch (mode_bits) {
-			case MODE_USER:
-				return ArmMode::USR;
-			case MODE_FIQ:
-				return ArmMode::FIQ;
-			case MODE_IRQ:
-				return ArmMode::IRQ;
-			case MODE_SUPERVISOR:
-				return ArmMode::SVC;
-			case MODE_ABORT:
-				return ArmMode::ABT;
-			case MODE_UNDEFINED:
-				return ArmMode::UND;
-			case MODE_SYSTEM:
-				return ArmMode::SYS;
-			default:
-				LOG_FATAL("Invalid processor mode");
-		}
-	}
-
-	Word ARM7TDMI::read_register(Word register_id) {
-		const ArmMode mode = get_flag_mode();
-		
-		switch (register_id) {
-		//These share registers for every mode
-		case 0: return R0;
-		case 1: return R1;
-		case 2: return R2;
-		case 3: return R3;
-		case 4: return R4;
-		case 5: return R5;
-		case 6: return R6;
-		case 7: return R7;
-		case 15: return R15;
-
-		// These are partially banked
-		case 8:
-			if (mode != ArmMode::FIQ) {
-				return R8;
-			}
-			else [[unlikely]] {
-				return R8_fiq;
-			}
-		case 9:
-			if (mode != ArmMode::FIQ) {
-				return R9;
-			}
-			else [[unlikely]] {
-				return R9_fiq;
-			}
-		case 10:
-			if (mode != ArmMode::FIQ) {
-				return R10;
-			}
-			else [[unlikely]] {
-				return R10_fiq;
-			}
-		case 11:
-			if (mode != ArmMode::FIQ) {
-				return R11;
-			}
-			else [[unlikely]] {
-				return R11_fiq;
-			}
-		case 12:
-			if (mode != ArmMode::FIQ) {
-				return R12;
-			}
-			else [[unlikely]] {
-				return R12_fiq;
-			}
-
-		//These are banked
-		case 13:
-			switch (mode) {
-			case ArmMode::SYS:
-			case ArmMode::USR: return R13;
-			case ArmMode::FIQ: return R13_fiq;
-			case ArmMode::IRQ: return R13_irq;
-			case ArmMode::SVC: return R13_svc;
-			case ArmMode::ABT: return R13_abt;
-			case ArmMode::UND: return R13_und;
-			}
-			break;
-		case 14:
-			switch (mode) {
-			case ArmMode::SYS:
-			case ArmMode::USR: return R14;
-			case ArmMode::FIQ: return R14_fiq;
-			case ArmMode::IRQ: return R14_irq;
-			case ArmMode::SVC: return R14_svc;
-			case ArmMode::ABT: return R14_abt;
-			case ArmMode::UND: return R14_und;
-			}
-			break;
-		default:
-			LOG_FATAL("Unknown register ID");
-		}
-		LOG_FATAL("Failed to find a register");
-	}
-
 	void ARM7TDMI::write_register(Word register_id, Word value) {
 		const ArmMode mode = get_flag_mode();
 
@@ -2424,5 +2535,12 @@ namespace emulator {
 		}
 	}
 
+	void ARM7TDMI::reset() {
+		set_flag_mode(ArmMode::SVC);
+		set_flag_I(false);
+		set_flag_F(false);
+		set_flag_T(false);
+		R15 = 0;
+	}
 
 }

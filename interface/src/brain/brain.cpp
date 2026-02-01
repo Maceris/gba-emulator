@@ -14,6 +14,7 @@ namespace brain {
 
 	BrainData::BrainData()
 		: command_queue{}
+		, gba{}
 	{}
 	BrainData::~BrainData() = default;
 

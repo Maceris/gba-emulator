@@ -32,7 +32,7 @@ namespace emulator {
 	/// 0=Enable,
 	/// 1=Disable
 	/// </summary>
-	constexpr Word IRQ_DISABLE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0100'0000;
+	constexpr Word IRQ_DISABLE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'1000'0000;
 
 	/// <summary>
 	/// Set this to disable IRQ interrupts. Also, gets set whenever IRQ mode is
@@ -41,14 +41,14 @@ namespace emulator {
 	/// 0=Enable,
 	/// 1=Disable
 	/// </summary>
-	constexpr Word FIQ_DISABLE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0010'0000;
+	constexpr Word FIQ_DISABLE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0100'0000;
 
 	/// <summary>
 	/// 0=ARM,
 	/// 1=THUMB
 	/// Should not be changed manually, only by the BX instruction.
 	/// </summary>
-	constexpr Word STATE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0001'0000;
+	constexpr Word STATE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0010'0000;
 
 	/// <summary>
 	/// 0b10000 (16) - User (non-privileged)           <para/>

@@ -325,6 +325,11 @@ void LogManager::fatal(
 #else
 	//TODO(ches) find a way to show message
 #endif
+
+#if _DEBUG
+	__debugbreak();// breaks into the debugger
+#endif
+
 	std::exit(-1);
 }
 
