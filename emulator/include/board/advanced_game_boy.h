@@ -22,6 +22,18 @@ namespace emulator {
 		// Prefetch Buffer
 		ARM7TDMI_Bus gba_bus;
 
+		/// <summary>
+		/// The physical switch that would be pressed by a cartridge.
+		/// True represents the switch being actuated, which would mean
+		/// a GB or GBC cartridge is inserted. False represents the switch
+		/// not being actuated, which would represent either a GBA 
+		/// cartridge being inserted or there being no cartridge.
+		/// 
+		/// This is intended for informational purposes, generally should be
+		/// read only except for the actual logic for inserting cartridges.
+		/// </summary>
+		bool cartridge_switch;
+
 		// 16-bit line to 256KB WRAM
 		// 8/32-bit line to  6-pin serial subconnector
 		// 16 bit line to game pak / shape detector switch
