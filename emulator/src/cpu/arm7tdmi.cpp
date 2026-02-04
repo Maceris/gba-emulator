@@ -531,6 +531,10 @@ namespace emulator {
 	}
 	ARM7TDMI::~ARM7TDMI() = default;
 
+	void ARM7TDMI::pulse_clock() {
+
+	}
+
 	void ARM7TDMI::fetch()
 	{}
 

@@ -20,6 +20,9 @@ namespace emulator {
 		SM83& operator=(SM83&&) = delete;
 		~SM83();
 
+		void pulse_clock();
+		
+	private:
 		void sm83_adc();
 		void sm83_add();
 		void sm83_and();

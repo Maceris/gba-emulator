@@ -41,6 +41,8 @@ namespace brain {
 			gui::draw_ui();
 			render::draw_frame();
 			process_commands();
+
+			g_brain_data->gba.pulse_clock();
 		}
 	}
 

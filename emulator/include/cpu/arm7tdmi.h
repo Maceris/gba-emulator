@@ -1504,6 +1504,8 @@ namespace emulator {
 		ARM7TDMI& operator=(ARM7TDMI&&) = delete;
 		~ARM7TDMI();
 
+		void pulse_clock();
+
 		void fetch();
 		void decode();
 		void execute();

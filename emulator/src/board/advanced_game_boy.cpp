@@ -9,4 +9,13 @@ namespace emulator {
 	{}
 
 	AdvancedGameBoy::~AdvancedGameBoy() = default;
+
+	void AdvancedGameBoy::pulse_clock() {
+		if (cartridge_switch) {
+			gbc_cpu.pulse_clock();
+		}
+		else {
+			gba_cpu.pulse_clock();
+		}
+	}
 }

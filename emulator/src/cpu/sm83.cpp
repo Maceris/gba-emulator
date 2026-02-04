@@ -5,6 +5,10 @@ namespace emulator {
 	SM83::SM83() = default;
 	SM83::~SM83() = default;
 
+	void SM83::pulse_clock() {
+
+	}
+
 #pragma region SM83 Instructions
 	void SM83::sm83_adc()
 	{}

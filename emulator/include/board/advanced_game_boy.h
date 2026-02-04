@@ -45,6 +45,8 @@ namespace emulator {
 		AdvancedGameBoy& operator=(AdvancedGameBoy&&) = delete;
 		~AdvancedGameBoy();
 
+		void pulse_clock();
+
 		//TODO(ches) draw a distinction between 32-pin and 40 pin boards
 
 		//TODO(ches) figure out what pins we actually care about
