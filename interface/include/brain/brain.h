@@ -1,9 +1,13 @@
 #pragma once
 
+#include <chrono>
+
 #include "brain/command_queue.h"
 #include "board/gba.h"
 
 namespace brain {
+
+	using Instant = std::chrono::steady_clock::time_point;
 
 	struct BrainData {
 		BrainData();
@@ -15,6 +19,7 @@ namespace brain {
 		
 		CommandQueue command_queue;
 		emulator::GBA gba;
+		Instant last_frame;
 	};
 
 	extern BrainData* g_brain_data;

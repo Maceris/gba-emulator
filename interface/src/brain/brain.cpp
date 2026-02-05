@@ -15,6 +15,7 @@ namespace brain {
 	BrainData::BrainData()
 		: command_queue{}
 		, gba{}
+		, last_frame{ std::chrono::steady_clock::now() }
 	{}
 	BrainData::~BrainData() = default;
 
@@ -35,14 +36,24 @@ namespace brain {
 	}
 
 	void run_application() {
+		Instant current;
+		Instant end_time;
+
 		while (!render::g_render_state->should_close())
 		{
 			glfwPollEvents();
 			gui::draw_ui();
 			render::draw_frame();
+			g_brain_data->last_frame = std::chrono::steady_clock::now();
 			process_commands();
 
-			g_brain_data->gba.pulse_clock();
+			current = std::chrono::steady_clock::now();
+			end_time = current + std::chrono::milliseconds(10);
+			while (current < end_time)
+			{
+				current = std::chrono::steady_clock::now();
+				g_brain_data->gba.pulse_clock();
+			}
 		}
 	}
 
