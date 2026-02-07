@@ -20,6 +20,7 @@ namespace brain {
 		CommandQueue command_queue;
 		emulator::GBA gba;
 		Instant last_frame;
+		bool paused;
 	};
 
 	extern BrainData* g_brain_data;

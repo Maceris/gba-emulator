@@ -16,6 +16,7 @@ namespace brain {
 		: command_queue{}
 		, gba{}
 		, last_frame{ std::chrono::steady_clock::now() }
+		, paused{ false }
 	{}
 	BrainData::~BrainData() = default;
 
@@ -47,12 +48,14 @@ namespace brain {
 			g_brain_data->last_frame = std::chrono::steady_clock::now();
 			process_commands();
 
-			current = std::chrono::steady_clock::now();
-			end_time = current + std::chrono::milliseconds(10);
-			while (current < end_time)
-			{
+			if (!g_brain_data->paused) {
 				current = std::chrono::steady_clock::now();
-				g_brain_data->gba.pulse_clock();
+				end_time = current + std::chrono::milliseconds(10);
+				while (current < end_time)
+				{
+					current = std::chrono::steady_clock::now();
+					g_brain_data->gba.pulse_clock();
+				}
 			}
 		}
 	}
@@ -258,7 +261,7 @@ namespace brain {
 	}
 
 	void process_command_FilePause() {
-		//TODO(ches) implement this
+		brain::g_brain_data->paused = !brain::g_brain_data->paused;
 	}
 
 	void process_command_FileReset() {

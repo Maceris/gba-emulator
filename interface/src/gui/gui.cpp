@@ -204,7 +204,7 @@ namespace gui {
 				}
 				ImGui::Separator();
 
-				if (ImGui::MenuItem("Pause", get_binding_text(Command::FilePause), NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("Pause", get_binding_text(Command::FilePause), brain::g_brain_data->paused, ENABLED))
 				{
 					brain::g_brain_data->command_queue.add(Command::FilePause);
 				}
