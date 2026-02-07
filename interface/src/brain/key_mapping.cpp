@@ -155,6 +155,10 @@ namespace brain {
     }
 
 	void key_callback(int key, int /*scancode*/, int action, int mods) {
+        if (action != GLFW_PRESS) {
+            return;
+        }
+
         gui::KeyBinding binding = { map_key_mod(mods), map_key(key) };
 
         if (!gui::has_binding(binding)) {
