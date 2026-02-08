@@ -381,24 +381,24 @@ namespace gui {
 					if (ImGui::BeginMenu("Show Speed"))
 					{
 						if (ImGui::MenuItem("None", get_binding_text(Command::OptionsEmulatorSpeedNone), 
-							Settings::Options::Emulator::ShowSpeed::NONE == g_settings.options.emulator.show_speed, DISABLED))
+							Settings::Options::Emulator::ShowSpeed::NONE == g_settings.options.emulator.show_speed, ENABLED))
 						{
 							brain::g_brain_data->command_queue.add(Command::OptionsEmulatorSpeedNone);
 						}
 						if (ImGui::MenuItem("Percentage", get_binding_text(Command::OptionsEmulatorSpeedPercentage),
-							Settings::Options::Emulator::ShowSpeed::PERCENTAGE == g_settings.options.emulator.show_speed, DISABLED))
+							Settings::Options::Emulator::ShowSpeed::PERCENTAGE == g_settings.options.emulator.show_speed, ENABLED))
 						{
 							brain::g_brain_data->command_queue.add(Command::OptionsEmulatorSpeedPercentage);
 						}
 						if (ImGui::MenuItem("Detailed", get_binding_text(Command::OptionsEmulatorSpeedDetailed),
-							Settings::Options::Emulator::ShowSpeed::DETAILED == g_settings.options.emulator.show_speed, DISABLED))
+							Settings::Options::Emulator::ShowSpeed::DETAILED == g_settings.options.emulator.show_speed, ENABLED))
 						{
 							brain::g_brain_data->command_queue.add(Command::OptionsEmulatorSpeedDetailed);
 						}
 						ImGui::Separator();
 
 						if (ImGui::MenuItem("Transparent", get_binding_text(Command::OptionsEmulatorSpeedTransparent), 
-							g_settings.options.emulator.speed_transparent, DISABLED))
+							g_settings.options.emulator.speed_transparent, ENABLED))
 						{
 							brain::g_brain_data->command_queue.add(Command::OptionsEmulatorSpeedTransparent);
 						}

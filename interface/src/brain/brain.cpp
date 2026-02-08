@@ -5,6 +5,7 @@
 
 #include "debugging/logger.h"
 #include "gui/gui.h"
+#include "gui/settings.h"
 #include "memory/memory_util.h"
 #include "rendering/render.h"
 #include "rendering/render_state.h"
@@ -389,19 +390,27 @@ namespace brain {
 	}
 
 	void process_command_OptionsEmulatorSpeedNone() {
-		//TODO(ches) implement this
+		//TODO(ches) disable showing emulator speed
+		gui::g_settings.options.emulator.show_speed =
+			gui::Settings::Options::Emulator::ShowSpeed::NONE;
 	}
 
 	void process_command_OptionsEmulatorSpeedPercentage() {
-		//TODO(ches) implement this
+		//TODO(ches) possibly enable showing the speed
+		gui::g_settings.options.emulator.show_speed =
+			gui::Settings::Options::Emulator::ShowSpeed::PERCENTAGE;
 	}
 
 	void process_command_OptionsEmulatorSpeedDetailed() {
-		//TODO(ches) implement this
+		//TODO(ches) possibly enable showing the speed
+		gui::g_settings.options.emulator.show_speed =
+			gui::Settings::Options::Emulator::ShowSpeed::DETAILED;
 	}
 
 	void process_command_OptionsEmulatorSpeedTransparent() {
-		//TODO(ches) implement this
+		//TODO(ches) actually tweak the shader?
+		gui::g_settings.options.emulator.speed_transparent = 
+			!gui::g_settings.options.emulator.speed_transparent;
 	}
 
 	void process_command_OptionsEmulatorSaveAutomatic() {
