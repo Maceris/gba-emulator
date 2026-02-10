@@ -12,6 +12,7 @@ SET(HEADER_FILES
   ${EMULATOR_HEADER_DIR}/cartridge/advance_game_pak.h
   ${EMULATOR_HEADER_DIR}/cartridge/color_game_pak.h
   ${EMULATOR_HEADER_DIR}/cartridge/game_pak.h
+  ${EMULATOR_HEADER_DIR}/cartridge/rom.h
   ${EMULATOR_HEADER_DIR}/cpu/arm7tdmi.h
   ${EMULATOR_HEADER_DIR}/cpu/cpu.h
   ${EMULATOR_HEADER_DIR}/cpu/sm83.h
@@ -33,6 +34,7 @@ SET(SOURCE_FILES
   ${EMULATOR_SOURCE_DIR}/cartridge/advance_game_pak.cpp
   ${EMULATOR_SOURCE_DIR}/cartridge/color_game_pak.cpp
   ${EMULATOR_SOURCE_DIR}/cartridge/game_pak.cpp
+  ${EMULATOR_SOURCE_DIR}/cartridge/rom.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/arm7tdmi.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/cpu.cpp
   ${EMULATOR_SOURCE_DIR}/cpu/sm83.cpp
