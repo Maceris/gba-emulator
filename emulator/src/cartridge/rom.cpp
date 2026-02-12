@@ -7,6 +7,10 @@ namespace emulator {
 	ROM::ROM() = default;
 	ROM::~ROM() = default;
 
+	static bool matches_n(char letter) {
+		return letter >= '0' && letter <= '9' || letter == 'n';
+	}
+
 	BackupType scan_for_backup_IDs(const ROM& rom) {
 		if (!rom.data || rom.rom_size == 0) {
 			return BackupType::NONE;
@@ -20,7 +24,6 @@ namespace emulator {
 		
 		// string length is always a multiple of 4 bytes, padded with zeroes
 
-		// Shown in little-endian, but these are stored in big-endian
 		// 1234  1234  1234  1234
 		// EEPR  OM_V  nnn0  
 		// SRAM  _Vnn  n000  
@@ -29,6 +32,11 @@ namespace emulator {
 		// FLAS  H1M_  Vnnn  
 
 		constexpr size_t STRING_ALIGNMENT = sizeof(Word);
+
+		constexpr Word EEPROM_START = ('E' << 24) + ('E' << 16) + ('P' << 8) + 'R';
+		constexpr Word EEPROM_SECOND = ('O' << 24) + ('M' << 16) + ('_' << 8) + 'V';
+		constexpr Word SRAM_START = ('S' << 24) + ('R' << 16) + ('A' << 8) + 'M';
+		constexpr Word FLASH_START = ('F' << 24) + ('L' << 16) + ('A' << 8) + 'S';
 
 		// 4 groups of 4 bytes
 		constexpr size_t MAX_STRING_LENGTH = 4ll * 4;
@@ -39,7 +47,8 @@ namespace emulator {
 		// many extra bytes left over at the end.
 		const size_t leftover_bytes = rom.rom_size % MAX_STRING_LENGTH;
 
-		Word first_word = 0;
+		Word* word_pointer = 0;
+		Word word = 0;
 		// From left to right, the 4 bytes in a group of 4 letters
 		char letter_1;
 		char letter_2;
@@ -48,35 +57,49 @@ namespace emulator {
 		// We can safely scan this for the longest string without running over
 		for (size_t i = 0; i < rom.rom_size - leftover_bytes; ++i) {
 			//TODO(ches) scan for the backup type
-			first_word = *((Word*)(((char*)rom.data) + i));
-			letter_4 = first_word & 0xff;
-			if (letter_4 < '0' || letter_4 > '9' && letter_4 != 'n') {
-				// Must be 0 or n, or 'n'.
-				continue;
+			word_pointer = (Word*)(((char*)rom.data) + i);
+			word = *word_pointer;
+			
+			if (word == EEPROM_START) {
+				word_pointer += 1;
+				word = *word_pointer;
+				if (word != EEPROM_SECOND) {
+					continue;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = (word >> 3) & 0xff;
+				letter_2 = (word >> 2) & 0xff;
+				letter_3 = (word >> 1) & 0xff;
+				letter_4 = word & 0xff;
+				if (!matches_n(letter_1)
+				 || !matches_n(letter_2)
+				 || !matches_n(letter_3)
+				 || !matches_n(letter_4)) {
+					continue;
+				}
+				return BackupType::EEPROM;
 			}
-			letter_3 = (first_word >> 1) & 0xff;
-			if (letter_3 < '0' || letter_3 > '9') {
-				// Must be 0 or n, or 'n'.
-				continue;
-			}
-			letter_2 = (first_word >> 2) & 0xff;
-			letter_1 = (first_word >> 3) & 0xff;
-			if (letter_2 == 'V' && letter_1 == '_') {
-				// TODO(ches) Check for flash 512
+			else if (word == SRAM_START) {
 
 			}
-			else if (letter_2 < '0' || letter_2 > '9') {
-				continue;
-			}
-
-			if (letter_1 == 'V') {
-				// TODO(ches) Check for flash 1M
+			else if (word == FLASH_START) {
 
 			}
-			else if (letter_1 < '0' || letter_1 > '9') {
-				// Must be 0 or n, or 'n'.
+			
+			letter_1 = (word >> 3) & 0xff;
+			letter_2 = (word >> 2) & 0xff;
+			letter_3 = (word >> 1) & 0xff;
+			letter_4 = word & 0xff;
+
+			if (!matches_n(letter_1)
+			 || !matches_n(letter_2) 
+			 || !matches_n(letter_3) 
+			 || !matches_n(letter_4)) {
 				continue;
 			}
+			
 
 		}
 
