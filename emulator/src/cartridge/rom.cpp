@@ -31,12 +31,12 @@ namespace emulator {
 		// FLAS  H512  _Vnn  n000
 		// FLAS  H1M_  Vnnn  
 
-		constexpr size_t STRING_ALIGNMENT = sizeof(Word);
-
 		constexpr Word EEPROM_START = ('E' << 24) + ('E' << 16) + ('P' << 8) + 'R';
 		constexpr Word EEPROM_SECOND = ('O' << 24) + ('M' << 16) + ('_' << 8) + 'V';
 		constexpr Word SRAM_START = ('S' << 24) + ('R' << 16) + ('A' << 8) + 'M';
 		constexpr Word FLASH_START = ('F' << 24) + ('L' << 16) + ('A' << 8) + 'S';
+		constexpr Word FLASH_512_SECOND = ('H' << 24) + ('5' << 16) + ('1' << 8) + '2';
+		constexpr Word FLASH_1M_SECOND = ('H' << 24) + ('1' << 16) + ('M' << 8) + '_';
 
 		// 4 groups of 4 bytes
 		constexpr size_t MAX_STRING_LENGTH = 4ll * 4;
@@ -69,10 +69,10 @@ namespace emulator {
 				word_pointer += 1;
 				word = *word_pointer;
 
-				letter_1 = (word >> 3) & 0xff;
-				letter_2 = (word >> 2) & 0xff;
-				letter_3 = (word >> 1) & 0xff;
-				letter_4 = word & 0xff;
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
 				if (!matches_n(letter_1)
 				 || !matches_n(letter_2)
 				 || !matches_n(letter_3)
@@ -82,30 +82,104 @@ namespace emulator {
 				return BackupType::EEPROM;
 			}
 			else if (word == SRAM_START) {
+				word_pointer += 1;
+				word = *word_pointer;
 
-			}
-			else if (word == FLASH_START) {
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
+				if ( letter_1 != '_'
+					|| letter_2 != 'V'
+					|| !matches_n(letter_3)
+					|| !matches_n(letter_4)) {
+					continue;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
 
-			}
-			
-			letter_1 = (word >> 3) & 0xff;
-			letter_2 = (word >> 2) & 0xff;
-			letter_3 = (word >> 1) & 0xff;
-			letter_4 = word & 0xff;
-
-			if (!matches_n(letter_1)
-			 || !matches_n(letter_2) 
-			 || !matches_n(letter_3) 
-			 || !matches_n(letter_4)) {
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				if (matches_n(letter_1)) {
+					return BackupType::SRAM;
+				}
 				continue;
 			}
-			
+			else if (word == FLASH_START) {
+				word_pointer += 1;
+				word = *word_pointer;
 
+				if (word == FLASH_512_SECOND) {
+					word_pointer += 1;
+					word = *word_pointer;
+
+					letter_1 = static_cast<char>((word >> 3) & 0xff);
+					letter_2 = static_cast<char>((word >> 2) & 0xff);
+					letter_3 = static_cast<char>((word >> 1) & 0xff);
+					letter_4 = static_cast<char>(word & 0xff);
+					if (letter_1 != '_'
+						|| letter_2 != 'V'
+						|| !matches_n(letter_3)
+						|| !matches_n(letter_4)) {
+						continue;
+					}
+					
+					word_pointer += 1;
+					word = *word_pointer;
+
+					letter_1 = static_cast<char>((word >> 3) & 0xff);
+					if (matches_n(letter_1)) {
+						return BackupType::FLASH_64KB;
+					}
+					continue;
+				}
+				else if (word == FLASH_1M_SECOND) {
+					word_pointer += 1;
+					word = *word_pointer;
+
+					letter_1 = static_cast<char>((word >> 3) & 0xff);
+					letter_2 = static_cast<char>((word >> 2) & 0xff);
+					letter_3 = static_cast<char>((word >> 1) & 0xff);
+					letter_4 = static_cast<char>(word & 0xff);
+
+					if (letter_1 != 'V'
+						|| !matches_n(letter_2)
+						|| !matches_n(letter_3)
+						|| !matches_n(letter_4)) {
+						continue;
+					}
+					return BackupType::FLASH_128KB;
+				}
+				// Otherwise check regular flash
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
+				if (letter_1 != 'H'
+					|| letter_2 != '_'
+					|| letter_3 != 'V'
+					|| !matches_n(letter_4)) {
+					continue;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				if (!matches_n(letter_1)
+					|| !matches_n(letter_2)) {
+					continue;
+				}
+				return BackupType::FLASH_64KB;
+			}
+			
 		}
 
 		// last lil nub of data, what cruel person would put the string there??
 		if (leftover_bytes >= MIN_STRING_LENGTH) {
-
+			//TODO(ches) last bit of scanning
 		}
+
+		return BackupType::NONE;
 	}
+
 }
