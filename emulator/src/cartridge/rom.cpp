@@ -176,7 +176,97 @@ namespace emulator {
 
 		// last lil nub of data, what cruel person would put the string there??
 		if (leftover_bytes >= MIN_STRING_LENGTH) {
-			//TODO(ches) last bit of scanning
+			word_pointer = (Word*)(((char*)rom.data) + rom.rom_size 
+				- leftover_bytes);
+			word = *word_pointer;
+
+			if (word == EEPROM_START) {
+				word_pointer += 1;
+				word = *word_pointer;
+				if (word != EEPROM_SECOND) {
+					return BackupType::NONE;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
+				if (!matches_n(letter_1)
+					|| !matches_n(letter_2)
+					|| !matches_n(letter_3)
+					|| !matches_n(letter_4)) {
+					return BackupType::NONE;
+				}
+				return BackupType::EEPROM;
+			}
+			else if (word == SRAM_START) {
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
+				if (letter_1 != '_'
+					|| letter_2 != 'V'
+					|| !matches_n(letter_3)
+					|| !matches_n(letter_4)) {
+					return BackupType::NONE;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				if (matches_n(letter_1)) {
+					return BackupType::SRAM;
+				}
+				return BackupType::NONE;
+			}
+			else if (word == FLASH_START) {
+				word_pointer += 1;
+				word = *word_pointer;
+
+				if (word == FLASH_1M_SECOND) {
+					word_pointer += 1;
+					word = *word_pointer;
+
+					letter_1 = static_cast<char>((word >> 3) & 0xff);
+					letter_2 = static_cast<char>((word >> 2) & 0xff);
+					letter_3 = static_cast<char>((word >> 1) & 0xff);
+					letter_4 = static_cast<char>(word & 0xff);
+
+					if (letter_1 != 'V'
+						|| !matches_n(letter_2)
+						|| !matches_n(letter_3)
+						|| !matches_n(letter_4)) {
+						return BackupType::NONE;
+					}
+					return BackupType::FLASH_128KB;
+				}
+				// Otherwise check regular flash
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				letter_3 = static_cast<char>((word >> 1) & 0xff);
+				letter_4 = static_cast<char>(word & 0xff);
+				if (letter_1 != 'H'
+					|| letter_2 != '_'
+					|| letter_3 != 'V'
+					|| !matches_n(letter_4)) {
+					return BackupType::NONE;
+				}
+				word_pointer += 1;
+				word = *word_pointer;
+
+				letter_1 = static_cast<char>((word >> 3) & 0xff);
+				letter_2 = static_cast<char>((word >> 2) & 0xff);
+				if (!matches_n(letter_1)
+					|| !matches_n(letter_2)) {
+					return BackupType::NONE;
+				}
+				return BackupType::FLASH_64KB;
+			}
 		}
 
 		return BackupType::NONE;
