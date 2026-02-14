@@ -21,6 +21,7 @@ namespace brain {
 		emulator::GBA gba;
 		Instant last_frame;
 		bool paused;
+		bool game_loaded;
 	};
 
 	extern BrainData* g_brain_data;

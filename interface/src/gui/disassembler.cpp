@@ -197,12 +197,16 @@ namespace gui {
 
 		if (ImGui::Begin("Disassembler", &g_gui_state.show_window_disassembler)) {
 			const emulator::GBA& gba = brain::g_brain_data->gba;
-
-			if (gba.agb.cartridge_switch) {
-				draw_sm83_disassembler();
+			if (brain::g_brain_data->game_loaded) {
+				if (gba.agb.cartridge_switch) {
+					draw_sm83_disassembler();
+				}
+				else {
+					draw_arm_disassembler();
+				}
 			}
 			else {
-				draw_arm_disassembler();
+				ImGui::Text("No game loaded, CPU offline");
 			}
 
 			ImGui::End();

@@ -18,6 +18,7 @@ namespace brain {
 		, gba{}
 		, last_frame{ std::chrono::steady_clock::now() }
 		, paused{ false }
+		, game_loaded{ false }
 	{}
 	BrainData::~BrainData() = default;
 
@@ -49,7 +50,7 @@ namespace brain {
 			g_brain_data->last_frame = std::chrono::steady_clock::now();
 			process_commands();
 
-			if (!g_brain_data->paused) {
+			if (g_brain_data->game_loaded && !g_brain_data->paused) {
 				current = std::chrono::steady_clock::now();
 				end_time = current + std::chrono::milliseconds(10);
 				while (current < end_time)
