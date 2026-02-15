@@ -29,6 +29,7 @@ static_assert(false, "GBA_GUI_COMMANDS_END_OF_LIST already defined, header proba
 	GBA_GUI_COMMANDS_MAPPING(ControlsStart)\
 	GBA_GUI_COMMANDS_MAPPING(ControlsSpeed)\
 	GBA_GUI_COMMANDS_MAPPING(ControlsScreenCapture)\
+	GBA_GUI_COMMANDS_MAPPING(FileOpen)\
 	GBA_GUI_COMMANDS_MAPPING(FileOpenGameboyAdvance)\
 	GBA_GUI_COMMANDS_MAPPING(FileOpenGameboy)\
 	GBA_GUI_COMMANDS_MAPPING(FileRecent01)\

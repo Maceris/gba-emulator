@@ -126,12 +126,34 @@ namespace brain {
 		//TODO(ches) implement this
 	}
 
+	void process_command_FileOpen() {
+		//TODO(ches) implement this
+		if (gui::g_gui_state.show_window_file_picker) {
+			// do nothing, it's already open
+			return;
+		}
+		gui::g_gui_state.file_picker.file_type_filter = gui::FileTypes::ANY;
+		gui::g_gui_state.show_window_file_picker = true;
+	}
+
 	void process_command_FileOpenGameboyAdvance() {
 		//TODO(ches) implement this
+		if (gui::g_gui_state.show_window_file_picker) {
+			// do nothing, it's already open
+			return;
+		}
+		gui::g_gui_state.file_picker.file_type_filter = gui::FileTypes::GBA;
+		gui::g_gui_state.show_window_file_picker = true;
 	}
 
 	void process_command_FileOpenGameboy() {
 		//TODO(ches) implement this
+		if (gui::g_gui_state.show_window_file_picker) {
+			// do nothing, it's already open
+			return;
+		}
+		gui::g_gui_state.file_picker.file_type_filter = gui::FileTypes::GBC;
+		gui::g_gui_state.show_window_file_picker = true;
 	}
 
 	void process_command_FileRecent01() {

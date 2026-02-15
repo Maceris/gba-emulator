@@ -20,6 +20,9 @@ namespace gui {
 	constexpr bool ENABLED = true;
 	constexpr bool DISABLED = false;
 
+	GuiState::GuiState() = default;
+	GuiState::~GuiState() = default;
+
 	GuiState g_gui_state = GuiState();
 
 	void draw_ui()
@@ -33,6 +36,9 @@ namespace gui {
 		if (g_gui_state.show_window_disassembler) {
 			draw_window_disassembler();
 		}
+		if (g_gui_state.show_window_file_picker) {
+			draw_window_file_picker();
+		}
 
 		ImGui::ShowDemoWindow();
 
@@ -45,11 +51,15 @@ namespace gui {
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Open Gameboy Advance", get_binding_text(Command::FileOpenGameboyAdvance), NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("Open", get_binding_text(Command::FileOpen), NOT_SELECTED, ENABLED))
 				{
 					brain::g_brain_data->command_queue.add(Command::FileOpenGameboyAdvance);
 				}
-				if (ImGui::MenuItem("Open Gameboy", get_binding_text(Command::FileOpenGameboy), NOT_SELECTED, DISABLED))
+				if (ImGui::MenuItem("Open Gameboy Advance", get_binding_text(Command::FileOpenGameboyAdvance), NOT_SELECTED, ENABLED))
+				{
+					brain::g_brain_data->command_queue.add(Command::FileOpenGameboyAdvance);
+				}
+				if (ImGui::MenuItem("Open Gameboy", get_binding_text(Command::FileOpenGameboy), NOT_SELECTED, ENABLED))
 				{
 					brain::g_brain_data->command_queue.add(Command::FileOpenGameboy);
 				}

@@ -1,9 +1,20 @@
 #pragma once
 
+#include "gui/file_picker.h"
+
 namespace gui {
 
 	struct GuiState {
+		GuiState();
+		GuiState(const GuiState&) = delete;
+		GuiState(GuiState&&) = delete;
+		GuiState& operator=(const GuiState&) = delete;
+		GuiState& operator=(GuiState&&) = delete;
+		~GuiState();
+
+		FilePicker file_picker;
 		bool show_window_disassembler = false;
+		bool show_window_file_picker = false;
 	};
 
 	extern GuiState g_gui_state;
