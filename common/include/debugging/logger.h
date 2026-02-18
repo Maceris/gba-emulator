@@ -53,11 +53,13 @@ namespace Logger
 
 	/// <summary>
 	/// Set up the logger, must be called at the beginning of the program.
+	/// Safe to be called multiple times.
 	/// </summary>
 	void init();
 
 	/// <summary>
 	/// Destroy the program should be called at the end of the program.
+	/// Safe to be called multiple times.
 	/// </summary>
 	void destroy();
 
