@@ -1,5 +1,6 @@
 #include "gui/file_picker.h"
 
+#include <algorithm>
 #if defined(WIN32)
 #include <Windows.h>
 #endif
@@ -17,6 +18,18 @@ namespace gui {
 	char logical_drive_list[MAX_PATH] = { 0 };
 #endif
 
+	constexpr ImVec4 FOLDER_TEXT_COLOR = { 0.09f, 0.13f, 1.0f, 1.0f };
+
+	FileEntry::FileEntry(std::string&& name, bool is_directory)
+		: name{ std::move(name) }
+		, is_directory{ is_directory }
+	{}
+	FileEntry::FileEntry(const FileEntry&) = default;
+	FileEntry::FileEntry(FileEntry&&) = default;
+	FileEntry& FileEntry::operator=(const FileEntry&) = default;
+	FileEntry& FileEntry::operator=(FileEntry&&) = default;
+	FileEntry::~FileEntry() = default;
+
 	FilePicker::FilePicker()
 		: file_type_filter{ FileTypes::ANY }
 		, current_path{}
@@ -25,6 +38,7 @@ namespace gui {
 		, drive_names{ 0 }
 		, drive_count{ 0 }
 		, selected_drive{ 0 }
+		, current_directory_entries{}
 	{
 		initialize();
 	}
@@ -33,8 +47,8 @@ namespace gui {
 
 	void FilePicker::initialize() {
 		current_path = std::filesystem::current_path();
-		current_path_string = current_path.generic_string();
 		root_path = current_path.root_path().generic_string();
+		update_directory_info();
 
 		Logger::init();
 
@@ -55,7 +69,7 @@ namespace gui {
 
 				if (strncmp(drive_name, root_path.c_str(), string_length) == 0) {
 					// Confusing name, but the current index
-					selected_drive = drive_count;
+					selected_drive = static_cast<int>(drive_count);
 				}
 
 				chars_read += string_length;
@@ -91,6 +105,25 @@ namespace gui {
 
 	void FilePicker::update_directory_info() {
 		current_path_string = current_path.generic_string();
+		current_directory_entries.clear();
+
+		for (const auto& entry : std::filesystem::directory_iterator(current_path)) {
+			bool directory = std::filesystem::is_directory(entry);
+			current_directory_entries.emplace_back(entry.path().generic_string(), directory);
+		}
+
+		std::sort(current_directory_entries.begin(), current_directory_entries.end(),
+			[](const FileEntry& a, const FileEntry& b) {
+				// returns true if a should come before b
+				if (a.is_directory && !b.is_directory) {
+					return true;
+				}
+				if (!a.is_directory && b.is_directory) {
+					return false;
+				}
+				return a.name < b.name;
+			});
+
 	}
 
 	void draw_window_file_picker() {
@@ -109,11 +142,21 @@ namespace gui {
 
 #if defined(WIN32)
 			ImGui::SetNextItemWidth(70);
-			ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names, picker.drive_count);
+			ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names, static_cast<int>(picker.drive_count));
 			ImGui::SameLine();
 #endif
 
 			ImGui::Text("%s", picker.current_path_string.c_str());
+
+			for (const auto& value : picker.current_directory_entries) {
+
+				if (value.is_directory) {
+					ImGui::TextColored(FOLDER_TEXT_COLOR, "%s", value.name.c_str());
+				}
+				else {
+					ImGui::Text("%s", value.name.c_str());
+				}
+			}
 
 			ImGui::End();
 		}

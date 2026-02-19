@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 namespace gui {
 
@@ -10,6 +11,18 @@ namespace gui {
 		ANY,
 		GBA,
 		GBC,
+	};
+
+	struct FileEntry {
+		std::string name;
+		bool is_directory;
+
+		FileEntry(std::string&& name, bool is_directory);
+		FileEntry(const FileEntry&);
+		FileEntry(FileEntry&&);
+		FileEntry& operator=(const FileEntry&);
+		FileEntry& operator=(FileEntry&&);
+		~FileEntry();
 	};
 
 	struct FilePicker {
@@ -30,6 +43,7 @@ namespace gui {
 		size_t drive_count;
 		// Only used on windows.
 		int selected_drive;
+		std::vector<FileEntry> current_directory_entries;
 
 		void initialize();
 		void select_file();
