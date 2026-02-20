@@ -96,10 +96,15 @@ namespace gui {
 	}
 
 	void FilePicker::navigate_to_parent() {
+		if (current_path_string == root_path) {
+			return;
+		}
+		current_path = current_path.parent_path();
 		update_directory_info();
 	}
 
-	void FilePicker::navigate_to_child() {
+	void FilePicker::navigate_to_child(const std::string& child_name) {
+		current_path = current_path / child_name;
 		update_directory_info();
 	}
 
@@ -146,17 +151,39 @@ namespace gui {
 			ImGui::SameLine();
 #endif
 
+			if (ImGui::Button("Up")) {
+				picker.navigate_to_parent();
+			}
+			ImGui::SameLine();
+
 			ImGui::Text("%s", picker.current_path_string.c_str());
 
+			const ImVec4& window_bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+
+			ImGui::PushStyleColor(ImGuiCol_Button, window_bg);
+
 			for (const auto& value : picker.current_directory_entries) {
+				if (value.is_directory) {
+					ImGui::PushStyleColor(ImGuiCol_Text, FOLDER_TEXT_COLOR);
+				}
+
+				if (ImGui::Button(value.name.c_str())) {
+					if (value.is_directory) {
+						picker.navigate_to_child(value.name);
+						ImGui::PopStyleColor();
+						break;
+					}
+					else {
+						//TODO(ches) Pick file
+					}
+				}
 
 				if (value.is_directory) {
-					ImGui::TextColored(FOLDER_TEXT_COLOR, "%s", value.name.c_str());
-				}
-				else {
-					ImGui::Text("%s", value.name.c_str());
+					ImGui::PopStyleColor();
 				}
 			}
+
+			ImGui::PopStyleColor();// Button background
 
 			ImGui::End();
 		}

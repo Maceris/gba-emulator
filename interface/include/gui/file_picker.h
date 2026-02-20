@@ -50,7 +50,7 @@ namespace gui {
 		void close();
 
 		void navigate_to_parent();
-		void navigate_to_child();
+		void navigate_to_child(const std::string& child_name);
 		void update_directory_info();
 	};
 
