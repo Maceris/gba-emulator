@@ -18,6 +18,12 @@ namespace gui {
 	char logical_drive_list[MAX_PATH] = { 0 };
 #endif
 
+	const char* FILE_FILTER_DROPDOWN_OPTIONS[FILE_TYPE_FILTER_COUNT] = {
+		"ANY (*.*)",
+		"GBA (*.gba)",
+		"GBC (*.gbc, *.gb)"
+	};
+
 	constexpr ImVec4 FOLDER_TEXT_COLOR = { 0.09f, 0.13f, 1.0f, 1.0f };
 
 	FileEntry::FileEntry(const std::string& name, bool is_directory)
@@ -32,6 +38,7 @@ namespace gui {
 
 	FilePicker::FilePicker()
 		: file_type_filter{ FileTypes::ANY }
+		, file_type_filter_index{ 0 }
 		, current_path{}
 		, current_path_string{}
 		, root_path{}
@@ -126,6 +133,7 @@ namespace gui {
 			if (strncmp(extension_c, ".gba", 5) == 0) {
 				return true;
 			}
+			return false;
 		case FileTypes::GBC:
 			if (strncmp(extension_c, ".gbc", 5) == 0) {
 				return true;
@@ -133,7 +141,9 @@ namespace gui {
 			if (strncmp(extension_c, ".gb", 4) == 0) {
 				return true;
 			}
+			return false;
 		}
+		return false;
 	}
 
 	void FilePicker::update_directory_info() {
@@ -144,7 +154,7 @@ namespace gui {
 			bool directory = std::filesystem::is_directory(entry);
 			std::string name = entry.path().generic_string();
 			
-			if (matches(file_type_filter, name)) {
+			if (directory || matches(file_type_filter, name)) {
 				current_directory_entries.emplace_back(name, directory);
 			}
 		}
@@ -171,16 +181,14 @@ namespace gui {
 
 			//TODO(ches) drive dropdown
 
-			//TODO(ches) parent folder button
-			//TODO(ches) navigate to child folders
-			//TODO(ches) list entries in folder, cached preferably
-
 			FilePicker& picker = g_gui_state.file_picker;
 
 #if defined(WIN32)
 			ImGui::SetNextItemWidth(70);
-			ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names, 
-				static_cast<int>(picker.drive_count));
+			if (ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names,
+				static_cast<int>(picker.drive_count))) {
+				//TODO(ches) switch drives
+			}
 			ImGui::SameLine();
 #endif
 
@@ -193,30 +201,40 @@ namespace gui {
 
 			const ImVec4& window_bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
 
-			ImGui::PushStyleColor(ImGuiCol_Button, window_bg);
+			if (ImGui::BeginChild("##FilesScroll", ImVec2(0, 200))) {
+				ImGui::PushStyleColor(ImGuiCol_Button, window_bg);
 
-			for (const auto& value : picker.current_directory_entries) {
-				if (value.is_directory) {
-					ImGui::PushStyleColor(ImGuiCol_Text, FOLDER_TEXT_COLOR);
-				}
-
-				if (ImGui::Button(value.name.c_str())) {
+				for (const auto& value : picker.current_directory_entries) {
 					if (value.is_directory) {
-						picker.navigate_to_child(value.name);
-						ImGui::PopStyleColor();
-						break;
+						ImGui::PushStyleColor(ImGuiCol_Text, FOLDER_TEXT_COLOR);
 					}
-					else {
-						//TODO(ches) Pick file
+
+					if (ImGui::Button(value.name.c_str())) {
+						if (value.is_directory) {
+							picker.navigate_to_child(value.name);
+							ImGui::PopStyleColor();
+							break;
+						}
+						else {
+							//TODO(ches) Pick file
+						}
+					}
+
+					if (value.is_directory) {
+						ImGui::PopStyleColor();
 					}
 				}
 
-				if (value.is_directory) {
-					ImGui::PopStyleColor();
-				}
+				ImGui::PopStyleColor();// Button background
+				ImGui::EndChild();
 			}
 
-			ImGui::PopStyleColor();// Button background
+			if (ImGui::Combo("File Filter", &picker.file_type_filter_index,
+				FILE_FILTER_DROPDOWN_OPTIONS, FILE_TYPE_FILTER_COUNT)) {
+				picker.file_type_filter = 
+					static_cast<FileTypes>(picker.file_type_filter_index);
+				picker.update_directory_info();
+			}
 
 			ImGui::End();
 		}

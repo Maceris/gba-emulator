@@ -13,6 +13,8 @@ namespace gui {
 		GBC,
 	};
 
+	constexpr int FILE_TYPE_FILTER_COUNT = 3;
+
 	struct FileEntry {
 		std::string name;
 		bool is_directory;
@@ -34,6 +36,7 @@ namespace gui {
 		~FilePicker();
 
 		FileTypes file_type_filter;
+		int file_type_filter_index;
 		std::filesystem::path current_path;
 		std::string current_path_string;
 		std::string root_path;
