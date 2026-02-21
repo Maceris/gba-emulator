@@ -20,8 +20,8 @@ namespace gui {
 
 	constexpr ImVec4 FOLDER_TEXT_COLOR = { 0.09f, 0.13f, 1.0f, 1.0f };
 
-	FileEntry::FileEntry(std::string&& name, bool is_directory)
-		: name{ std::move(name) }
+	FileEntry::FileEntry(const std::string& name, bool is_directory)
+		: name{ name }
 		, is_directory{ is_directory }
 	{}
 	FileEntry::FileEntry(const FileEntry&) = default;
@@ -84,8 +84,7 @@ namespace gui {
 
 	}
 
-	void FilePicker::select_file() {
-		//TODO(ches) figure out parameter(s)
+	void FilePicker::select_file(const std::string& child_name) {
 		//TODO(ches) do something with the selected file
 
 		close();
@@ -108,13 +107,46 @@ namespace gui {
 		update_directory_info();
 	}
 
+	static bool matches(FileTypes filter, const std::string& name) {
+		if (filter == FileTypes::ANY) {
+			return true;
+		}
+
+		size_t last_period = name.find_last_of(".");
+		if (last_period == std::string::npos) {
+			// not found
+			return false;
+		}
+		std::string extension = name.substr(last_period);
+		const char* extension_c = extension.c_str();
+
+		switch (filter) {
+		case FileTypes::ANY: return true;
+		case FileTypes::GBA:
+			if (strncmp(extension_c, ".gba", 5) == 0) {
+				return true;
+			}
+		case FileTypes::GBC:
+			if (strncmp(extension_c, ".gbc", 5) == 0) {
+				return true;
+			}
+			if (strncmp(extension_c, ".gb", 4) == 0) {
+				return true;
+			}
+		}
+	}
+
 	void FilePicker::update_directory_info() {
 		current_path_string = current_path.generic_string();
 		current_directory_entries.clear();
 
 		for (const auto& entry : std::filesystem::directory_iterator(current_path)) {
 			bool directory = std::filesystem::is_directory(entry);
-			current_directory_entries.emplace_back(entry.path().generic_string(), directory);
+			std::string name = entry.path().generic_string();
+			
+			if (matches(file_type_filter, name)) {
+				current_directory_entries.emplace_back(name, directory);
+			}
 		}
 
 		std::sort(current_directory_entries.begin(), current_directory_entries.end(),
@@ -147,7 +179,8 @@ namespace gui {
 
 #if defined(WIN32)
 			ImGui::SetNextItemWidth(70);
-			ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names, static_cast<int>(picker.drive_count));
+			ImGui::Combo("##drives", &picker.selected_drive, picker.drive_names, 
+				static_cast<int>(picker.drive_count));
 			ImGui::SameLine();
 #endif
 

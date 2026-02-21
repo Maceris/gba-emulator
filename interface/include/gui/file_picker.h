@@ -17,7 +17,7 @@ namespace gui {
 		std::string name;
 		bool is_directory;
 
-		FileEntry(std::string&& name, bool is_directory);
+		FileEntry(const std::string& name, bool is_directory);
 		FileEntry(const FileEntry&);
 		FileEntry(FileEntry&&);
 		FileEntry& operator=(const FileEntry&);
@@ -46,7 +46,7 @@ namespace gui {
 		std::vector<FileEntry> current_directory_entries;
 
 		void initialize();
-		void select_file();
+		void select_file(const std::string& child_name);
 		void close();
 
 		void navigate_to_parent();
