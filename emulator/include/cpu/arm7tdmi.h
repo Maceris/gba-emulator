@@ -16,21 +16,9 @@ namespace emulator {
 		/// </summary>
 		ADD,
 		/// <summary>
-		/// Load Address (short-range). Pseudo-instruction.
-		/// </summary>
-		ADR,
-		/// <summary>
-		/// Load Address (medium-range). Pseudo-instruction.
-		/// </summary>
-		ADRL,
-		/// <summary>
 		/// And.
 		/// </summary>
 		AND,
-		/// <summary>
-		/// Arithmetic Shift Right. Pseudo-instruction.
-		/// </summary>
-		ASR,
 		/// <summary>
 		/// Branch.
 		/// </summary>
@@ -40,7 +28,7 @@ namespace emulator {
 		/// </summary>
 		BIC,
 		/// <summary>
-		/// Branch with link. Pseudo-instruction.
+		/// Branch with link.
 		/// </summary>
 		BL,
 		/// <summary>
@@ -68,11 +56,12 @@ namespace emulator {
 		/// </summary>
 		LDC,
 		/// <summary>
-		/// Load multiple registers.
+		/// Load multiple user mode registers (S bit set, PC not in the list).
 		/// </summary>
 		LDM,
 		/// <summary>
-		/// Load multiple registers, exception return.
+		/// Load multiple registers, exception return (S bit set, PC in the
+		/// list, SPSR is copied to CPSR).
 		/// </summary>
 		LDM_EXCEPTION,
 		/// <summary>
@@ -120,14 +109,6 @@ namespace emulator {
 		/// </summary>
 		LDRT,
 		/// <summary>
-		/// Logical Shift Left. Pseudo-instruction.
-		/// </summary>
-		LSL,
-		/// <summary>
-		/// Logical Shift Right. Pseudo-instruction.
-		/// </summary>
-		LSR,
-		/// <summary>
 		/// Move CPU register to coprocessor register.
 		/// </summary>
 		MCR,
@@ -160,29 +141,9 @@ namespace emulator {
 		/// </summary>
 		MVN,
 		/// <summary>
-		/// No Operation. Pseudo-instruction.
-		/// </summary>
-		NOP,
-		/// <summary>
 		/// Or.
 		/// </summary>
 		ORR,
-		/// <summary>
-		/// Pop. Pseudo-instruction.
-		/// </summary>
-		POP,
-		/// <summary>
-		/// Push. Pseudo-instruction.
-		/// </summary>
-		PUSH,
-		/// <summary>
-		/// Rotate Right. Pseudo-instruction.
-		/// </summary>
-		ROR,
-		/// <summary>
-		/// Rotate Right with Extend. Pseudo-instruction.
-		/// </summary>
-		RRX,
 		/// <summary>
 		/// Reverse subtract.
 		/// </summary>
@@ -208,7 +169,7 @@ namespace emulator {
 		/// </summary>
 		STC,
 		/// <summary>
-		/// Store multiple.
+		/// Store multiple user mode registers (S bit set).
 		/// </summary>
 		STM,
 		/// <summary>
@@ -260,6 +221,10 @@ namespace emulator {
 		/// </summary>
 		SWP,
 		/// <summary>
+		/// Swap byte with memory.
+		/// </summary>
+		SWPB,
+		/// <summary>
 		/// Test bitwise equality.
 		/// </summary>
 		TEQ,
@@ -268,10 +233,6 @@ namespace emulator {
 		/// </summary>
 		TST,
 		/// <summary>
-		/// Permanently undefined.
-		/// </summary>
-		UDF,
-		/// <summary>
 		/// Multiply unsigned accumulate long.
 		/// </summary>
 		UMLAL,
@@ -279,7 +240,12 @@ namespace emulator {
 		/// Multiply unsigned long.
 		/// </summary>
 		UMULL,
-		UNIMPLEMENTED
+		/// <summary>
+		/// Any encoding in the undefined instruction space, which takes the
+		/// undefined instruction trap. This includes every instruction added
+		/// after ARMv4T.
+		/// </summary>
+		UNDEFINED,
 	};
 
 	/// <summary>
@@ -347,12 +313,15 @@ namespace emulator {
 		/// Always.
 		/// </summary>
 		AL,
+		/// <summary>
+		/// Never. Reserved on ARMv4T, the instruction never executes. (ARMv5
+		/// and later reuse this encoding for unconditional instructions.)
+		/// </summary>
+		NV,
 	};
 
 	/// <summary>
 	/// Converts the 4-bit cond code to the appropriate conditional code.
-	/// 0b1111u is only present for instructions that execute unconditionally,
-	/// so we will return AL for that as well as the legitimate AL (0b1110u).
 	/// </summary>
 	/// <param name="cond">The 4 bits of the cond code.</param>
 	/// <returns>The appropriate conditional code.</returns>
@@ -515,10 +484,6 @@ namespace emulator {
 		/// </summary>
 		NEG,
 		/// <summary>
-		/// No Operation.
-		/// </summary>
-		NOP,
-		/// <summary>
 		/// Or.
 		/// </summary>
 		ORR,
@@ -534,10 +499,6 @@ namespace emulator {
 		/// Rotate right.
 		/// </summary>
 		ROR,
-		/// <summary>
-		/// Reverse subtract.
-		/// </summary>
-		RSB,
 		/// <summary>
 		/// Subtract with carry.
 		/// </summary>
@@ -570,71 +531,13 @@ namespace emulator {
 		/// Test bits.
 		/// </summary>
 		TST,
-		UNIMPLEMENTED
+		/// <summary>
+		/// Any encoding in the undefined instruction space, which takes the
+		/// undefined instruction trap. This includes every instruction added
+		/// after ARMv4T.
+		/// </summary>
+		UNDEFINED,
 	};
-
-	namespace DecodeArm
-	{
-		ARMInstructionType constexpr decode(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_conditional_instruction(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_data_processing_and_miscellaneous(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_data_processing_immediate(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_data_processing_register(ArmInstruction instruction);
-		/// <summary>
-		/// Handles decoding of Data Processing instructions, except when 
-		/// op1 is 1101x, given that we already know it's either a 
-		/// Data Processing (register-shifted register) or 
-		/// Data Processing (register) instruction.
-		/// </summary>
-		/// <param name="op">The 5 bits of op1.</param>
-		/// <returns>The appropriate instruction.</returns>
-		ARMInstructionType constexpr decode_data_processing_register_shared(const ArmInstruction op);
-		ARMInstructionType constexpr decode_data_processing_register_shifted_register(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_miscellaneous(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_multiply_and_multiply_accumulate(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_synchronization_primitives(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_extra_load_store(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_msr_and_hints(ArmInstruction instruction);
-
-		/// <summary>
-		/// Decode load/store word and unsigned byte instructions, given the 
-		/// below information.
-		/// 
-		/// 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 10  9  8  7  6  5  4  3  2  1  0
-		/// ____cond___  0  1  A _____op1______ ____Rn_____                                B
-		/// 
-		/// Either bits A or B may be 1, but not both.
-		/// 
-		/// </summary>
-		/// <param name="instruction">The instruction to decode.</param>
-		/// <returns>The appropriate instruction.</returns>
-		ARMInstructionType constexpr decode_load_store_word_and_unsigned_byte(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_media_instructions(ArmInstruction instruction);
-
-		ARMInstructionType constexpr decode_branch_branch_with_link_and_block_data_transfer(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_coprocessor_and_supervisor_call(ArmInstruction instruction);
-		ARMInstructionType constexpr decode_unconditional_instruction(ArmInstruction instruction);
-	}
-
-	namespace DecodeThumb {
-		bool constexpr is_32_bit(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_shift_add_sub_mov_cmp(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_data_processing(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_special_data_branch_exchange(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_load_store_single_data(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_misc(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_16_conditional_branch_supervisor(ThumbInstruction instruction);
-		ThumbInstructionType constexpr decode_32(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_store_multiple(ThumbInstruction first_instruction);
-		ThumbInstructionType constexpr decode_32_data_processing_shifted_register(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_single(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_byte_memory_hints(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_halfword_memory_hints(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_load_word(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_data_processing_register(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-		ThumbInstructionType constexpr decode_32_multiply_multiply_accumulate_absolute_difference(ThumbInstruction first_instruction, ThumbInstruction second_instruction);
-	}
 
 	enum class ArmMode {
 		/// <summary>
@@ -1014,21 +917,9 @@ namespace emulator {
 		/// </summary>
 		void arm_add(ArmInstruction instruction);
 		/// <summary>
-		/// Load Address (short-range).
-		/// </summary>
-		void arm_adr(ArmInstruction instruction);
-		/// <summary>
-		/// Load Address (medium-range).
-		/// </summary>
-		void arm_adrl(ArmInstruction instruction);
-		/// <summary>
 		/// And.
 		/// </summary>
 		void arm_and(ArmInstruction instruction);
-		/// <summary>
-		/// Arithmetic Shift Right.
-		/// </summary>
-		void arm_asr(ArmInstruction instruction);
 		/// <summary>
 		/// Branch.
 		/// </summary>
@@ -1118,14 +1009,6 @@ namespace emulator {
 		/// </summary>
 		void arm_ldrt(ArmInstruction instruction);
 		/// <summary>
-		/// Logical Shift Left.
-		/// </summary>
-		void arm_lsl(ArmInstruction instruction);
-		/// <summary>
-		/// Logical Shift Right.
-		/// </summary>
-		void arm_lsr(ArmInstruction instruction);
-		/// <summary>
 		/// Move CPU register to coprocessor register.
 		/// </summary>
 		void arm_mcr(ArmInstruction instruction);
@@ -1158,29 +1041,9 @@ namespace emulator {
 		/// </summary>
 		void arm_mvn(ArmInstruction instruction);
 		/// <summary>
-		/// No Operation.
-		/// </summary>
-		void arm_nop(ArmInstruction instruction);
-		/// <summary>
 		/// Or.
 		/// </summary>
 		void arm_orr(ArmInstruction instruction);
-		/// <summary>
-		/// Pop.
-		/// </summary>
-		void arm_pop(ArmInstruction instruction);
-		/// <summary>
-		/// Push.
-		/// </summary>
-		void arm_push(ArmInstruction instruction);
-		/// <summary>
-		/// Rotate Right.
-		/// </summary>
-		void arm_ror(ArmInstruction instruction);
-		/// <summary>
-		/// Rotate Right with Extend.
-		/// </summary>
-		void arm_rrx(ArmInstruction instruction);
 		/// <summary>
 		/// Reverse subtract.
 		/// </summary>
@@ -1238,10 +1101,6 @@ namespace emulator {
 		/// </summary>
 		void arm_strbt(ArmInstruction instruction);
 		/// <summary>
-		/// Store register dual.
-		/// </summary>
-		void arm_strd(ArmInstruction instruction);
-		/// <summary>
 		/// Store register halfword.
 		/// </summary>
 		void arm_strh(ArmInstruction instruction);
@@ -1262,6 +1121,10 @@ namespace emulator {
 		/// </summary>
 		void arm_swp(ArmInstruction instruction);
 		/// <summary>
+		/// Swap byte with memory.
+		/// </summary>
+		void arm_swpb(ArmInstruction instruction);
+		/// <summary>
 		/// Test bitwise equality.
 		/// </summary>
 		void arm_teq(ArmInstruction instruction);
@@ -1270,10 +1133,6 @@ namespace emulator {
 		/// </summary>
 		void arm_tst(ArmInstruction instruction);
 		/// <summary>
-		/// Permanently undefined.
-		/// </summary>
-		void arm_udf(ArmInstruction instruction);
-		/// <summary>
 		/// Multiply unsigned accumulate long.
 		/// </summary>
 		void arm_umlal(ArmInstruction instruction);
@@ -1281,6 +1140,10 @@ namespace emulator {
 		/// Multiply unsigned long.
 		/// </summary>
 		void arm_umull(ArmInstruction instruction);
+		/// <summary>
+		/// Undefined instruction, takes the undefined instruction trap.
+		/// </summary>
+		void arm_undefined(ArmInstruction instruction);
 #pragma endregion
 
 #pragma region Thumb Instructions
@@ -1439,10 +1302,6 @@ namespace emulator {
 		/// </summary>
 		void thumb_neg(ThumbInstruction instruction);
 		/// <summary>
-		/// No operation.
-		/// </summary>
-		void thumb_nop(ThumbInstruction instruction);
-		/// <summary>
 		/// Or.
 		/// </summary>
 		void thumb_or(ThumbInstruction instruction);
@@ -1458,10 +1317,6 @@ namespace emulator {
 		/// Rotate right.
 		/// </summary>
 		void thumb_ror(ThumbInstruction instruction);
-		/// <summary>
-		/// Reverse subtract.
-		/// </summary>
-		void thumb_rsb(ThumbInstruction instruction);
 		/// <summary>
 		/// Subtract with carry.
 		/// </summary>
@@ -1494,6 +1349,10 @@ namespace emulator {
 		/// Test bits.
 		/// </summary>
 		void thumb_tst(ThumbInstruction instruction);
+		/// <summary>
+		/// Undefined instruction, takes the undefined instruction trap.
+		/// </summary>
+		void thumb_undefined(ThumbInstruction instruction);
 
 #pragma endregion
 
@@ -1590,8 +1449,7 @@ namespace emulator {
 	private:
 #pragma region ARM Decoding
 		ARMInstructionType decode_arm(ArmInstruction instruction);
-		ThumbInstructionType decode_thumb(ThumbInstruction instruction, 
-			ThumbInstruction next_instruction);
+		ThumbInstructionType decode_thumb(ThumbInstruction instruction);
 #pragma endregion
 
 #pragma region Set register functions
@@ -1640,7 +1498,8 @@ namespace emulator {
 		/// <summary>
 		/// Set the CPSR control bit for state.
 		/// false = ARM, true = THUMB.
-		/// Should not be changed manually, only by the BX instruction.
+		/// Only changed by BX, exception entry (cleared), and exception return
+		/// (restored from the SPSR). Changing it with MSR is unpredictable.
 		/// </summary>
 		/// <param name="flag">The value to set.</param>
 		void set_flag_T(bool flag);

@@ -29,15 +29,19 @@ namespace emulator {
 	constexpr Word OVERFLOW_FLAG_BITS = 0b0001'0000'0000'0000'0000'0000'0000'0000;
 
 	/// <summary>
+	/// Set this to disable IRQ interrupts. Also gets set on entry to every
+	/// exception (reset, undefined instruction, SWI, prefetch abort, data
+	/// abort, IRQ, and FIQ).
+	///
 	/// 0=Enable,
 	/// 1=Disable
 	/// </summary>
 	constexpr Word IRQ_DISABLE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'1000'0000;
 
 	/// <summary>
-	/// Set this to disable IRQ interrupts. Also, gets set whenever IRQ mode is
-	/// entered.
-	/// 
+	/// Set this to disable FIQ interrupts. Also gets set on reset and on
+	/// entry to FIQ mode.
+	///
 	/// 0=Enable,
 	/// 1=Disable
 	/// </summary>
@@ -46,7 +50,9 @@ namespace emulator {
 	/// <summary>
 	/// 0=ARM,
 	/// 1=THUMB
-	/// Should not be changed manually, only by the BX instruction.
+	/// Changed by the BX instruction, cleared on entry to every exception
+	/// (exceptions are always handled in ARM state), and restored from the
+	/// SPSR on exception return. Changing it with MSR is unpredictable.
 	/// </summary>
 	constexpr Word STATE_FLAG_BITS = 0b0000'0000'0000'0000'0000'0000'0010'0000;
 

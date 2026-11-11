@@ -14,6 +14,7 @@ SET(HEADER_FILES
   ${EMULATOR_HEADER_DIR}/cartridge/game_pak.h
   ${EMULATOR_HEADER_DIR}/cartridge/rom.h
   ${EMULATOR_HEADER_DIR}/cpu/arm7tdmi.h
+  ${EMULATOR_HEADER_DIR}/cpu/arm7tdmi_decode.h
   ${EMULATOR_HEADER_DIR}/cpu/cpu.h
   ${EMULATOR_HEADER_DIR}/cpu/sm83.h
   ${EMULATOR_HEADER_DIR}/cpu/cpu_constants.h
@@ -43,6 +44,7 @@ SET(SOURCE_FILES
 
 SET(TEST_FILES
   ${EMULATOR_TEST_DIR}/main.cpp
+  ${EMULATOR_TEST_DIR}/cpu/arm7tdmi_decode_test.cpp
   ${EMULATOR_TEST_DIR}/cpu/cpu_test.cpp
 )
 
